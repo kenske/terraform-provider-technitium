@@ -3,8 +3,8 @@ package provider
 import (
 	"context"
 	"os"
+	"terraform-provider-technitium-dns/internal/technitium"
 
-	"github.com/hashicorp-demoapp/hashicups-client-go"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -15,50 +15,44 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ provider.Provider = &hashicupsProvider{}
+	_ provider.Provider = &technitiumProvider{}
 )
 
 // New is a helper function to simplify provider server and testing implementation.
 func New(version string) func() provider.Provider {
 	return func() provider.Provider {
-		return &hashicupsProvider{
+		return &technitiumProvider{
 			version: version,
 		}
 	}
 }
 
-// hashicupsProvider is the provider implementation.
-type hashicupsProvider struct {
+type technitiumProvider struct {
 	// version is set to the provider version on release, "dev" when the
 	// provider is built and ran locally, and "test" when running acceptance
 	// testing.
 	version string
 }
 
-// hashicupsProviderModel maps provider schema data to a Go type.
-type hashicupsProviderModel struct {
-	Host     types.String `tfsdk:"host"`
-	Username types.String `tfsdk:"username"`
-	Password types.String `tfsdk:"password"`
+type technitiumProviderModel struct {
+	Host  types.String `tfsdk:"host"`
+	Token types.String `tfsdk:"token"`
 }
 
 // Metadata returns the provider type name.
-func (p *hashicupsProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
-	resp.TypeName = "hashicups"
+func (p *technitiumProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
+	resp.TypeName = "technitium"
 	resp.Version = p.version
 }
 
 // Schema defines the provider-level schema for configuration data.
-func (p *hashicupsProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
+func (p *technitiumProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"host": schema.StringAttribute{
 				Optional: true,
 			},
-			"username": schema.StringAttribute{
-				Optional: true,
-			},
-			"password": schema.StringAttribute{
+			"token": schema.StringAttribute{
 				Optional:  true,
 				Sensitive: true,
 			},
@@ -66,9 +60,9 @@ func (p *hashicupsProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 	}
 }
 
-func (p *hashicupsProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+func (p *technitiumProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	// Retrieve provider data from configuration
-	var config hashicupsProviderModel
+	var config technitiumProviderModel
 	diags := req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -81,27 +75,16 @@ func (p *hashicupsProvider) Configure(ctx context.Context, req provider.Configur
 	if config.Host.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(
 			path.Root("host"),
-			"Unknown HashiCups API Host",
-			"The provider cannot create the HashiCups API client as there is an unknown configuration value for the HashiCups API host. "+
-				"Either target apply the source of the value first, set the value statically in the configuration, or use the HASHICUPS_HOST environment variable.",
+			"Unknown Technitium DNS API Host",
+			"The provider cannot create the Technitium DNS API client as there is an unknown configuration value for the host. ",
 		)
 	}
 
-	if config.Username.IsUnknown() {
+	if config.Token.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(
-			path.Root("username"),
-			"Unknown HashiCups API Username",
-			"The provider cannot create the HashiCups API client as there is an unknown configuration value for the HashiCups API username. "+
-				"Either target apply the source of the value first, set the value statically in the configuration, or use the HASHICUPS_USERNAME environment variable.",
-		)
-	}
-
-	if config.Password.IsUnknown() {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("password"),
-			"Unknown HashiCups API Password",
-			"The provider cannot create the HashiCups API client as there is an unknown configuration value for the HashiCups API password. "+
-				"Either target apply the source of the value first, set the value statically in the configuration, or use the HASHICUPS_PASSWORD environment variable.",
+			path.Root("token"),
+			"Unknown Technitium DNS API Password",
+			"The provider cannot create the Technitium DNS API client as there is an unknown configuration value for the API token. ",
 		)
 	}
 
@@ -112,20 +95,15 @@ func (p *hashicupsProvider) Configure(ctx context.Context, req provider.Configur
 	// Default values to environment variables, but override
 	// with Terraform configuration value if set.
 
-	host := os.Getenv("HASHICUPS_HOST")
-	username := os.Getenv("HASHICUPS_USERNAME")
-	password := os.Getenv("HASHICUPS_PASSWORD")
+	host := os.Getenv("TECHNITIUM_HOST")
+	token := os.Getenv("TECHNITIUM_TOKEN")
 
 	if !config.Host.IsNull() {
 		host = config.Host.ValueString()
 	}
 
-	if !config.Username.IsNull() {
-		username = config.Username.ValueString()
-	}
-
-	if !config.Password.IsNull() {
-		password = config.Password.ValueString()
+	if !config.Token.IsNull() {
+		token = config.Token.ValueString()
 	}
 
 	// If any of the expected configurations are missing, return
@@ -134,30 +112,16 @@ func (p *hashicupsProvider) Configure(ctx context.Context, req provider.Configur
 	if host == "" {
 		resp.Diagnostics.AddAttributeError(
 			path.Root("host"),
-			"Missing HashiCups API Host",
-			"The provider cannot create the HashiCups API client as there is a missing or empty value for the HashiCups API host. "+
-				"Set the host value in the configuration or use the HASHICUPS_HOST environment variable. "+
-				"If either is already set, ensure the value is not empty.",
+			"Missing Technitium DNS API API Host",
+			"Host value is missing",
 		)
 	}
 
-	if username == "" {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("username"),
-			"Missing HashiCups API Username",
-			"The provider cannot create the HashiCups API client as there is a missing or empty value for the HashiCups API username. "+
-				"Set the username value in the configuration or use the HASHICUPS_USERNAME environment variable. "+
-				"If either is already set, ensure the value is not empty.",
-		)
-	}
-
-	if password == "" {
+	if token == "" {
 		resp.Diagnostics.AddAttributeError(
 			path.Root("password"),
-			"Missing HashiCups API Password",
-			"The provider cannot create the HashiCups API client as there is a missing or empty value for the HashiCups API password. "+
-				"Set the password value in the configuration or use the HASHICUPS_PASSWORD environment variable. "+
-				"If either is already set, ensure the value is not empty.",
+			"Missing Technitium DNS API token",
+			"Token is empty",
 		)
 	}
 
@@ -165,32 +129,29 @@ func (p *hashicupsProvider) Configure(ctx context.Context, req provider.Configur
 		return
 	}
 
-	// Create a new HashiCups client using the configuration values
-	client, err := hashicups.NewClient(&host, &username, &password)
+	client, err := technitium.NewClient(host, token)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Create HashiCups API Client",
-			"An unexpected error occurred when creating the HashiCups API client. "+
+			"Unable to Create Technitium DNS API Client",
+			"An unexpected error occurred when creating the Technitium DNS API client. "+
 				"If the error is not clear, please contact the provider developers.\n\n"+
-				"HashiCups Client Error: "+err.Error(),
+				"Client Error: "+err.Error(),
 		)
 		return
 	}
 
-	// Make the HashiCups client available during DataSource and Resource
-	// type Configure methods.
 	resp.DataSourceData = client
 	resp.ResourceData = client
 }
 
 // DataSources defines the data sources implemented in the provider.
-func (p *hashicupsProvider) DataSources(_ context.Context) []func() datasource.DataSource {
+func (p *technitiumProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewCoffeesDataSource,
+		NewDhcpScopesDataSource,
 	}
 }
 
 // Resources defines the resources implemented in the provider.
-func (p *hashicupsProvider) Resources(_ context.Context) []func() resource.Resource {
+func (p *technitiumProvider) Resources(_ context.Context) []func() resource.Resource {
 	return nil
 }
