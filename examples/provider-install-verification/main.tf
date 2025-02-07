@@ -7,7 +7,7 @@ terraform {
 }
 
 provider "technitium" {
-  host  = "http://localhost:19090"
+  host  = "http://localhost:5380"
   token = "test"
 }
 

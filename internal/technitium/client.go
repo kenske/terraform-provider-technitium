@@ -1,8 +1,10 @@
 package technitium
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"io"
 	"net/http"
 	"strings"
@@ -23,7 +25,7 @@ type StatusResponse struct {
 	status string
 }
 
-func NewClient(host, token string) (*Client, error) {
+func NewClient(host, token string, ctx context.Context) (*Client, error) {
 	c := Client{
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
 		HostURL:    HostURL,
@@ -34,7 +36,7 @@ func NewClient(host, token string) (*Client, error) {
 	}
 
 	c.Token = token
-	err := c.GetSessionInfo()
+	err := c.GetSessionInfo(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -42,12 +44,13 @@ func NewClient(host, token string) (*Client, error) {
 	return &c, nil
 }
 
-func (c *Client) GetSessionInfo() error {
+func (c *Client) GetSessionInfo(ctx context.Context) error {
 	if c.Token == "" {
 		return fmt.Errorf("missing API token")
 	}
-	rb, err := json.Marshal(c)
+	rb, err := json.Marshal(c.Token)
 	if err != nil {
+		tflog.Info(ctx, "got err!")
 		return err
 	}
 

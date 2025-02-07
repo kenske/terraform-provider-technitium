@@ -129,7 +129,7 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 		return
 	}
 
-	client, err := technitium.NewClient(host, token)
+	client, err := technitium.NewClient(host, token, ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Technitium DNS API Client",
