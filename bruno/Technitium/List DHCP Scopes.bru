@@ -1,0 +1,15 @@
+meta {
+  name: List DHCP Scopes
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://{{host}}/api/dhcp/scopes/list?token={{api_token}}
+  body: none
+  auth: none
+}
+
+params:query {
+  token: {{api_token}}
+}

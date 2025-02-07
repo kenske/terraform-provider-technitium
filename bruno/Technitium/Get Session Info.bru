@@ -1,0 +1,15 @@
+meta {
+  name: Get Session Info
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://{{host}}/api/user/session/get?token={{api_token}}
+  body: none
+  auth: none
+}
+
+params:query {
+  token: {{api_token}}
+}

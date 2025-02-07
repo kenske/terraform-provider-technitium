@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Technitium",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

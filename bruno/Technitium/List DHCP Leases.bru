@@ -1,0 +1,15 @@
+meta {
+  name: List DHCP Leases
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://{{host}}/api/dhcp/leases/list?token={{api_token}}
+  body: none
+  auth: none
+}
+
+params:query {
+  token: {{api_token}}
+}
