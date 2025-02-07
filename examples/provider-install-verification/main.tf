@@ -1,15 +1,13 @@
 terraform {
   required_providers {
-    hashicups = {
-      source = "hashicorp.com/edu/hashicups"
+    technitium = {
+      source = "kenske.com/terraform/technitium-dns"
     }
   }
 }
 
-provider "hashicups" {
-  host     = "http://localhost:19090"
-  username = "education"
-  password = "test123"
+provider "technitium" {
+  host  = "http://localhost:19090"
+  token = "test"
 }
 
-data "hashicups_coffees" "example" {}
