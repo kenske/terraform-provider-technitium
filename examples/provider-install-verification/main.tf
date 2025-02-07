@@ -6,6 +6,10 @@ terraform {
   }
 }
 
-provider "hashicups" {}
+provider "hashicups" {
+  host     = "http://localhost:19090"
+  username = "education"
+  password = "test123"
+}
 
 data "hashicups_coffees" "example" {}
