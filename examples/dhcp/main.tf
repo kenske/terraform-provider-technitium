@@ -14,7 +14,7 @@ provider "technitium" {
 data "technitium_dhcp_scopes" "scopes" {}
 
 
-# output "scopes" {
-#  value = data.technitium_dhcp_scopes.scopes
-# }
+output "scopes" {
+ value = data.technitium_dhcp_scopes.scopes
+}
 

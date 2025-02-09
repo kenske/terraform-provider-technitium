@@ -7,7 +7,9 @@ import (
 )
 
 func (c *Client) GetScopes() ([]Scope, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/dhcp/scopes/list", c.HostURL), nil)
+	url := fmt.Sprintf("%s/api/dhcp/scopes/list", c.HostURL)
+
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -17,11 +19,11 @@ func (c *Client) GetScopes() ([]Scope, error) {
 		return nil, err
 	}
 
-	scopes := []Scope{}
-	err = json.Unmarshal(body, &scopes)
+	response := ScopesResponse{}
+	err = json.Unmarshal(body, &response)
 	if err != nil {
 		return nil, err
 	}
 
-	return scopes, nil
+	return response.Response.Scopes, nil
 }

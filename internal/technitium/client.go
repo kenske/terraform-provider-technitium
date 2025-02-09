@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"io"
 	"net/http"
 	"strings"
@@ -48,9 +47,10 @@ func (c *Client) GetSessionInfo(ctx context.Context) error {
 	if c.Token == "" {
 		return fmt.Errorf("missing API token")
 	}
+
 	rb, err := json.Marshal(c.Token)
+
 	if err != nil {
-		tflog.Info(ctx, "got err!")
 		return err
 	}
 
@@ -75,7 +75,7 @@ func (c *Client) GetSessionInfo(ctx context.Context) error {
 
 func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 
-	req.URL.RawQuery = "?token=" + c.Token
+	req.URL.RawQuery = "token=" + c.Token
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
