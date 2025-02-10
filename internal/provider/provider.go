@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"os"
 	"terraform-provider-technitium-dns/internal/technitium"
 
@@ -142,6 +143,9 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 
 	resp.DataSourceData = client
 	resp.ResourceData = client
+
+	ctx = tflog.SetField(ctx, "technitium_api_host", host)
+	tflog.Info(ctx, "Configured API client", map[string]any{"success": true})
 }
 
 // DataSources defines the data sources implemented in the provider.
