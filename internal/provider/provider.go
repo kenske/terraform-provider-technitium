@@ -148,14 +148,14 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 	tflog.Info(ctx, "Configured API client", map[string]any{"success": true})
 }
 
-// DataSources defines the data sources implemented in the provider.
 func (p *technitiumProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewDhcpScopesDataSource,
 	}
 }
 
-// Resources defines the resources implemented in the provider.
 func (p *technitiumProvider) Resources(_ context.Context) []func() resource.Resource {
-	return nil
+	return []func() resource.Resource{
+		NewDhcpScopeResource,
+	}
 }
