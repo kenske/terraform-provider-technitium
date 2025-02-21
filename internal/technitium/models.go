@@ -1,6 +1,6 @@
 package technitium
 
-type ListScope struct {
+type ListDhcpScope struct {
 	Name             string `json:"name"`
 	Enabled          bool   `json:"enabled"`
 	StartingAddress  string `json:"startingAddress"`
@@ -13,22 +13,15 @@ type ListScope struct {
 
 type ListScopesResponse struct {
 	Response struct {
-		Scopes []ListScope
+		Scopes []ListDhcpScope
 	} `json:"response"`
 	Status string `json:"status"`
 }
 
-type Scope struct {
-	Name             string   `json:"name"`
-	Enabled          bool     `json:"enabled"`
-	StartingAddress  string   `json:"startingAddress"`
-	EndingAddress    string   `json:"endingAddress"`
-	SubnetMask       string   `json:"subnetMask"`
-	NetworkAddress   string   `json:"networkAddress"`
-	BroadcastAddress string   `json:"broadcastAddress"`
-	InterfaceAddress string   `json:"interfaceAddress"`
-	NtpServers       []string `json:"ntpServers"`
-	StaticRoutes     []struct {
+type DhcpScope struct {
+	ListDhcpScope
+	NtpServers   []string `json:"ntpServers"`
+	StaticRoutes []struct {
 		Destination string `json:"destination"`
 		SubnetMask  string `json:"subnetMask"`
 		Router      string `json:"router"`
@@ -58,7 +51,7 @@ type Scope struct {
 	IgnoreClientIdentifier      bool `json:"ignoreClientIdentifierOption"`
 }
 
-type ScopeResponse struct {
-	Response Scope  `json:"response"`
-	Status   string `json:"status"`
+type DhcpScopeResponse struct {
+	Response DhcpScope `json:"response"`
+	Status   string    `json:"status"`
 }

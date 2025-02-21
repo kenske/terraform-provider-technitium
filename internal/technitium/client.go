@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 )
@@ -103,7 +102,9 @@ func (c *Client) GetRequest(path string) (*http.Request, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", c.HostURL, path), nil)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
+
+	return req, nil
 
 }

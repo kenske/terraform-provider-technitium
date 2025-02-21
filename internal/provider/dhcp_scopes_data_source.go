@@ -24,18 +24,7 @@ type dhcpScopesDataSource struct {
 	client *technitium.Client
 }
 type dhcpScopesDataSourceModel struct {
-	Scopes []dhcpScopeModel `tfsdk:"scopes"`
-}
-
-type dhcpScopeModel struct {
-	Name             types.String `tfsdk:"name"`
-	Enabled          types.Bool   `tfsdk:"enabled"`
-	StartingAddress  types.String `tfsdk:"starting_address"`
-	EndingAddress    types.String `tfsdk:"ending_address"`
-	SubnetMask       types.String `tfsdk:"subnet_mask"`
-	NetworkAddress   types.String `tfsdk:"network_address"`
-	BroadcastAddress types.String `tfsdk:"broadcast_address"`
-	InterfaceAddress types.String `tfsdk:"interface_address"`
+	Scopes []dhcpScope `tfsdk:"scopes"`
 }
 
 // Metadata returns the data source type name.
@@ -97,7 +86,7 @@ func (d *dhcpScopesDataSource) Read(ctx context.Context, req datasource.ReadRequ
 
 	// Map response body to model
 	for _, scope := range scopes {
-		scopeState := dhcpScopeModel{
+		scopeState := dhcpScope{
 			Name:             types.StringValue(scope.Name),
 			Enabled:          types.BoolValue(scope.Enabled),
 			StartingAddress:  types.StringValue(scope.StartingAddress),

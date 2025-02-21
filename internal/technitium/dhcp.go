@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetScopes() ([]ListScope, error) {
+func (c *Client) GetScopes() ([]ListDhcpScope, error) {
 	url := fmt.Sprintf("%s/api/dhcp/scopes/list", c.HostURL)
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -28,31 +28,35 @@ func (c *Client) GetScopes() ([]ListScope, error) {
 	return response.Response.Scopes, nil
 }
 
-func (c *Client) GetScope(name string) (Scope, error) {
+func (c *Client) GetScope(name string) (DhcpScope, error) {
 	url := fmt.Sprintf("%s/api/dhcp/scopes/get?name=%s", c.HostURL, name)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return Scope{}, err
+		return DhcpScope{}, err
 	}
 
 	body, err := c.doRequest(req)
 	if err != nil {
-		return Scope{}, err
+		return DhcpScope{}, err
 	}
 
-	response := ScopeResponse{}
+	response := DhcpScopeResponse{}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return Scope{}, err
+		return DhcpScope{}, err
 	}
 
 	return response.Response, nil
 }
 
-func (c *Client) CreateScope(s Scope) (Scope, error) {
+func (c *Client) CreateScope(s dhcpScope) (DhcpScope, error) {
 
 	req, err := c.GetRequest("/api/dhcp/scopes/set")
+
+	if err != nil {
+		return DhcpScope{}, err
+	}
 
 	params := req.URL.Query()
 
@@ -80,13 +84,13 @@ func (c *Client) CreateScope(s Scope) (Scope, error) {
 
 	body, err := c.doRequest(req)
 	if err != nil {
-		return Scope{}, err
+		return DhcpScope{}, err
 	}
 
-	response := ScopeResponse{}
+	response := DhcpScopeResponse{}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return Scope{}, err
+		return DhcpScope{}, err
 	}
 
 	return response.Response, nil
