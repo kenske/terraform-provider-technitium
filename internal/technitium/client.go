@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -75,7 +76,10 @@ func (c *Client) GetSessionInfo(ctx context.Context) error {
 
 func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 
-	req.URL.RawQuery = "token=" + c.Token
+	// append token to url parameters
+	query := req.URL.Query()
+	query.Add("token", c.Token)
+	req.URL.RawQuery = query.Encode()
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
@@ -93,4 +97,13 @@ func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	}
 
 	return body, err
+}
+
+func (c *Client) GetRequest(path string) (*http.Request, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", c.HostURL, path), nil)
+
+	if err != nil {
+		return err
+	}
+
 }

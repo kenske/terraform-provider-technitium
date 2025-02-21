@@ -3,8 +3,11 @@ package provider
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp-demoapp/hashicups-client-go"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"strconv"
 	"terraform-provider-technitium-dns/internal/technitium"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -224,6 +227,48 @@ func (r *dhcpScopeResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 
 // Create creates the resource and sets the initial Terraform state.
 func (r *dhcpScopeResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	// Retrieve values from plan
+	var plan technitium.Scope
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Create new order
+	order, err := r.client.CreateScope(plan)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error creating order",
+			"Could not create order, unexpected error: "+err.Error(),
+		)
+		return
+	}
+
+	// Map response body to schema and populate Computed attribute values
+	plan.ID = types.StringValue(strconv.Itoa(order.ID))
+	for orderItemIndex, orderItem := range order.Items {
+		plan.Items[orderItemIndex] = orderItemModel{
+			Coffee: orderItemCoffeeModel{
+				ID:          types.Int64Value(int64(orderItem.Coffee.ID)),
+				Name:        types.StringValue(orderItem.Coffee.Name),
+				Teaser:      types.StringValue(orderItem.Coffee.Teaser),
+				Description: types.StringValue(orderItem.Coffee.Description),
+				Price:       types.Float64Value(orderItem.Coffee.Price),
+				Image:       types.StringValue(orderItem.Coffee.Image),
+			},
+			Quantity: types.Int64Value(int64(orderItem.Quantity)),
+		}
+	}
+	plan.LastUpdated = types.StringValue(time.Now().Format(time.RFC850))
+
+	// Set state to fully populated data
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 }
 
 // Read refreshes the Terraform state with the latest data.
