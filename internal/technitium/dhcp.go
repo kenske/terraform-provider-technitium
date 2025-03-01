@@ -50,7 +50,7 @@ func (c *Client) GetScope(name string) (DhcpScope, error) {
 	return response.Response, nil
 }
 
-func (c *Client) CreateScope(s dhcpScope) (DhcpScope, error) {
+func (c *Client) CreateScope(s DhcpScope) (DhcpScope, error) {
 
 	req, err := c.GetRequest("/api/dhcp/scopes/set")
 

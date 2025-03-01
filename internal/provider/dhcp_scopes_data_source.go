@@ -39,32 +39,7 @@ func (d *dhcpScopesDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			"scopes": schema.ListNestedAttribute{
 				Computed: true,
 				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"name": schema.StringAttribute{
-							Computed: true,
-						},
-						"enabled": schema.BoolAttribute{
-							Computed: true,
-						},
-						"starting_address": schema.StringAttribute{
-							Computed: true,
-						},
-						"ending_address": schema.StringAttribute{
-							Computed: true,
-						},
-						"subnet_mask": schema.StringAttribute{
-							Computed: true,
-						},
-						"network_address": schema.StringAttribute{
-							Computed: true,
-						},
-						"broadcast_address": schema.StringAttribute{
-							Computed: true,
-						},
-						"interface_address": schema.StringAttribute{
-							Computed: true,
-						},
-					},
+					Attributes: DhcpScopeSchema(true),
 				},
 			},
 		},

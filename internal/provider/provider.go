@@ -150,6 +150,7 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 
 func (p *technitiumProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
+		NewDhcpScopeDataSource,
 		NewDhcpScopesDataSource,
 	}
 }
