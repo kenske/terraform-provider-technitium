@@ -4,11 +4,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 )
 
-func DhcpScopeSchema(list bool) map[string]schema.Attribute {
+func DhcpScopesSchema() map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"name": schema.StringAttribute{
-			Computed: list,
-			Required: !list,
+			Computed: true,
 		},
 		"enabled": schema.BoolAttribute{
 			Computed: true,
@@ -28,7 +27,24 @@ func DhcpScopeSchema(list bool) map[string]schema.Attribute {
 		"broadcast_address": schema.StringAttribute{
 			Computed: true,
 		},
-		"interface_address": schema.StringAttribute{
+	}
+}
+
+func DhcpScopeSchema() map[string]schema.Attribute {
+	return map[string]schema.Attribute{
+		"name": schema.StringAttribute{
+			Required: true,
+		},
+		"starting_address": schema.StringAttribute{
+			Computed: true,
+		},
+		"ending_address": schema.StringAttribute{
+			Computed: true,
+		},
+		"subnet_mask": schema.StringAttribute{
+			Computed: true,
+		},
+		"router_address": schema.StringAttribute{
 			Computed: true,
 		},
 	}

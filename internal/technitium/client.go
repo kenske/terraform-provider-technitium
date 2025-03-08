@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"io"
 	"net/http"
 	"strings"
@@ -59,7 +60,7 @@ func (c *Client) GetSessionInfo(ctx context.Context) error {
 		return err
 	}
 
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, ctx)
 	if err != nil {
 		return err
 	}
@@ -73,13 +74,17 @@ func (c *Client) GetSessionInfo(ctx context.Context) error {
 	return nil
 }
 
-func (c *Client) doRequest(req *http.Request) ([]byte, error) {
+func (c *Client) doRequest(req *http.Request, ctx context.Context) ([]byte, error) {
 
 	// append token to url parameters
 	query := req.URL.Query()
 	query.Add("token", c.Token)
 	req.URL.RawQuery = query.Encode()
 
+	if ctx != nil {
+		url := req.URL.String()
+		tflog.Info(ctx, url)
+	}
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return nil, err

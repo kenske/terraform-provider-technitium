@@ -32,14 +32,14 @@ func (d *dhcpScopeDataSource) Metadata(_ context.Context, req datasource.Metadat
 // Schema defines the schema for the data source.
 func (d *dhcpScopeDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Attributes: DhcpScopeSchema(false),
+		Attributes: DhcpScopeSchema(),
 	}
 }
 
 // Read refreshes the Terraform state with the latest data.
 func (d *dhcpScopeDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var state dhcpScope
+	var state dhcpScopeGet
 	diags := resp.State.Get(ctx, &state)
 
 	resp.Diagnostics.Append(diags...)
@@ -47,7 +47,7 @@ func (d *dhcpScopeDataSource) Read(ctx context.Context, req datasource.ReadReque
 		return
 	}
 
-	scope, err := d.client.GetScope(state.Name.ValueString())
+	scope, err := d.client.GetScope(state.Name.ValueString(), ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read DHCP Scope",
@@ -57,15 +57,12 @@ func (d *dhcpScopeDataSource) Read(ctx context.Context, req datasource.ReadReque
 	}
 
 	// Map response body to model
-	data := dhcpScope{
-		Name:             types.StringValue(scope.Name),
-		Enabled:          types.BoolValue(scope.Enabled),
-		StartingAddress:  types.StringValue(scope.StartingAddress),
-		EndingAddress:    types.StringValue(scope.EndingAddress),
-		SubnetMask:       types.StringValue(scope.SubnetMask),
-		NetworkAddress:   types.StringValue(scope.NetworkAddress),
-		BroadcastAddress: types.StringValue(scope.BroadcastAddress),
-		InterfaceAddress: types.StringValue(scope.InterfaceAddress),
+	data := dhcpScopeGet{
+		Name:            types.StringValue(scope.Name),
+		StartingAddress: types.StringValue(scope.StartingAddress),
+		EndingAddress:   types.StringValue(scope.EndingAddress),
+		SubnetMask:      types.StringValue(scope.SubnetMask),
+		RouterAddress:   types.StringValue(scope.RouterAddress),
 	}
 
 	// Set state

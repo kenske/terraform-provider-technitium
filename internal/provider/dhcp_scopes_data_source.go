@@ -24,7 +24,7 @@ type dhcpScopesDataSource struct {
 	client *technitium.Client
 }
 type dhcpScopesDataSourceModel struct {
-	Scopes []dhcpScope `tfsdk:"scopes"`
+	Scopes []dhcpScopeList `tfsdk:"scopes"`
 }
 
 // Metadata returns the data source type name.
@@ -39,7 +39,7 @@ func (d *dhcpScopesDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			"scopes": schema.ListNestedAttribute{
 				Computed: true,
 				NestedObject: schema.NestedAttributeObject{
-					Attributes: DhcpScopeSchema(true),
+					Attributes: DhcpScopesSchema(),
 				},
 			},
 		},
@@ -50,7 +50,7 @@ func (d *dhcpScopesDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 func (d *dhcpScopesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var state dhcpScopesDataSourceModel
 
-	scopes, err := d.client.GetScopes()
+	scopes, err := d.client.GetScopes(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read DHCP Scopes",
@@ -61,7 +61,7 @@ func (d *dhcpScopesDataSource) Read(ctx context.Context, req datasource.ReadRequ
 
 	// Map response body to model
 	for _, scope := range scopes {
-		scopeState := dhcpScope{
+		scopeState := dhcpScopeList{
 			Name:             types.StringValue(scope.Name),
 			Enabled:          types.BoolValue(scope.Enabled),
 			StartingAddress:  types.StringValue(scope.StartingAddress),
@@ -69,7 +69,6 @@ func (d *dhcpScopesDataSource) Read(ctx context.Context, req datasource.ReadRequ
 			SubnetMask:       types.StringValue(scope.SubnetMask),
 			NetworkAddress:   types.StringValue(scope.NetworkAddress),
 			BroadcastAddress: types.StringValue(scope.BroadcastAddress),
-			InterfaceAddress: types.StringValue(scope.InterfaceAddress),
 		}
 
 		state.Scopes = append(state.Scopes, scopeState)

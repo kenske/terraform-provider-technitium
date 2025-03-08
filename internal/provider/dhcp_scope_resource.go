@@ -55,12 +55,13 @@ func (r *dhcpScopeResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 	resp.Schema = schema.Schema{
 		Attributes: DhcpScopeResourceSchema(),
 	}
+
 }
 
 // Create creates the resource and sets the initial Terraform state.
 func (r *dhcpScopeResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	// Retrieve values from plan
-	var plan dhcpScope
+	var plan dhcpScopeCreate
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -71,16 +72,13 @@ func (r *dhcpScopeResource) Create(ctx context.Context, req resource.CreateReque
 
 	// Set values from plan
 	scope.Name = plan.Name.ValueString()
-	scope.Enabled = plan.Enabled.ValueBool()
 	scope.StartingAddress = plan.StartingAddress.ValueString()
 	scope.EndingAddress = plan.EndingAddress.ValueString()
 	scope.SubnetMask = plan.SubnetMask.ValueString()
-	scope.NetworkAddress = plan.NetworkAddress.ValueString()
-	scope.BroadcastAddress = plan.BroadcastAddress.ValueString()
-	scope.InterfaceAddress = plan.InterfaceAddress.ValueString()
+	scope.RouterAddress = plan.RouterAddress.ValueString()
 
 	// Create new order
-	_, err := r.client.CreateScope(scope)
+	_, err := r.client.CreateScope(scope, ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating dhcp scope",
@@ -101,7 +99,7 @@ func (r *dhcpScopeResource) Create(ctx context.Context, req resource.CreateReque
 // Read refreshes the Terraform state with the latest data.
 func (r *dhcpScopeResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var state dhcpScope
+	var state dhcpScopeGet
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -109,7 +107,7 @@ func (r *dhcpScopeResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 
 	// Get refreshed order value from HashiCups
-	scope, err := r.client.GetScope(state.Name.ValueString())
+	scope, err := r.client.GetScope(state.Name.ValueString(), ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading DHCP scope",
@@ -120,13 +118,10 @@ func (r *dhcpScopeResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	// Overwrite the state with the latest data
 	state.Name = types.StringValue(scope.Name)
-	state.Enabled = types.BoolValue(scope.Enabled)
 	state.StartingAddress = types.StringValue(scope.StartingAddress)
 	state.EndingAddress = types.StringValue(scope.EndingAddress)
 	state.SubnetMask = types.StringValue(scope.SubnetMask)
-	state.NetworkAddress = types.StringValue(scope.NetworkAddress)
-	state.BroadcastAddress = types.StringValue(scope.BroadcastAddress)
-	state.InterfaceAddress = types.StringValue(scope.InterfaceAddress)
+	state.RouterAddress = types.StringValue(scope.RouterAddress)
 
 	// Set refreshed state
 	diags = resp.State.Set(ctx, &state)
@@ -142,4 +137,21 @@ func (r *dhcpScopeResource) Update(ctx context.Context, req resource.UpdateReque
 
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *dhcpScopeResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+
+	var state dhcpScopeGet
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	err := r.client.DeleteScope(state.Name.ValueString(), ctx)
+
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error deleting DHCP scope",
+			"Could not delete DHCP scope  "+state.Name.ValueString()+": "+err.Error(),
+		)
+		return
+	}
 }

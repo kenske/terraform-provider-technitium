@@ -1,12 +1,13 @@
 package technitium
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-func (c *Client) GetScopes() ([]ListDhcpScope, error) {
+func (c *Client) GetScopes(ctx context.Context) ([]DhcpListScope, error) {
 	url := fmt.Sprintf("%s/api/dhcp/scopes/list", c.HostURL)
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -14,12 +15,12 @@ func (c *Client) GetScopes() ([]ListDhcpScope, error) {
 		return nil, err
 	}
 
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	response := ListScopesResponse{}
+	response := DhcpScopesResponse{}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		return nil, err
@@ -28,7 +29,7 @@ func (c *Client) GetScopes() ([]ListDhcpScope, error) {
 	return response.Response.Scopes, nil
 }
 
-func (c *Client) GetScope(name string) (DhcpScope, error) {
+func (c *Client) GetScope(name string, ctx context.Context) (DhcpScope, error) {
 	url := fmt.Sprintf("%s/api/dhcp/scopes/get?name=%s", c.HostURL, name)
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -36,7 +37,7 @@ func (c *Client) GetScope(name string) (DhcpScope, error) {
 		return DhcpScope{}, err
 	}
 
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, ctx)
 	if err != nil {
 		return DhcpScope{}, err
 	}
@@ -50,9 +51,9 @@ func (c *Client) GetScope(name string) (DhcpScope, error) {
 	return response.Response, nil
 }
 
-func (c *Client) CreateScope(s DhcpScope) (DhcpScope, error) {
+func (c *Client) CreateScope(s DhcpScope, ctx context.Context) (DhcpScope, error) {
 
-	req, err := c.GetRequest("/api/dhcp/scopes/set")
+	req, err := c.GetRequest("api/dhcp/scopes/set")
 
 	if err != nil {
 		return DhcpScope{}, err
@@ -61,12 +62,10 @@ func (c *Client) CreateScope(s DhcpScope) (DhcpScope, error) {
 	params := req.URL.Query()
 
 	params.Add("name", s.Name)
-	params.Add("enabled", fmt.Sprintf("%t", s.Enabled))
 	params.Add("startingAddress", s.StartingAddress)
 	params.Add("endingAddress", s.EndingAddress)
 	params.Add("subnetMask", s.SubnetMask)
-	params.Add("networkAddress", s.NetworkAddress)
-	params.Add("broadcastAddress", s.BroadcastAddress)
+	params.Add("routerAddress", s.RouterAddress)
 	//params.Add("interfaceAddress", s.InterfaceAddress)
 	//params.Add("ntpServers", fmt.Sprintf("%v", s.NtpServers))
 	//params.Add("staticRoutes", fmt.Sprintf("%v", s.StaticRoutes))
@@ -82,7 +81,7 @@ func (c *Client) CreateScope(s DhcpScope) (DhcpScope, error) {
 
 	req.URL.RawQuery = params.Encode()
 
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, ctx)
 	if err != nil {
 		return DhcpScope{}, err
 	}
@@ -94,4 +93,31 @@ func (c *Client) CreateScope(s DhcpScope) (DhcpScope, error) {
 	}
 
 	return response.Response, nil
+}
+
+func (c *Client) DeleteScope(name string, ctx context.Context) error {
+
+	req, err := c.GetRequest("/api/dhcp/scopes/delete")
+
+	if err != nil {
+		return err
+	}
+
+	params := req.URL.Query()
+
+	params.Add("name", name)
+	req.URL.RawQuery = params.Encode()
+
+	body, err := c.doRequest(req, ctx)
+	if err != nil {
+		return err
+	}
+
+	response := DhcpScopeResponse{}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -19,6 +19,26 @@ func DhcpScopeResourceSchema() map[string]schema.Attribute {
 		"subnet_mask": schema.StringAttribute{
 			Required: true,
 		},
+		"router_address": schema.StringAttribute{
+			Optional: true,
+		},
+	}
+}
+
+func DhcpScopeResourceExtraSchema() map[string]schema.Attribute {
+	return map[string]schema.Attribute{
+		"name": schema.StringAttribute{
+			Required: true,
+		},
+		"starting_address": schema.StringAttribute{
+			Required: true,
+		},
+		"ending_address": schema.StringAttribute{
+			Required: true,
+		},
+		"subnet_mask": schema.StringAttribute{
+			Required: true,
+		},
 		"lease_time_days": schema.Int32Attribute{
 			Optional: true,
 		},
