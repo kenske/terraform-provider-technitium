@@ -103,8 +103,9 @@ func (c *Client) doRequest(req *http.Request, ctx context.Context) ([]byte, erro
 	return body, err
 }
 
+// GetRequest TODO: change this function to accept a map with GET params
 func (c *Client) GetRequest(path string) (*http.Request, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", c.HostURL, path), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s%s", c.HostURL, path), nil)
 
 	if err != nil {
 		return nil, err

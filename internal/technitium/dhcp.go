@@ -53,7 +53,7 @@ func (c *Client) GetScope(name string, ctx context.Context) (DhcpScope, error) {
 
 func (c *Client) CreateScope(s DhcpScope, ctx context.Context) (DhcpScope, error) {
 
-	req, err := c.GetRequest("api/dhcp/scopes/set")
+	req, err := c.GetRequest("/api/dhcp/scopes/set")
 
 	if err != nil {
 		return DhcpScope{}, err

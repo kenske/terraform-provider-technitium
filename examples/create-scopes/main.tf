@@ -11,7 +11,9 @@ provider "technitium" {
   token = var.TECHNITIUM_TOKEN
 }
 
-data "technitium_dhcp_scopes" "list" {}
+data "technitium_dhcp_scopes" "list" {
+  depends_on = [technitium_dhcp_scope.test]
+}
 
 resource "technitium_dhcp_scope" "test" {
   name = "Test"

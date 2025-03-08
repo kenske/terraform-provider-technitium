@@ -75,7 +75,9 @@ func (r *dhcpScopeResource) Create(ctx context.Context, req resource.CreateReque
 	scope.StartingAddress = plan.StartingAddress.ValueString()
 	scope.EndingAddress = plan.EndingAddress.ValueString()
 	scope.SubnetMask = plan.SubnetMask.ValueString()
-	scope.RouterAddress = plan.RouterAddress.ValueString()
+
+	// TODO: Ternary operation to keep null value instead of empty string
+	scope.RouterAddress = plan.RouterAddress.IsNull() ? nil : plan.RouterAddress.ValueString()
 
 	// Create new order
 	_, err := r.client.CreateScope(scope, ctx)
