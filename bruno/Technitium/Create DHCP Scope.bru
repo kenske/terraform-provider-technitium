@@ -1,0 +1,21 @@
+meta {
+  name: Create DHCP Scope
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://{{host}}/api/dhcp/scopes/set?token={{api_token}}&name=Default&startingAddress=10.1.0.100&endingAddress=10.1.0.152&subnetMask=255.255.255.0
+  body: none
+  auth: none
+}
+
+params:query {
+  token: {{api_token}}
+  name: Default
+  startingAddress: 10.1.0.100
+  endingAddress: 10.1.0.152
+  subnetMask: 255.255.255.0
+  : 
+  : 
+}
