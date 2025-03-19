@@ -20,7 +20,7 @@ type dhcpScopeList struct {
 	BroadcastAddress types.String `tfsdk:"broadcast_address"`
 }
 
-type dhcpScopeCreate struct {
+type dhcpScopeSet struct {
 	Name            types.String `tfsdk:"name"`
 	StartingAddress types.String `tfsdk:"starting_address"`
 	EndingAddress   types.String `tfsdk:"ending_address"`

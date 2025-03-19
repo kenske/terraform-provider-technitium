@@ -61,7 +61,7 @@ func (r *dhcpScopeResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 // Create creates the resource and sets the initial Terraform state.
 func (r *dhcpScopeResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	// Retrieve values from plan
-	var plan dhcpScopeCreate
+	var plan dhcpScopeSet
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -153,6 +153,56 @@ func (r *dhcpScopeResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *dhcpScopeResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+
+	// Retrieve values from plan
+	var plan dhcpScopeSet
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var scope technitium.DhcpScope
+
+	// Set values from plan
+	scope.Name = plan.Name.ValueString()
+	scope.StartingAddress = plan.StartingAddress.ValueString()
+	scope.EndingAddress = plan.EndingAddress.ValueString()
+	scope.SubnetMask = plan.SubnetMask.ValueString()
+
+	// Set router address if not null
+	if !plan.RouterAddress.IsNull() {
+		scope.RouterAddress = plan.RouterAddress.ValueString()
+	}
+
+	// Create new scope
+	updatedScope, err := r.client.CreateScope(scope, ctx)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error creating DHCP scope",
+			"Could not create DHCP scope, unexpected error: "+err.Error(),
+		)
+		return
+	}
+
+	// Set state to fully populated data
+	plan.Name = types.StringValue(updatedScope.Name)
+	plan.SubnetMask = types.StringValue(updatedScope.SubnetMask)
+	plan.StartingAddress = types.StringValue(updatedScope.StartingAddress)
+	plan.EndingAddress = types.StringValue(updatedScope.EndingAddress)
+
+	// Set router address if not empty
+	plan.RouterAddress = types.StringNull()
+	if updatedScope.RouterAddress != "" {
+		plan.RouterAddress = types.StringValue(updatedScope.RouterAddress)
+	}
+
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 }
 
 // Delete deletes the resource and removes the Terraform state on success.

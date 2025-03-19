@@ -18,7 +18,7 @@ data "technitium_dhcp_scopes" "list" {
 resource "technitium_dhcp_scope" "test" {
   name = "Test"
   starting_address = "10.1.0.100"
-  ending_address = "10.1.0.155"
+  ending_address = "10.1.0.157"
   subnet_mask = "255.255.255.0"
 }
 
