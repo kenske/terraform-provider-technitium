@@ -18,15 +18,21 @@ type DhcpScopesResponse struct {
 }
 
 type DhcpScope struct {
-	Name            string `json:"name"`
-	StartingAddress string `json:"startingAddress"`
-	EndingAddress   string `json:"endingAddress"`
-	SubnetMask      string `json:"subnetMask"`
-	RouterAddress   string `json:"routerAddress"`
+	Name             string   `json:"name"`
+	StartingAddress  string   `json:"startingAddress"`
+	EndingAddress    string   `json:"endingAddress"`
+	SubnetMask       string   `json:"subnetMask"`
+	RouterAddress    string   `json:"routerAddress,omitempty"`
+	UseThisDnsServer bool     `json:"useThisDnsServer,omitempty"`
+	DnsServers       []string `json:"dnsServers,omitempty"`
+	DomainName       string   `json:"DomainName,omitempty"`
+	Exclusions       []struct {
+		StartingAddress string `json:"startingAddress"`
+		EndingAddress   string `json:"endingAddress"`
+	} `json:"exclusions"`
 }
 
 type DhcpScopeExtra struct {
-	DomainName   string   `json:"DomainName"`
 	NtpServers   []string `json:"ntpServers"`
 	StaticRoutes []struct {
 		Destination string `json:"destination"`
@@ -43,10 +49,6 @@ type DhcpScopeExtra struct {
 		Code  int32  `json:"code"`
 		Value string `json:"value"`
 	} `json:"genericOptions"`
-	Exclusions []struct {
-		StartingAddress string `json:"startingAddress"`
-		EndingAddress   string `json:"endingAddress"`
-	} `json:"exclusions"`
 	ReservedLeases []struct {
 		HostName        string `json:"hostName,omitempty"`
 		HardwareAddress string `json:"hardwareAddress"`

@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"net/http"
+	"strings"
 )
 
 func (c *Client) GetScopes(ctx context.Context) ([]DhcpListScope, error) {
@@ -51,7 +53,7 @@ func (c *Client) GetScope(name string, ctx context.Context) (DhcpScope, error) {
 	return response.Response, nil
 }
 
-func (c *Client) CreateScope(s DhcpScope, ctx context.Context) (DhcpScope, error) {
+func (c *Client) SetScope(s DhcpScope, oldName string, ctx context.Context) (DhcpScope, error) {
 
 	req, err := c.GetRequest("/api/dhcp/scopes/set")
 
@@ -66,18 +68,17 @@ func (c *Client) CreateScope(s DhcpScope, ctx context.Context) (DhcpScope, error
 	params.Add("endingAddress", s.EndingAddress)
 	params.Add("subnetMask", s.SubnetMask)
 	params.Add("routerAddress", s.RouterAddress)
-	//params.Add("interfaceAddress", s.InterfaceAddress)
-	//params.Add("ntpServers", fmt.Sprintf("%v", s.NtpServers))
-	//params.Add("staticRoutes", fmt.Sprintf("%v", s.StaticRoutes))
-	//params.Add("vendorInfo", fmt.Sprintf("%v", s.VendorInfo))
-	//params.Add("capwapAcIpAddresses", fmt.Sprintf("%v", s.CapwapAcIpAddresses))
-	//params.Add("tftpServerAddresses", fmt.Sprintf("%v", s.TftpServerAddresses))
-	//params.Add("genericOptions", fmt.Sprintf("%v", s.GenericOptions))
-	//params.Add("exclusions", fmt.Sprintf("%v", s.Exclusions))
-	//params.Add("reservedLeases", fmt.Sprintf("%v", s.ReservedLeases))
-	//params.Add("allowOnlyReservedLeases", fmt.Sprintf("%t", s.AllowOnlyReservedLeases))
-	//params.Add("blockLocallyAdministeredMacAddresses", fmt.Sprintf("%t", s.BlockLocallyAdministeredMac))
-	//params.Add("ignoreClientIdentifierOption", fmt.Sprintf("%t", s.IgnoreClientIdentifier))
+	params.Add("useThisDnsServer", fmt.Sprintf("%v", s.UseThisDnsServer))
+	params.Add("dnsServers", strings.Join(s.DnsServers, ","))
+	params.Add("domainName", s.DomainName)
+
+	if oldName != "" {
+		tflog.Debug(ctx, fmt.Sprintf("Renaming scope from %s to %s", oldName, s.Name))
+		params.Set("name", oldName)
+		params.Add("newName", s.Name)
+	} else {
+		tflog.Debug(ctx, fmt.Sprintf("Creating new scope %s", s.Name))
+	}
 
 	req.URL.RawQuery = params.Encode()
 

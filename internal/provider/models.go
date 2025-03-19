@@ -3,11 +3,15 @@ package provider
 import "github.com/hashicorp/terraform-plugin-framework/types"
 
 type dhcpScopeGet struct {
-	Name            types.String `tfsdk:"name"`
-	StartingAddress types.String `tfsdk:"starting_address"`
-	EndingAddress   types.String `tfsdk:"ending_address"`
-	SubnetMask      types.String `tfsdk:"subnet_mask"`
-	RouterAddress   types.String `tfsdk:"router_address"`
+	Name             types.String   `tfsdk:"name"`
+	StartingAddress  types.String   `tfsdk:"starting_address"`
+	EndingAddress    types.String   `tfsdk:"ending_address"`
+	SubnetMask       types.String   `tfsdk:"subnet_mask"`
+	RouterAddress    types.String   `tfsdk:"router_address"`
+	UseThisDnsServer types.Bool     `tfsdk:"use_this_dns_server"`
+	DnsServers       []types.String `tfsdk:"dns_servers"`
+	DomainName       types.String   `tfsdk:"domain_name"`
+	Exclusions       []Exclusion    `tfsdk:"exclusions"`
 }
 
 type dhcpScopeList struct {
@@ -21,9 +25,18 @@ type dhcpScopeList struct {
 }
 
 type dhcpScopeSet struct {
-	Name            types.String `tfsdk:"name"`
+	Name             types.String   `tfsdk:"name"`
+	StartingAddress  types.String   `tfsdk:"starting_address"`
+	EndingAddress    types.String   `tfsdk:"ending_address"`
+	SubnetMask       types.String   `tfsdk:"subnet_mask"`
+	RouterAddress    types.String   `tfsdk:"router_address"`
+	UseThisDnsServer types.Bool     `tfsdk:"use_this_dns_server"`
+	DnsServers       []types.String `tfsdk:"dns_servers"`
+	DomainName       types.String   `tfsdk:"domain_name"`
+	Exclusions       []Exclusion    `tfsdk:"exclusions"`
+}
+
+type Exclusion struct {
 	StartingAddress types.String `tfsdk:"starting_address"`
 	EndingAddress   types.String `tfsdk:"ending_address"`
-	SubnetMask      types.String `tfsdk:"subnet_mask"`
-	RouterAddress   types.String `tfsdk:"router_address"`
 }

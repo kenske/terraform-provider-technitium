@@ -68,6 +68,61 @@ func (r *dhcpScopeResource) Create(ctx context.Context, req resource.CreateReque
 		return
 	}
 
+	err := r.SetScope(plan, "", ctx)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error creating DHCP scope",
+			"Could not create DHCP scope: "+err.Error(),
+		)
+		return
+	}
+
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+}
+
+// Update updates the resource and sets the updated Terraform state on success.
+func (r *dhcpScopeResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	// Retrieve values from plan
+	var plan dhcpScopeSet
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Get state so that we can pass the old name to the SetScope method
+	var state dhcpScopeSet
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	oldName := state.Name.ValueString()
+
+	err := r.SetScope(plan, oldName, ctx)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error updating DHCP scope",
+			"Could not updating DHCP scope: "+err.Error(),
+		)
+		return
+	}
+
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+}
+
+func (r *dhcpScopeResource) SetScope(plan dhcpScopeSet, oldName string, ctx context.Context) error {
+
 	var scope technitium.DhcpScope
 
 	// Set values from plan
@@ -75,20 +130,25 @@ func (r *dhcpScopeResource) Create(ctx context.Context, req resource.CreateReque
 	scope.StartingAddress = plan.StartingAddress.ValueString()
 	scope.EndingAddress = plan.EndingAddress.ValueString()
 	scope.SubnetMask = plan.SubnetMask.ValueString()
+	scope.UseThisDnsServer = plan.UseThisDnsServer.ValueBool()
+	scope.DomainName = plan.DomainName.ValueString()
 
 	// Set router address if not null
 	if !plan.RouterAddress.IsNull() {
 		scope.RouterAddress = plan.RouterAddress.ValueString()
 	}
 
+	if len(plan.DnsServers) > 0 {
+		scope.DnsServers = make([]string, len(plan.DnsServers))
+		for _, server := range plan.DnsServers {
+			scope.DnsServers = append(scope.DnsServers, server.ValueString())
+		}
+	}
+
 	// Create new scope
-	createdScope, err := r.client.CreateScope(scope, ctx)
+	createdScope, err := r.client.SetScope(scope, oldName, ctx)
 	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error creating DHCP scope",
-			"Could not create DHCP scope, unexpected error: "+err.Error(),
-		)
-		return
+		return err
 	}
 
 	// Set state to fully populated data
@@ -103,12 +163,7 @@ func (r *dhcpScopeResource) Create(ctx context.Context, req resource.CreateReque
 		plan.RouterAddress = types.StringValue(createdScope.RouterAddress)
 	}
 
-	diags = resp.State.Set(ctx, plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
+	return nil
 }
 
 // Read refreshes the Terraform state with the latest data.
@@ -149,60 +204,6 @@ func (r *dhcpScopeResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-}
-
-// Update updates the resource and sets the updated Terraform state on success.
-func (r *dhcpScopeResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-
-	// Retrieve values from plan
-	var plan dhcpScopeSet
-	diags := req.Plan.Get(ctx, &plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	var scope technitium.DhcpScope
-
-	// Set values from plan
-	scope.Name = plan.Name.ValueString()
-	scope.StartingAddress = plan.StartingAddress.ValueString()
-	scope.EndingAddress = plan.EndingAddress.ValueString()
-	scope.SubnetMask = plan.SubnetMask.ValueString()
-
-	// Set router address if not null
-	if !plan.RouterAddress.IsNull() {
-		scope.RouterAddress = plan.RouterAddress.ValueString()
-	}
-
-	// Create new scope
-	updatedScope, err := r.client.CreateScope(scope, ctx)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error creating DHCP scope",
-			"Could not create DHCP scope, unexpected error: "+err.Error(),
-		)
-		return
-	}
-
-	// Set state to fully populated data
-	plan.Name = types.StringValue(updatedScope.Name)
-	plan.SubnetMask = types.StringValue(updatedScope.SubnetMask)
-	plan.StartingAddress = types.StringValue(updatedScope.StartingAddress)
-	plan.EndingAddress = types.StringValue(updatedScope.EndingAddress)
-
-	// Set router address if not empty
-	plan.RouterAddress = types.StringNull()
-	if updatedScope.RouterAddress != "" {
-		plan.RouterAddress = types.StringValue(updatedScope.RouterAddress)
-	}
-
-	diags = resp.State.Set(ctx, plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
 }
 
 // Delete deletes the resource and removes the Terraform state on success.

@@ -22,32 +22,43 @@ func DhcpScopeResourceSchema() map[string]schema.Attribute {
 		"router_address": schema.StringAttribute{
 			Optional: true,
 		},
+		"use_this_dns_server": schema.BoolAttribute{
+			Optional: true,
+		},
+		"dns_servers": schema.ListAttribute{
+			ElementType: types.StringType,
+			Optional:    true,
+		},
+		"domain_name": schema.StringAttribute{
+			Optional: true,
+		},
+		"exclusions": schema.ListNestedAttribute{
+			Optional: true,
+			NestedObject: schema.NestedAttributeObject{
+				Attributes: map[string]schema.Attribute{
+					"starting_address": schema.StringAttribute{
+						Required: true,
+					},
+					"ending_address": schema.StringAttribute{
+						Required: true,
+					},
+				},
+			},
+		},
+		//"lease_time_days": schema.Int32Attribute{
+		//	Optional: true,
+		//},
+		//"lease_time_hours": schema.Int32Attribute{
+		//	Optional: true,
+		//},
+		//"lease_time_minutes": schema.Int32Attribute{
+		//	Optional: true,
+		//},
 	}
 }
 
 func DhcpScopeResourceExtraSchema() map[string]schema.Attribute {
 	return map[string]schema.Attribute{
-		"name": schema.StringAttribute{
-			Required: true,
-		},
-		"starting_address": schema.StringAttribute{
-			Required: true,
-		},
-		"ending_address": schema.StringAttribute{
-			Required: true,
-		},
-		"subnet_mask": schema.StringAttribute{
-			Required: true,
-		},
-		"lease_time_days": schema.Int32Attribute{
-			Optional: true,
-		},
-		"lease_time_hours": schema.Int32Attribute{
-			Optional: true,
-		},
-		"lease_time_minutes": schema.Int32Attribute{
-			Optional: true,
-		},
 		"offer_delay_time": schema.Int32Attribute{
 			Optional: true,
 		},
@@ -58,9 +69,6 @@ func DhcpScopeResourceExtraSchema() map[string]schema.Attribute {
 			Optional: true,
 		},
 		"ping_check_retries": schema.Int32Attribute{
-			Optional: true,
-		},
-		"domain_name": schema.StringAttribute{
 			Optional: true,
 		},
 		"domain_search_list": schema.ListAttribute{
@@ -81,16 +89,6 @@ func DhcpScopeResourceExtraSchema() map[string]schema.Attribute {
 		},
 		"boot_file_name": schema.StringAttribute{
 			Optional: true,
-		},
-		"router_address": schema.StringAttribute{
-			Optional: true,
-		},
-		"use_this_dns_server": schema.BoolAttribute{
-			Optional: true,
-		},
-		"dns_servers": schema.ListAttribute{
-			ElementType: types.StringType,
-			Optional:    true,
 		},
 		"wins_servers": schema.ListAttribute{
 			ElementType: types.StringType,

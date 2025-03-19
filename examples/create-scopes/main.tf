@@ -16,10 +16,23 @@ data "technitium_dhcp_scopes" "list" {
 }
 
 resource "technitium_dhcp_scope" "test" {
-  name = "Test"
-  starting_address = "10.1.0.100"
-  ending_address = "10.1.0.157"
+  name = "Test3"
+  starting_address = "10.0.0.1"
+  ending_address = "10.0.0.165"
   subnet_mask = "255.255.255.0"
+  router_address = "10.0.0.1"
+  domain_name = "kenskes"
+  use_this_dns_server = false
+  dns_servers = [
+    "1.1.1.1",
+    "8.8.8.8"
+  ]
+  exclusions = [
+    {
+      starting_address = "10.0.0.1"
+      ending_address   = "10.0.0.50"
+    }
+  ]
 }
 
 
