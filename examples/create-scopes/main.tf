@@ -16,9 +16,9 @@ data "technitium_dhcp_scopes" "list" {
 }
 
 resource "technitium_dhcp_scope" "test" {
-  name = "Test3"
-  starting_address = "10.0.0.1"
-  ending_address = "10.0.0.165"
+  name = "Test1"
+  starting_address = "10.0.0.2"
+  ending_address = "10.0.0.254"
   subnet_mask = "255.255.255.0"
   router_address = "10.0.0.1"
   domain_name = "kenskes"
@@ -29,11 +29,16 @@ resource "technitium_dhcp_scope" "test" {
   ]
   exclusions = [
     {
-      starting_address = "10.0.0.1"
-      ending_address   = "10.0.0.50"
+      starting_address = "10.0.0.10"
+      ending_address   = "10.0.0.40"
+    },
+    {
+      starting_address = "10.0.0.240"
+      ending_address   = "10.0.0.250"
     }
   ]
 }
+
 
 
 output "scopes" {

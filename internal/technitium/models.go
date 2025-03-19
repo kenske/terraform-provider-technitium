@@ -18,18 +18,20 @@ type DhcpScopesResponse struct {
 }
 
 type DhcpScope struct {
-	Name             string   `json:"name"`
-	StartingAddress  string   `json:"startingAddress"`
-	EndingAddress    string   `json:"endingAddress"`
-	SubnetMask       string   `json:"subnetMask"`
-	RouterAddress    string   `json:"routerAddress,omitempty"`
-	UseThisDnsServer bool     `json:"useThisDnsServer,omitempty"`
-	DnsServers       []string `json:"dnsServers,omitempty"`
-	DomainName       string   `json:"DomainName,omitempty"`
-	Exclusions       []struct {
-		StartingAddress string `json:"startingAddress"`
-		EndingAddress   string `json:"endingAddress"`
-	} `json:"exclusions"`
+	Name             string      `json:"name"`
+	StartingAddress  string      `json:"startingAddress"`
+	EndingAddress    string      `json:"endingAddress"`
+	SubnetMask       string      `json:"subnetMask"`
+	RouterAddress    string      `json:"routerAddress,omitempty"`
+	UseThisDnsServer bool        `json:"useThisDnsServer,omitempty"`
+	DnsServers       []string    `json:"dnsServers,omitempty"`
+	DomainName       string      `json:"DomainName,omitempty"`
+	Exclusions       []Exclusion `json:"exclusions"`
+}
+
+type Exclusion struct {
+	StartingAddress string `json:"startingAddress"`
+	EndingAddress   string `json:"endingAddress"`
 }
 
 type DhcpScopeExtra struct {

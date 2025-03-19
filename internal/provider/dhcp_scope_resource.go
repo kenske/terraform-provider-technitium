@@ -145,6 +145,16 @@ func (r *dhcpScopeResource) SetScope(plan dhcpScopeSet, oldName string, ctx cont
 		}
 	}
 
+	if len(plan.Exclusions) > 0 {
+		for _, e := range plan.Exclusions {
+			exclusion := technitium.Exclusion{
+				StartingAddress: e.StartingAddress.ValueString(),
+				EndingAddress:   e.EndingAddress.ValueString(),
+			}
+			scope.Exclusions = append(scope.Exclusions, exclusion)
+		}
+	}
+
 	// Create new scope
 	createdScope, err := r.client.SetScope(scope, oldName, ctx)
 	if err != nil {

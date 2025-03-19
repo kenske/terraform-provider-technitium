@@ -80,6 +80,16 @@ func (c *Client) SetScope(s DhcpScope, oldName string, ctx context.Context) (Dhc
 		tflog.Debug(ctx, fmt.Sprintf("Creating new scope %s", s.Name))
 	}
 
+	exclusions := make([]string, 0)
+	if s.Exclusions != nil {
+		for _, exclusion := range s.Exclusions {
+			entry := fmt.Sprintf("%s|%s", exclusion.StartingAddress, exclusion.EndingAddress)
+			exclusions = append(exclusions, entry)
+		}
+
+		params.Add("exclusions", strings.Join(exclusions, "|"))
+	}
+
 	req.URL.RawQuery = params.Encode()
 
 	body, err := c.doRequest(req, ctx)
