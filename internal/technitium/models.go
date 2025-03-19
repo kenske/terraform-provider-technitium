@@ -59,6 +59,7 @@ type DhcpScopeExtra struct {
 }
 
 type DhcpScopeResponse struct {
-	Response DhcpScope `json:"response"`
-	Status   string    `json:"status"`
+	Response     DhcpScope `json:"response"`
+	Status       string    `json:"status"`
+	ErrorMessage string    `json:"errorMessage,omitempty"`
 }

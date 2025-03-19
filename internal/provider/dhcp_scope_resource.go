@@ -76,20 +76,33 @@ func (r *dhcpScopeResource) Create(ctx context.Context, req resource.CreateReque
 	scope.EndingAddress = plan.EndingAddress.ValueString()
 	scope.SubnetMask = plan.SubnetMask.ValueString()
 
-	// TODO: Ternary operation to keep null value instead of empty string
-	scope.RouterAddress = plan.RouterAddress.IsNull() ? nil : plan.RouterAddress.ValueString()
+	// Set router address if not null
+	if !plan.RouterAddress.IsNull() {
+		scope.RouterAddress = plan.RouterAddress.ValueString()
+	}
 
-	// Create new order
-	_, err := r.client.CreateScope(scope, ctx)
+	// Create new scope
+	createdScope, err := r.client.CreateScope(scope, ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating dhcp scope",
-			"Could not create dhcp scope, unexpected error: "+err.Error(),
+			"Error creating DHCP scope",
+			"Could not create DHCP scope, unexpected error: "+err.Error(),
 		)
 		return
 	}
 
 	// Set state to fully populated data
+	plan.Name = types.StringValue(createdScope.Name)
+	plan.SubnetMask = types.StringValue(createdScope.SubnetMask)
+	plan.StartingAddress = types.StringValue(createdScope.StartingAddress)
+	plan.EndingAddress = types.StringValue(createdScope.EndingAddress)
+
+	// Set router address if not empty
+	plan.RouterAddress = types.StringNull()
+	if createdScope.RouterAddress != "" {
+		plan.RouterAddress = types.StringValue(createdScope.RouterAddress)
+	}
+
 	diags = resp.State.Set(ctx, plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -108,7 +121,7 @@ func (r *dhcpScopeResource) Read(ctx context.Context, req resource.ReadRequest, 
 		return
 	}
 
-	// Get refreshed order value from HashiCups
+	// Get refreshed scope value from Technitium
 	scope, err := r.client.GetScope(state.Name.ValueString(), ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -123,7 +136,12 @@ func (r *dhcpScopeResource) Read(ctx context.Context, req resource.ReadRequest, 
 	state.StartingAddress = types.StringValue(scope.StartingAddress)
 	state.EndingAddress = types.StringValue(scope.EndingAddress)
 	state.SubnetMask = types.StringValue(scope.SubnetMask)
-	state.RouterAddress = types.StringValue(scope.RouterAddress)
+	state.RouterAddress = types.StringNull()
+
+	//Set router address if not empty
+	if scope.RouterAddress != "" {
+		state.RouterAddress = types.StringValue(scope.RouterAddress)
+	}
 
 	// Set refreshed state
 	diags = resp.State.Set(ctx, &state)

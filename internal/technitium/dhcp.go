@@ -92,7 +92,11 @@ func (c *Client) CreateScope(s DhcpScope, ctx context.Context) (DhcpScope, error
 		return DhcpScope{}, err
 	}
 
-	return response.Response, nil
+	if response.Status != "ok" {
+		return DhcpScope{}, fmt.Errorf("failed to create scope: %s", response.ErrorMessage)
+	}
+
+	return c.GetScope(s.Name, ctx)
 }
 
 func (c *Client) DeleteScope(name string, ctx context.Context) error {
