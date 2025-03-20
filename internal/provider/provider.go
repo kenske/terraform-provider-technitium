@@ -158,5 +158,6 @@ func (p *technitiumProvider) DataSources(_ context.Context) []func() datasource.
 func (p *technitiumProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewDhcpScopeResource,
+		NewDhcpReservedLeaseResource,
 	}
 }

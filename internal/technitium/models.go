@@ -34,36 +34,22 @@ type Exclusion struct {
 	EndingAddress   string `json:"endingAddress"`
 }
 
-type DhcpScopeExtra struct {
-	NtpServers   []string `json:"ntpServers"`
-	StaticRoutes []struct {
-		Destination string `json:"destination"`
-		SubnetMask  string `json:"subnetMask"`
-		Router      string `json:"router"`
-	} `json:"staticRoutes"`
-	VendorInfo []struct {
-		Identifier  string `json:"identifier"`
-		Information string `json:"information"`
-	} `json:"vendorInfo"`
-	CapwapAcIpAddresses []string `json:"capwapAcIpAddresses"`
-	TftpServerAddresses []string `json:"tftpServerAddresses"`
-	GenericOptions      []struct {
-		Code  int32  `json:"code"`
-		Value string `json:"value"`
-	} `json:"genericOptions"`
-	ReservedLeases []struct {
-		HostName        string `json:"hostName,omitempty"`
-		HardwareAddress string `json:"hardwareAddress"`
-		Address         string `json:"address"`
-		Comments        string `json:"comments,omitempty"`
-	} `json:"reservedLeases"`
-	AllowOnlyReservedLeases     bool `json:"allowOnlyReservedLeases"`
-	BlockLocallyAdministeredMac bool `json:"blockLocallyAdministeredMacAddresses"`
-	IgnoreClientIdentifier      bool `json:"ignoreClientIdentifierOption"`
-}
-
 type DhcpScopeResponse struct {
 	Response     DhcpScope `json:"response"`
 	Status       string    `json:"status"`
 	ErrorMessage string    `json:"errorMessage,omitempty"`
+}
+
+type DhcpReservedLease struct {
+	Name            string `json:"name"`
+	HardwareAddress string `json:"hardwareAddress"`
+	IpAddress       string `json:"ipAddress"`
+	HostName        string `json:"hostName,omitempty"`
+	Comments        string `json:"comments,omitempty"`
+}
+
+type DhcpReservedLeaseResponse struct {
+	Response     DhcpReservedLease `json:"response"`
+	Status       string            `json:"status"`
+	ErrorMessage string            `json:"errorMessage,omitempty"`
 }

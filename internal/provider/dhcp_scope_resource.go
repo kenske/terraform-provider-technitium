@@ -36,7 +36,7 @@ func (r *dhcpScopeResource) Configure(_ context.Context, req resource.ConfigureR
 
 	if !ok {
 		resp.Diagnostics.AddError(
-			"Unexpected Data Source Configure Type",
+			"Unexpected Configure Type",
 			fmt.Sprintf("Expected *technitium.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
 
@@ -61,7 +61,7 @@ func (r *dhcpScopeResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 // Create creates the resource and sets the initial Terraform state.
 func (r *dhcpScopeResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	// Retrieve values from plan
-	var plan dhcpScopeSet
+	var plan dhcpScope
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -88,7 +88,7 @@ func (r *dhcpScopeResource) Create(ctx context.Context, req resource.CreateReque
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *dhcpScopeResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	// Retrieve values from plan
-	var plan dhcpScopeSet
+	var plan dhcpScope
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -96,7 +96,7 @@ func (r *dhcpScopeResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 
 	// Get state so that we can pass the old name to the SetScope method
-	var state dhcpScopeSet
+	var state dhcpScope
 	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -121,7 +121,7 @@ func (r *dhcpScopeResource) Update(ctx context.Context, req resource.UpdateReque
 
 }
 
-func (r *dhcpScopeResource) SetScope(plan dhcpScopeSet, oldName string, ctx context.Context) error {
+func (r *dhcpScopeResource) SetScope(plan dhcpScope, oldName string, ctx context.Context) error {
 
 	var scope technitium.DhcpScope
 
@@ -179,7 +179,7 @@ func (r *dhcpScopeResource) SetScope(plan dhcpScopeSet, oldName string, ctx cont
 // Read refreshes the Terraform state with the latest data.
 func (r *dhcpScopeResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var state dhcpScopeGet
+	var state dhcpScope
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -219,7 +219,7 @@ func (r *dhcpScopeResource) Read(ctx context.Context, req resource.ReadRequest, 
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *dhcpScopeResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
-	var state dhcpScopeGet
+	var state dhcpScope
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {

@@ -39,7 +39,7 @@ func (d *dhcpScopeDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 // Read refreshes the Terraform state with the latest data.
 func (d *dhcpScopeDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var state dhcpScopeGet
+	var state dhcpScope
 	diags := resp.State.Get(ctx, &state)
 
 	resp.Diagnostics.Append(diags...)
@@ -57,12 +57,25 @@ func (d *dhcpScopeDataSource) Read(ctx context.Context, req datasource.ReadReque
 	}
 
 	// Map response body to model
-	data := dhcpScopeGet{
-		Name:            types.StringValue(scope.Name),
-		StartingAddress: types.StringValue(scope.StartingAddress),
-		EndingAddress:   types.StringValue(scope.EndingAddress),
-		SubnetMask:      types.StringValue(scope.SubnetMask),
-		RouterAddress:   types.StringValue(scope.RouterAddress),
+	data := dhcpScope{
+		Name:             types.StringValue(scope.Name),
+		StartingAddress:  types.StringValue(scope.StartingAddress),
+		EndingAddress:    types.StringValue(scope.EndingAddress),
+		SubnetMask:       types.StringValue(scope.SubnetMask),
+		RouterAddress:    types.StringValue(scope.RouterAddress),
+		UseThisDnsServer: types.BoolValue(scope.UseThisDnsServer),
+		DomainName:       types.StringValue(scope.DomainName),
+	}
+
+	for _, dnsServer := range scope.DnsServers {
+		data.DnsServers = append(data.DnsServers, types.StringValue(dnsServer))
+	}
+
+	for _, exclusion := range scope.Exclusions {
+		data.Exclusions = append(data.Exclusions, Exclusion{
+			StartingAddress: types.StringValue(exclusion.StartingAddress),
+			EndingAddress:   types.StringValue(exclusion.EndingAddress),
+		})
 	}
 
 	// Set state
