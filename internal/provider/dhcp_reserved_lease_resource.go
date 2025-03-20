@@ -12,9 +12,9 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ resource.Resource              = &dhcpReservedLeaseResource{}
-	_ resource.ResourceWithConfigure = &dhcpReservedLeaseResource{}
-	_ resource.ResourceWithConfigure = &dhcpReservedLeaseResource{}
+	_ resource.Resource               = &dhcpReservedLeaseResource{}
+	_ resource.ResourceWithConfigure  = &dhcpReservedLeaseResource{}
+	_ resource.ResourceWithModifyPlan = &dhcpReservedLeaseResource{}
 )
 
 func NewDhcpReservedLeaseResource() resource.Resource {
@@ -59,7 +59,7 @@ func (r *dhcpReservedLeaseResource) Schema(_ context.Context, _ resource.SchemaR
 
 }
 
-func (r *dhcpReservedLeaseResource) ModifyPlan(_ context.Context, req resource.ModifyPlanRequest, resp resource.ModifyPlanResponse) {
+func (r *dhcpReservedLeaseResource) ModifyPlan(_ context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	resp.RequiresReplace = path.Paths{
 		path.Root("name"),
 		path.Root("hardware_address"),
@@ -82,8 +82,8 @@ func (r *dhcpReservedLeaseResource) Create(ctx context.Context, req resource.Cre
 	err := r.SetReservedLease(plan, ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating DHCP scope",
-			"Could not create DHCP scope: "+err.Error(),
+			"Error creating DHCP reserved lease",
+			"Could not create DHCP reserved lease: "+err.Error(),
 		)
 		return
 	}
@@ -128,19 +128,19 @@ func (r *dhcpReservedLeaseResource) Read(ctx context.Context, req resource.ReadR
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *dhcpReservedLeaseResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
-	var state dhcpScope
+	var state dhcpReservedLease
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	err := r.client.DeleteScope(state.Name.ValueString(), ctx)
+	err := r.client.DeleteLease(state.Name.ValueString(), state.HardwareAddress.ValueString(), ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error deleting DHCP scope",
-			"Could not delete DHCP scope  "+state.Name.ValueString()+": "+err.Error(),
+			"Error deleting DHCP reserved lease",
+			"Could not delete DHCP reserved lease  "+state.Name.ValueString()+": "+err.Error(),
 		)
 		return
 	}
