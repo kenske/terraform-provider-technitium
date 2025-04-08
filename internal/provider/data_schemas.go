@@ -82,7 +82,10 @@ func DnsZoneSchema() map[string]schema.Attribute {
 		"disabled": schema.BoolAttribute{
 			Computed: true,
 		},
-		"dns_sec_status": schema.StringAttribute{
+		"dnssec_status": schema.StringAttribute{
+			Computed: true,
+		},
+		"catalog": schema.StringAttribute{
 			Computed: true,
 		},
 		"notify_failed": schema.BoolAttribute{
@@ -91,9 +94,6 @@ func DnsZoneSchema() map[string]schema.Attribute {
 		"notify_failed_for": schema.ListAttribute{
 			Computed:    true,
 			ElementType: types.StringType,
-		},
-		"catalog": schema.StringAttribute{
-			Computed: true,
 		},
 		"query_access": schema.StringAttribute{
 			Computed: true,

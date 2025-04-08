@@ -79,22 +79,22 @@ type DnsZonesResponse struct {
 }
 
 type DnsZone struct {
-	Name         string `json:"name"`
-	Type         string `json:"type"`
-	Disabled     bool   `json:"disabled"`
-	DnsSecStatus string `json:"dnsSecStatus"`
-	Catalog      string `json:"catalog"`
-	//NotifyFailed             bool     `json:"notifyFailed"`
-	//NotifyFailedFor          []string `json:"notifyFailedFor"`
-	//QueryAccess              string   `json:"queryAccess"`
-	//QueryAccessNetworkAcl    []string `json:"queryAccessNetworkACL"`
-	//ZoneTransfer             string   `json:"zoneTransfer"`
-	//ZoneTransferNetworkAcl   []string `json:"zoneTransferNetworkACL"`
-	//ZoneTransferTsigKeyNames []string `json:"zoneTransferTsigKeyNames"`
-	//Notify                   string   `json:"notify"`
-	//NotifyNameServers        []string `json:"notifyNameServers"`
-	//Update                   string   `json:"update"`
-	//UpdateNetworkAcl         []string `json:"updateNetworkACL"`
+	Name                     string   `json:"name"`
+	Type                     string   `json:"type"`
+	Disabled                 bool     `json:"disabled"`
+	DnsSecStatus             string   `json:"dnsSecStatus"`
+	Catalog                  string   `json:"catalog"`
+	NotifyFailed             bool     `json:"notifyFailed"`
+	NotifyFailedFor          []string `json:"notifyFailedFor"`
+	QueryAccess              string   `json:"queryAccess"`
+	QueryAccessNetworkAcl    []string `json:"queryAccessNetworkACL"`
+	ZoneTransfer             string   `json:"zoneTransfer"`
+	ZoneTransferNetworkAcl   []string `json:"zoneTransferNetworkACL"`
+	ZoneTransferTsigKeyNames []string `json:"zoneTransferTsigKeyNames"`
+	Notify                   string   `json:"notify"`
+	NotifyNameServers        []string `json:"notifyNameServers"`
+	Update                   string   `json:"update"`
+	UpdateNetworkAcl         []string `json:"updateNetworkACL"`
 }
 
 type DnsZoneResponse struct {

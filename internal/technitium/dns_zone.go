@@ -34,7 +34,7 @@ func (c *Client) GetDnsZones(ctx context.Context) ([]DnsZoneList, error) {
 }
 
 func (c *Client) GetDnsZone(name string, ctx context.Context) (DnsZone, error) {
-	url := fmt.Sprintf("%s/api/zones/options/get?name=%s", c.HostURL, name)
+	url := fmt.Sprintf("%s/api/zones/options/get?zone=%s", c.HostURL, name)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

@@ -11,17 +11,16 @@ provider "technitium" {
   token = var.TECHNITIUM_TOKEN
 }
 
-# data "technitium_dns_zone" "localhost" {
-#   name = "localhost"
-# }
+data "technitium_dns_zone" "example" {
+  name = "example.com"
+}
 
 data "technitium_dns_zones" "list" {
 }
 
-
-# output "default_zone" {
-#   value = data.technitium_dns_zone.localhost
-# }
+output "example_zone" {
+  value = data.technitium_dns_zone.example
+}
 
 output "all_zones" {
   value = data.technitium_dns_zones.list.zones

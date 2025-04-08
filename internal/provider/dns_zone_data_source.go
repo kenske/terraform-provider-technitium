@@ -47,7 +47,7 @@ func (d *dnsZoneDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		return
 	}
 
-	scope, err := d.client.GetDnsZone(state.Name.ValueString(), ctx)
+	zone, err := d.client.GetDnsZone(state.Name.ValueString(), ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read DNS Zone",
@@ -58,11 +58,22 @@ func (d *dnsZoneDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 	// Map response body to model
 	data := dnsZone{
-		Name:         types.StringValue(scope.Name),
-		Type:         types.StringValue(scope.Type),
-		Disabled:     types.BoolValue(scope.Disabled),
-		DnsSecStatus: types.StringValue(scope.DnsSecStatus),
-		Catalog:      types.StringValue(scope.Catalog),
+		Name:                     types.StringValue(zone.Name),
+		Type:                     types.StringValue(zone.Type),
+		Disabled:                 types.BoolValue(zone.Disabled),
+		DnssecStatus:             types.StringValue(zone.DnsSecStatus),
+		Catalog:                  types.StringValue(zone.Catalog),
+		NotifyFailed:             types.BoolValue(zone.NotifyFailed),
+		NotifyFailedFor:          convertStringList(zone.NotifyFailedFor),
+		QueryAccess:              types.StringValue(zone.QueryAccess),
+		QueryAccessNetworkAcl:    convertStringList(zone.QueryAccessNetworkAcl),
+		ZoneTransfer:             types.StringValue(zone.ZoneTransfer),
+		ZoneTransferNetworkAcl:   convertStringList(zone.ZoneTransferNetworkAcl),
+		ZoneTransferTsigKeyNames: convertStringList(zone.ZoneTransferTsigKeyNames),
+		Notify:                   types.StringValue(zone.Notify),
+		NotifyNameServers:        convertStringList(zone.NotifyNameServers),
+		Update:                   types.StringValue(zone.Update),
+		UpdateNetworkAcl:         convertStringList(zone.UpdateNetworkAcl),
 	}
 
 	// Set state
