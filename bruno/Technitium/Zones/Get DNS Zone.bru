@@ -1,0 +1,16 @@
+meta {
+  name: Get DNS Zone
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://{{host}}/api/zones/options/get?token={{api_token}}&zone=localhost
+  body: none
+  auth: none
+}
+
+params:query {
+  token: {{api_token}}
+  zone: localhost
+}

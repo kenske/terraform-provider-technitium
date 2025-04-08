@@ -1,11 +1,11 @@
 meta {
-  name: List DHCP Leases
+  name: List DNS Zones
   type: http
-  seq: 3
+  seq: 2
 }
 
 get {
-  url: http://{{host}}/api/dhcp/leases/list?token={{api_token}}
+  url: http://{{host}}/api/zones/list?token={{api_token}}
   body: none
   auth: none
 }

@@ -1,5 +1,7 @@
 # Terraform Provider - Technitium DNS Server
 
+Works with Technitium v13.x [API](https://github.com/TechnitiumSoftware/DnsServer/blob/master/APIDOCS.md) 
+
 
 ## Building The Provider
 

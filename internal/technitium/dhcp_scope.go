@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func (c *Client) GetScopes(ctx context.Context) ([]DhcpListScope, error) {
+func (c *Client) GetScopes(ctx context.Context) ([]DhcpScopeList, error) {
 	url := fmt.Sprintf("%s/api/dhcp/scopes/list", c.HostURL)
 
 	req, err := http.NewRequest("GET", url, nil)

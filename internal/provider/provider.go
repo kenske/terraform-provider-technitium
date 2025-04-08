@@ -152,6 +152,8 @@ func (p *technitiumProvider) DataSources(_ context.Context) []func() datasource.
 	return []func() datasource.DataSource{
 		NewDhcpScopeDataSource,
 		NewDhcpScopesDataSource,
+		NewDnsZoneDataSource,
+		NewDnsZonesDataSource,
 	}
 }
 

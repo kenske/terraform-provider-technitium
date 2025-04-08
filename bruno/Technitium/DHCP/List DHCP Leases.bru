@@ -1,11 +1,11 @@
 meta {
-  name: Get Session Info
+  name: List DHCP Leases
   type: http
   seq: 1
 }
 
 get {
-  url: http://{{host}}/api/user/session/get?token={{api_token}}
+  url: http://{{host}}/api/dhcp/leases/list?token={{api_token}}
   body: none
   auth: none
 }

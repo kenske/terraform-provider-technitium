@@ -36,3 +36,24 @@ type dhcpReservedLease struct {
 	HostName        types.String `tfsdk:"host_name"`
 	Comments        types.String `tfsdk:"comments"`
 }
+
+type dnsZoneList struct {
+	Name         types.String `tfsdk:"name"`
+	Type         types.String `tfsdk:"type"`
+	Disabled     types.Bool   `tfsdk:"disabled"`
+	DnsSecStatus types.String `tfsdk:"dnssec_status"`
+	SoaSerial    types.Int32  `tfsdk:"soa_serial"`
+	Expiry       types.String `tfsdk:"expiry"`
+	IsExpired    types.Bool   `tfsdk:"is_expired"`
+	LastModified types.String `tfsdk:"last_modified"`
+	Internal     types.Bool   `tfsdk:"internal"`
+	Catalog      types.String `tfsdk:"catalog"`
+}
+
+type dnsZone struct {
+	Name         types.String `tfsdk:"name"`
+	Type         types.String `tfsdk:"type"`
+	Disabled     types.Bool   `tfsdk:"disabled"`
+	DnsSecStatus types.String `tfsdk:"dnssec_status"`
+	Catalog      types.String `tfsdk:"catalog"`
+}

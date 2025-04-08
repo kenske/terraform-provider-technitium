@@ -3,7 +3,6 @@ module terraform-provider-technitium-dns
 go 1.22.7
 
 require (
-	github.com/hashicorp-demoapp/hashicups-client-go v0.1.0
 	github.com/hashicorp/terraform-plugin-framework v1.14.1
 	github.com/hashicorp/terraform-plugin-log v0.9.0
 )

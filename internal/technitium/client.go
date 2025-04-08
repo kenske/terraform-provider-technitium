@@ -11,7 +11,6 @@ import (
 	"time"
 )
 
-// HostURL - Default Hashicups URL
 const HostURL string = "http://localhost:5380"
 
 // Client -
