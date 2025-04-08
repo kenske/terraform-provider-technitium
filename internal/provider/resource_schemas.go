@@ -68,3 +68,46 @@ func DhcpReservedLeaseResourceSchema() map[string]schema.Attribute {
 		},
 	}
 }
+
+func DnsZoneResourceSchema() map[string]schema.Attribute {
+	return map[string]schema.Attribute{
+		"name": schema.StringAttribute{
+			Required: true,
+		},
+		"type": schema.StringAttribute{
+			Required: true,
+		},
+		"catalog": schema.StringAttribute{
+			Optional: true,
+		},
+		"forwarder": schema.StringAttribute{
+			Optional:  true,
+			WriteOnly: true,
+		},
+		"use_soa_serial_date_scheme": schema.BoolAttribute{
+			Optional:  true,
+			WriteOnly: true,
+		},
+		"primary_name_server_addresses": schema.ListAttribute{
+			ElementType: types.StringType,
+			Optional:    true,
+			WriteOnly:   true,
+		},
+		"zone_transfer_protocol": schema.StringAttribute{
+			Optional:  true,
+			WriteOnly: true,
+		},
+		"tsig_key_name": schema.StringAttribute{
+			Optional:  true,
+			WriteOnly: true,
+		},
+		"protocol": schema.StringAttribute{
+			Optional:  true,
+			WriteOnly: true,
+		},
+		"dnssec_validation": schema.BoolAttribute{
+			Optional:  true,
+			WriteOnly: true,
+		},
+	}
+}

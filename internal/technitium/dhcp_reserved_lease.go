@@ -65,7 +65,7 @@ func (c *Client) DeleteLease(name string, hardwareAddress string, ctx context.Co
 		return err
 	}
 
-	response := DhcpReservedLeaseResponse{}
+	response := BaseResponse{}
 	err = json.Unmarshal(body, &response)
 
 	if err != nil {
@@ -73,7 +73,7 @@ func (c *Client) DeleteLease(name string, hardwareAddress string, ctx context.Co
 	}
 
 	if response.Status != "ok" {
-		return fmt.Errorf("failed to create scope: %s", response.ErrorMessage)
+		return fmt.Errorf("failed to delete lease: %s", response.ErrorMessage)
 	}
 
 	return nil

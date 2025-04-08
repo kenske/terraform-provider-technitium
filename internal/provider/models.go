@@ -68,3 +68,16 @@ type dnsZone struct {
 	Update                   types.String   `tfsdk:"update"`
 	UpdateNetworkAcl         []types.String `tfsdk:"update_network_acl"`
 }
+
+type dnsZoneCreate struct {
+	Name                       types.String   `tfsdk:"name"`
+	Type                       types.String   `tfsdk:"type"`
+	Catalog                    types.String   `tfsdk:"catalog"`
+	Forwarder                  types.String   `tfsdk:"forwarder"`
+	UseSoaSerialDateScheme     types.Bool     `tfsdk:"use_soa_serial_date_scheme"`
+	PrimaryNameServerAddresses []types.String `tfsdk:"primary_name_server_addresses"`
+	ZoneTransferProtocol       types.String   `tfsdk:"zone_transfer_protocol"`
+	TsigKeyName                types.String   `tfsdk:"tsig_key_name"`
+	Protocol                   types.String   `tfsdk:"protocol"`
+	DnssecValidation           types.Bool     `tfsdk:"dnssec_validation"`
+}

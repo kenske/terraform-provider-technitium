@@ -64,16 +64,16 @@ func (d *dnsZoneDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		DnssecStatus:             types.StringValue(zone.DnsSecStatus),
 		Catalog:                  types.StringValue(zone.Catalog),
 		NotifyFailed:             types.BoolValue(zone.NotifyFailed),
-		NotifyFailedFor:          convertStringList(zone.NotifyFailedFor),
+		NotifyFailedFor:          convertStringListToTF(zone.NotifyFailedFor),
 		QueryAccess:              types.StringValue(zone.QueryAccess),
-		QueryAccessNetworkAcl:    convertStringList(zone.QueryAccessNetworkAcl),
+		QueryAccessNetworkAcl:    convertStringListToTF(zone.QueryAccessNetworkAcl),
 		ZoneTransfer:             types.StringValue(zone.ZoneTransfer),
-		ZoneTransferNetworkAcl:   convertStringList(zone.ZoneTransferNetworkAcl),
-		ZoneTransferTsigKeyNames: convertStringList(zone.ZoneTransferTsigKeyNames),
+		ZoneTransferNetworkAcl:   convertStringListToTF(zone.ZoneTransferNetworkAcl),
+		ZoneTransferTsigKeyNames: convertStringListToTF(zone.ZoneTransferTsigKeyNames),
 		Notify:                   types.StringValue(zone.Notify),
-		NotifyNameServers:        convertStringList(zone.NotifyNameServers),
+		NotifyNameServers:        convertStringListToTF(zone.NotifyNameServers),
 		Update:                   types.StringValue(zone.Update),
-		UpdateNetworkAcl:         convertStringList(zone.UpdateNetworkAcl),
+		UpdateNetworkAcl:         convertStringListToTF(zone.UpdateNetworkAcl),
 	}
 
 	// Set state

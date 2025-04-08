@@ -1,5 +1,10 @@
 package technitium
 
+type BaseResponse struct {
+	Status       string `json:"status"`
+	ErrorMessage string `json:"errorMessage,omitempty"`
+}
+
 type DhcpScopeList struct {
 	Name             string `json:"name"`
 	Enabled          bool   `json:"enabled"`
@@ -14,7 +19,7 @@ type DhcpScopesResponse struct {
 	Response struct {
 		Scopes []DhcpScopeList
 	} `json:"response"`
-	Status string `json:"status"`
+	BaseResponse
 }
 
 type DhcpScope struct {
@@ -35,9 +40,8 @@ type Exclusion struct {
 }
 
 type DhcpScopeResponse struct {
-	Response     DhcpScope `json:"response"`
-	Status       string    `json:"status"`
-	ErrorMessage string    `json:"errorMessage,omitempty"`
+	Response DhcpScope `json:"response"`
+	BaseResponse
 }
 
 type DhcpReservedLease struct {
@@ -49,9 +53,8 @@ type DhcpReservedLease struct {
 }
 
 type DhcpReservedLeaseResponse struct {
-	Response     DhcpReservedLease `json:"response"`
-	Status       string            `json:"status"`
-	ErrorMessage string            `json:"errorMessage,omitempty"`
+	Response DhcpReservedLease `json:"response"`
+	BaseResponse
 }
 
 type DnsZoneList struct {
@@ -74,8 +77,7 @@ type DnsZonesResponse struct {
 		TotalZones int           `json:"totalZones"`
 		Zones      []DnsZoneList `json:"zones"`
 	} `json:"response"`
-	Status       string `json:"status"`
-	ErrorMessage string `json:"errorMessage,omitempty"`
+	BaseResponse
 }
 
 type DnsZone struct {
@@ -98,9 +100,8 @@ type DnsZone struct {
 }
 
 type DnsZoneResponse struct {
-	Response     DnsZone `json:"response"`
-	Status       string  `json:"status"`
-	ErrorMessage string  `json:"errorMessage,omitempty"`
+	Response DnsZone `json:"response"`
+	BaseResponse
 }
 
 type DnsZoneCreate struct {
@@ -120,6 +121,5 @@ type DnsZoneCreateResponse struct {
 	Response struct {
 		Domain string `json:"domain"`
 	} `json:"response"`
-	Status       string `json:"status"`
-	ErrorMessage string `json:"errorMessage,omitempty"`
+	BaseResponse
 }

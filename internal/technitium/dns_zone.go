@@ -96,3 +96,29 @@ func (c *Client) CreateDnsZone(z DnsZoneCreate, ctx context.Context) (DnsZone, e
 	return c.GetDnsZone(z.Name, ctx)
 
 }
+
+func (c *Client) DeleteDnsZone(name string, ctx context.Context) error {
+	url := fmt.Sprintf("%s/api/zones/delete?zone=%s", c.HostURL, name)
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return err
+	}
+
+	body, err := c.doRequest(req, ctx)
+	if err != nil {
+		return err
+	}
+
+	response := BaseResponse{}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return err
+	}
+
+	if response.Status != "ok" {
+		return fmt.Errorf("failed to delete zone: %s", response.ErrorMessage)
+	}
+
+	return nil
+}
