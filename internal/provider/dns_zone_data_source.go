@@ -39,7 +39,7 @@ func (d *dnsZoneDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 // Read refreshes the Terraform state with the latest data.
 func (d *dnsZoneDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var state dnsZone
+	var state dnsZoneGet
 	diags := resp.State.Get(ctx, &state)
 
 	resp.Diagnostics.Append(diags...)
@@ -57,24 +57,23 @@ func (d *dnsZoneDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	}
 
 	// Map response body to model
-	data := dnsZone{
-		Name:                     types.StringValue(zone.Name),
-		Type:                     types.StringValue(zone.Type),
-		Disabled:                 types.BoolValue(zone.Disabled),
-		DnssecStatus:             types.StringValue(zone.DnsSecStatus),
-		Catalog:                  types.StringValue(zone.Catalog),
-		NotifyFailed:             types.BoolValue(zone.NotifyFailed),
-		NotifyFailedFor:          convertStringListToTF(zone.NotifyFailedFor),
-		QueryAccess:              types.StringValue(zone.QueryAccess),
-		QueryAccessNetworkAcl:    convertStringListToTF(zone.QueryAccessNetworkAcl),
-		ZoneTransfer:             types.StringValue(zone.ZoneTransfer),
-		ZoneTransferNetworkAcl:   convertStringListToTF(zone.ZoneTransferNetworkAcl),
-		ZoneTransferTsigKeyNames: convertStringListToTF(zone.ZoneTransferTsigKeyNames),
-		Notify:                   types.StringValue(zone.Notify),
-		NotifyNameServers:        convertStringListToTF(zone.NotifyNameServers),
-		Update:                   types.StringValue(zone.Update),
-		UpdateNetworkAcl:         convertStringListToTF(zone.UpdateNetworkAcl),
-	}
+	data := dnsZoneGet{}
+	data.Name = types.StringValue(zone.Name)
+	data.Type = types.StringValue(zone.Type)
+	data.Catalog = types.StringValue(zone.Catalog)
+	data.Disabled = types.BoolValue(zone.Disabled)
+	data.DnssecStatus = types.StringValue(zone.DnsSecStatus)
+	data.NotifyFailed = types.BoolValue(zone.NotifyFailed)
+	data.NotifyFailedFor = convertStringListToTF(zone.NotifyFailedFor)
+	data.QueryAccess = types.StringValue(zone.QueryAccess)
+	data.QueryAccessNetworkAcl = convertStringListToTF(zone.QueryAccessNetworkAcl)
+	data.ZoneTransfer = types.StringValue(zone.ZoneTransfer)
+	data.ZoneTransferNetworkAcl = convertStringListToTF(zone.ZoneTransferNetworkAcl)
+	data.ZoneTransferTsigKeyNames = convertStringListToTF(zone.ZoneTransferTsigKeyNames)
+	data.Notify = types.StringValue(zone.Notify)
+	data.NotifyNameServers = convertStringListToTF(zone.NotifyNameServers)
+	data.Update = types.StringValue(zone.Update)
+	data.UpdateNetworkAcl = convertStringListToTF(zone.UpdateNetworkAcl)
 
 	// Set state
 	diagsState := resp.State.Set(ctx, &data)

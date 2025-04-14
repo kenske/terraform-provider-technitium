@@ -37,25 +37,16 @@ type dhcpReservedLease struct {
 	Comments        types.String `tfsdk:"comments"`
 }
 
-type dnsZoneList struct {
-	Name         types.String `tfsdk:"name"`
-	Type         types.String `tfsdk:"type"`
-	Disabled     types.Bool   `tfsdk:"disabled"`
-	DnsSecStatus types.String `tfsdk:"dnssec_status"`
-	SoaSerial    types.Int32  `tfsdk:"soa_serial"`
-	Expiry       types.String `tfsdk:"expiry"`
-	IsExpired    types.Bool   `tfsdk:"is_expired"`
-	LastModified types.String `tfsdk:"last_modified"`
-	Internal     types.Bool   `tfsdk:"internal"`
-	Catalog      types.String `tfsdk:"catalog"`
+type dnsZone struct {
+	Name    types.String `tfsdk:"name"`
+	Type    types.String `tfsdk:"type"`
+	Catalog types.String `tfsdk:"catalog"`
 }
 
-type dnsZone struct {
-	Name                     types.String   `tfsdk:"name"`
-	Type                     types.String   `tfsdk:"type"`
+type dnsZoneGet struct {
+	dnsZone
 	Disabled                 types.Bool     `tfsdk:"disabled"`
 	DnssecStatus             types.String   `tfsdk:"dnssec_status"`
-	Catalog                  types.String   `tfsdk:"catalog"`
 	NotifyFailed             types.Bool     `tfsdk:"notify_failed"`
 	NotifyFailedFor          []types.String `tfsdk:"notify_failed_for"`
 	QueryAccess              types.String   `tfsdk:"query_access"`
@@ -69,10 +60,19 @@ type dnsZone struct {
 	UpdateNetworkAcl         []types.String `tfsdk:"update_network_acl"`
 }
 
+type dnsZoneList struct {
+	dnsZone
+	Disabled     types.Bool   `tfsdk:"disabled"`
+	DnssecStatus types.String `tfsdk:"dnssec_status"`
+	SoaSerial    types.Int32  `tfsdk:"soa_serial"`
+	Expiry       types.String `tfsdk:"expiry"`
+	IsExpired    types.Bool   `tfsdk:"is_expired"`
+	LastModified types.String `tfsdk:"last_modified"`
+	Internal     types.Bool   `tfsdk:"internal"`
+}
+
 type dnsZoneCreate struct {
-	Name                       types.String   `tfsdk:"name"`
-	Type                       types.String   `tfsdk:"type"`
-	Catalog                    types.String   `tfsdk:"catalog"`
+	dnsZone
 	Forwarder                  types.String   `tfsdk:"forwarder"`
 	UseSoaSerialDateScheme     types.Bool     `tfsdk:"use_soa_serial_date_scheme"`
 	PrimaryNameServerAddresses []types.String `tfsdk:"primary_name_server_addresses"`

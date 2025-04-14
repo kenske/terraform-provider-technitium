@@ -61,7 +61,7 @@ type DnsZoneList struct {
 	Name         string `json:"name"`
 	Type         string `json:"type"`
 	Disabled     bool   `json:"disabled"`
-	DnsSecStatus string `json:"dnssecStatus"`
+	DnssecStatus string `json:"dnssecStatus"`
 	SoaSerial    int    `json:"soaSerial"`
 	Expiry       string `json:"expiry,omitempty"`
 	IsExpired    bool   `json:"isExpired,omitempty"`

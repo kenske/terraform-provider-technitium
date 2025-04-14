@@ -112,7 +112,7 @@ func (r *dnsZoneResource) Read(ctx context.Context, req resource.ReadRequest, re
 	zone, err := r.client.GetDnsZone(state.Name.ValueString(), ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error Reading DNS zone scope",
+			"Error Reading DNS zone",
 			"Could not read DNS zone  "+state.Name.ValueString()+": "+err.Error(),
 		)
 		return
@@ -134,19 +134,19 @@ func (r *dnsZoneResource) Read(ctx context.Context, req resource.ReadRequest, re
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *dnsZoneResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
-	var state dhcpScope
+	var state dnsZoneCreate
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	err := r.client.DeleteScope(state.Name.ValueString(), ctx)
+	err := r.client.DeleteDnsZone(state.Name.ValueString(), ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error deleting DHCP scope",
-			"Could not delete DHCP scope  "+state.Name.ValueString()+": "+err.Error(),
+			"Error deleting DNS zone",
+			"Could not delete DNS Zone "+state.Name.ValueString()+": "+err.Error(),
 		)
 		return
 	}
@@ -158,4 +158,5 @@ func (r *dnsZoneResource) ModifyPlan(_ context.Context, req resource.ModifyPlanR
 		path.Root("type"),
 		path.Root("catalog"),
 	}
+
 }

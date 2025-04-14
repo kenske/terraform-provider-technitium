@@ -61,18 +61,17 @@ func (d *dnsZonesDataSource) Read(ctx context.Context, req datasource.ReadReques
 
 	// Map response body to model
 	for _, zone := range zones {
-		zoneState := dnsZoneList{
-			Name:         types.StringValue(zone.Name),
-			Type:         types.StringValue(zone.Type),
-			Disabled:     types.BoolValue(zone.Disabled),
-			DnsSecStatus: types.StringValue(zone.DnsSecStatus),
-			SoaSerial:    types.Int32Value(int32(zone.SoaSerial)),
-			Expiry:       types.StringValue(zone.Expiry),
-			IsExpired:    types.BoolValue(zone.IsExpired),
-			LastModified: types.StringValue(zone.LastModified),
-			Internal:     types.BoolValue(zone.Internal),
-			Catalog:      types.StringValue(zone.Catalog),
-		}
+		zoneState := dnsZoneList{}
+		zoneState.Name = types.StringValue(zone.Name)
+		zoneState.Type = types.StringValue(zone.Type)
+		zoneState.Catalog = types.StringValue(zone.Catalog)
+		zoneState.Disabled = types.BoolValue(zone.Disabled)
+		zoneState.DnssecStatus = types.StringValue(zone.DnssecStatus)
+		zoneState.SoaSerial = types.Int32Value(int32(zone.SoaSerial))
+		zoneState.Expiry = types.StringValue(zone.Expiry)
+		zoneState.IsExpired = types.BoolValue(zone.IsExpired)
+		zoneState.LastModified = types.StringValue(zone.LastModified)
+		zoneState.Internal = types.BoolValue(zone.Internal)
 
 		state.Zones = append(state.Zones, zoneState)
 	}
