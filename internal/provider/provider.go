@@ -154,6 +154,7 @@ func (p *technitiumProvider) DataSources(_ context.Context) []func() datasource.
 		NewDhcpScopesDataSource,
 		NewDnsZoneDataSource,
 		NewDnsZonesDataSource,
+		NewDnsZoneRecordsDataSource,
 	}
 }
 
@@ -162,5 +163,6 @@ func (p *technitiumProvider) Resources(_ context.Context) []func() resource.Reso
 		NewDhcpScopeResource,
 		NewDhcpReservedLeaseResource,
 		NewDnsZoneResource,
+		NewDnsZoneRecordResource,
 	}
 }

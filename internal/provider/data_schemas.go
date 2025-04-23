@@ -164,3 +164,103 @@ func DnsZonesSchema() map[string]schema.Attribute {
 		},
 	}
 }
+
+func DnsZoneRecordsSchema() map[string]schema.Attribute {
+	return map[string]schema.Attribute{
+		"domain": schema.StringAttribute{
+			Required: true,
+		},
+		"records": schema.ListNestedAttribute{
+			Computed: true,
+			NestedObject: schema.NestedAttributeObject{
+				Attributes: DnsZoneRecordSchema(),
+			},
+		},
+	}
+}
+
+func DnsZoneRecordSchema() map[string]schema.Attribute {
+	return map[string]schema.Attribute{
+		"name": schema.StringAttribute{
+			Computed: true,
+		},
+		"type": schema.StringAttribute{
+			Computed: true,
+		},
+		"ttl": schema.Int32Attribute{
+			Computed: true,
+		},
+		"disabled": schema.BoolAttribute{
+			Computed: true,
+		},
+		"dnssec_status": schema.StringAttribute{
+			Computed: true,
+		},
+		"last_used_on": schema.StringAttribute{
+			Computed: true,
+		},
+		"last_modified": schema.StringAttribute{
+			Computed: true,
+		},
+		"expiry_ttl": schema.Int32Attribute{
+			Computed: true,
+		},
+		"record_data": schema.SingleNestedAttribute{
+			Computed:   true,
+			Attributes: RecordDataSchema(),
+		},
+	}
+}
+
+func RecordDataSchema() map[string]schema.Attribute {
+	return map[string]schema.Attribute{
+		"primary_name_server": schema.StringAttribute{
+			Computed: true,
+		},
+		"responsible_person": schema.StringAttribute{
+			Computed: true,
+		},
+		"serial": schema.Int32Attribute{
+			Computed: true,
+		},
+		"refresh": schema.Int32Attribute{
+			Computed: true,
+		},
+		"retry": schema.Int32Attribute{
+			Computed: true,
+		},
+		"expire": schema.Int32Attribute{
+			Computed: true,
+		},
+		"minimum": schema.Int32Attribute{
+			Computed: true,
+		},
+		"use_serial_date_scheme": schema.BoolAttribute{
+			Computed: true,
+		},
+		"protocol": schema.StringAttribute{
+			Computed: true,
+		},
+		"forwarder": schema.StringAttribute{
+			Computed: true,
+		},
+		"priority": schema.Int32Attribute{
+			Computed: true,
+		},
+		"dnssec_validation": schema.BoolAttribute{
+			Computed: true,
+		},
+		"proxy_type": schema.StringAttribute{
+			Computed: true,
+		},
+		"ip_address": schema.StringAttribute{
+			Computed: true,
+		},
+		"cname": schema.StringAttribute{
+			Computed: true,
+		},
+		"name_server": schema.StringAttribute{
+			Computed: true,
+		},
+	}
+}

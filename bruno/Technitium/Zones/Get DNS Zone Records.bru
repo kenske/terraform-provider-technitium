@@ -1,0 +1,16 @@
+meta {
+  name: Get DNS Zone Records
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://{{host}}/api/zones/records/get?token={{api_token}}&domain=example.com
+  body: none
+  auth: none
+}
+
+params:query {
+  token: {{api_token}}
+  domain: example.com
+}

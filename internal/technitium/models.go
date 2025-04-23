@@ -123,3 +123,39 @@ type DnsZoneCreateResponse struct {
 	} `json:"response"`
 	BaseResponse
 }
+
+type DnsZoneRecordsResponse struct {
+	Response struct {
+		Records []DnsZoneRecord `json:"records"`
+	} `json:"response"`
+	BaseResponse
+}
+
+type DnsZoneRecord struct {
+	Name         string `json:"name"`
+	Type         string `json:"type"`
+	TTL          int64  `json:"ttl"`
+	Disabled     bool   `json:"disabled"`
+	DnsSecStatus string `json:"dnsSecStatus"`
+	LastUsedOn   string `json:"lastUsedOn"`
+	LastModified string `json:"lastModified"`
+	ExpiryTTL    int64  `json:"expiryTTL"`
+	RecordData   struct {
+		PrimaryNameServer   string `json:"primaryNameServer"`
+		ResponsiblePerson   string `json:"responsiblePerson"`
+		Serial              int64  `json:"serial"`
+		Refresh             int64  `json:"refresh"`
+		Retry               int64  `json:"retry"`
+		Expire              int64  `json:"expire"`
+		Minimum             int64  `json:"minimum"`
+		UseSerialDateScheme bool   `json:"useSerialDateScheme"`
+		Protocol            string `json:"protocol"`
+		Forwarder           string `json:"forwarder"`
+		Priority            int64  `json:"priority"`
+		DnssecValidation    bool   `json:"dnssecValidation"`
+		ProxyType           string `json:"proxyType"`
+		IpAddress           string `json:"ipAddress"`
+		NameServer          string `json:"nameServer"`
+		Cname               string `json:"cname"`
+	} `json:"rData"`
+}

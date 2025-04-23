@@ -27,7 +27,7 @@ type dnsZoneResource struct {
 
 // Configure adds the provider configured client to the resource.
 func (r *dnsZoneResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
-	r.client = ConfigureClient(req, resp)
+	r.client = ConfigureResourceClient(req, resp)
 }
 
 // Metadata returns the resource type name.
@@ -157,6 +157,13 @@ func (r *dnsZoneResource) ModifyPlan(_ context.Context, req resource.ModifyPlanR
 		path.Root("name"),
 		path.Root("type"),
 		path.Root("catalog"),
+		path.Root("forwarder"),
+		path.Root("use_soa_serial_date_scheme"),
+		path.Root("primary_name_server_addresses"),
+		path.Root("zone_transfer_protocol"),
+		path.Root("tsig_key_name"),
+		path.Root("protocol"),
+		path.Root("dnssec_validation"),
 	}
 
 }

@@ -81,3 +81,39 @@ type dnsZoneCreate struct {
 	Protocol                   types.String   `tfsdk:"protocol"`
 	DnssecValidation           types.Bool     `tfsdk:"dnssec_validation"`
 }
+
+type dnsZoneRecords struct {
+	Domain  types.String    `tfsdk:"domain"`
+	Records []dnsZoneRecord `tfsdk:"records"`
+}
+
+type dnsZoneRecord struct {
+	Name         types.String      `tfsdk:"name"`
+	Type         types.String      `tfsdk:"type"`
+	TTL          types.Int64       `tfsdk:"ttl"`
+	Disabled     types.Bool        `tfsdk:"disabled"`
+	DnssecStatus types.String      `tfsdk:"dnssec_status"`
+	LastUsedOn   types.String      `tfsdk:"last_used_on"`
+	LastModified types.String      `tfsdk:"last_modified"`
+	ExpiryTTL    types.Int64       `tfsdk:"expiry_ttl"`
+	RecordData   dnsZoneRecordData `tfsdk:"record_data"`
+}
+
+type dnsZoneRecordData struct {
+	PrimaryNameServer   types.String `tfsdk:"primary_name_server"`
+	ResponsiblePerson   types.String `tfsdk:"responsible_person"`
+	Serial              types.Int64  `tfsdk:"serial"`
+	Refresh             types.Int64  `tfsdk:"refresh"`
+	Retry               types.Int64  `tfsdk:"retry"`
+	Expire              types.Int64  `tfsdk:"expire"`
+	Minimum             types.Int64  `tfsdk:"minimum"`
+	UseSerialDateScheme types.Bool   `tfsdk:"use_serial_date_scheme"`
+	Protocol            types.String `tfsdk:"protocol"`
+	Forwarder           types.String `tfsdk:"forwarder"`
+	Priority            types.Int64  `tfsdk:"priority"`
+	DnssecValidation    types.Bool   `tfsdk:"dnssec_validation"`
+	ProxyType           types.String `tfsdk:"proxy_type"`
+	IpAddress           types.String `tfsdk:"ip_address"`
+	Cname               types.String `tfsdk:"cname"`
+	NameServer          types.String `tfsdk:"name_server"`
+}

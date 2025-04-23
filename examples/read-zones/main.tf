@@ -18,6 +18,13 @@ data "technitium_dns_zone" "example" {
 data "technitium_dns_zones" "list" {
 }
 
+data "technitium_dns_zone_records" "example" {
+  domain = data.technitium_dns_zone.example.name
+}
+
+
+
+
 output "example_zone" {
   value = data.technitium_dns_zone.example
 }
@@ -25,4 +32,10 @@ output "example_zone" {
 output "all_zones" {
   value = data.technitium_dns_zones.list.zones
 }
+
+output "zone_records" {
+  value = data.technitium_dns_zone_records.example.records
+}
+
+
 
