@@ -7,7 +7,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
@@ -102,33 +101,6 @@ func (r *dnsZoneResource) CreateZone(plan dnsZoneCreate, ctx context.Context) er
 // Read refreshes the Terraform state with the latest data.
 func (r *dnsZoneResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var state dnsZoneCreate
-	diags := req.State.Get(ctx, &state)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	zone, err := r.client.GetDnsZone(state.Name.ValueString(), ctx)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error Reading DNS zone",
-			"Could not read DNS zone  "+state.Name.ValueString()+": "+err.Error(),
-		)
-		return
-	}
-
-	// Overwrite the state with the latest data
-	state.Name = types.StringValue(zone.Name)
-	state.Type = types.StringValue(zone.Type)
-	state.Catalog = types.StringValue(zone.Catalog)
-
-	// Set refreshed state
-	diags = resp.State.Set(ctx, &state)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
 }
 
 // Delete deletes the resource and removes the Terraform state on success.
