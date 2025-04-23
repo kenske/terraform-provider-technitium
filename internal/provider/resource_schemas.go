@@ -104,3 +104,92 @@ func DnsZoneResourceSchema() map[string]schema.Attribute {
 		},
 	}
 }
+
+func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
+	return map[string]schema.Attribute{
+		"domain": schema.StringAttribute{
+			Required: true,
+		},
+		"type": schema.StringAttribute{
+			Required: true,
+		},
+		"zone": schema.StringAttribute{
+			Optional: true,
+		},
+		"ttl": schema.Int64Attribute{
+			Optional: true,
+		},
+		"comments": schema.StringAttribute{
+			Optional: true,
+		},
+		"expiry_ttl": schema.Int64Attribute{
+			Optional: true,
+		},
+		"ip_address": schema.StringAttribute{
+			Optional: true,
+		},
+		"ptr": schema.StringAttribute{
+			Optional: true,
+		},
+		"createPtrZone": schema.BoolAttribute{
+			Optional: true,
+		},
+		"update_svcb_hints": schema.BoolAttribute{
+			Optional: true,
+		},
+		"name_server": schema.StringAttribute{
+			Optional: true,
+		},
+		"cname": schema.StringAttribute{
+			Optional: true,
+		},
+		"ptrName": schema.StringAttribute{
+			Optional: true,
+		},
+		"exchange": schema.StringAttribute{
+			Optional:    true,
+			Description: "The exchange domain name. This option is required for adding MX record.",
+		},
+		"preference": schema.Int64Attribute{
+			Optional:    true,
+			Description: "This is the preference value for MX record type. This option is required for adding MX record.",
+		},
+		"text": schema.StringAttribute{
+			Optional:    true,
+			Description: "The text data for TXT record. This option is required for adding TXT record.",
+		},
+		"splitText": schema.StringAttribute{
+			Optional:    true,
+			Description: "Set to true for using new line char to split text into multiple character-strings for adding TXT record.",
+		},
+		"protocol": schema.StringAttribute{
+			Optional:    true,
+			Description: "This parameter is required for adding the FWD record. Valid values are [Udp, Tcp, Tls, Https, Quic].",
+		},
+		"forwarder": schema.StringAttribute{
+			Optional:    true,
+			Description: "The forwarder address. A special value of this-server can be used to directly forward requests internally to the DNS server. This parameter is required for adding the FWD record.",
+		},
+		"forwarder_priority": schema.Int64Attribute{
+			Optional: true,
+		},
+		"dnssec_validation": schema.BoolAttribute{
+			Optional: true,
+		},
+		"proxy_type": schema.StringAttribute{
+			Optional: true,
+		},
+		"proxy_address": schema.StringAttribute{
+			Optional: true,
+		},
+		"proxy_port": schema.Int64Attribute{
+			Optional: true,
+		},
+		"proxy_username": schema.StringAttribute{
+			Optional: true,
+		},
+		"proxy_password": schema.StringAttribute{
+			Optional: true,
+		},
+	}
+}

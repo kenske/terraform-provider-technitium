@@ -31,3 +31,89 @@ func (c *Client) GetDnsZoneRecords(domain string, ctx context.Context) ([]DnsZon
 
 	return response.Response.Records, nil
 }
+
+func (c *Client) CreateDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context) error {
+
+	req, err := c.GetRequest("/api/zones/records/add")
+	if err != nil {
+		return err
+	}
+
+	params := req.URL.Query()
+	params.Add("domain", r.Domain)
+	params.Add("type", r.Type)
+	params.Add("zone", r.Zone)
+	params.Add("ttl", fmt.Sprintf("%d", r.TTL))
+	params.Add("comments", r.Comments)
+	params.Add("expiryTtl", fmt.Sprintf("%d", r.ExpiryTTL))
+	params.Add("ipAddress", r.IPAddress)
+	params.Add("ptr", r.Ptr)
+	params.Add("createPtrZone", fmt.Sprintf("%t", r.CreatePtrZone))
+	params.Add("updateSvcbHints", fmt.Sprintf("%t", r.UpdateSvcbHints))
+	params.Add("nameServer", r.NameServer)
+	params.Add("cname", r.Cname)
+	params.Add("ptrName", r.PtrName)
+	params.Add("exchange", r.Exchange)
+	params.Add("preference", fmt.Sprintf("%d", r.Preference))
+	params.Add("text", r.Text)
+	params.Add("splitText", r.SplitText)
+	params.Add("protocol", r.Protocol)
+	params.Add("forwarder", r.Forwarder)
+	params.Add("forwarderPriority", fmt.Sprintf("%d", r.ForwarderPriority))
+	params.Add("dnssecValidation", fmt.Sprintf("%t", r.DnssecValidation))
+	params.Add("proxyType", r.ProxyType)
+	params.Add("proxyAddress", r.ProxyAddress)
+	params.Add("proxyPort", fmt.Sprintf("%d", r.ProxyPort))
+	params.Add("proxyUsername", r.ProxyUsername)
+	params.Add("proxyPassword", r.ProxyPassword)
+
+	req.URL.RawQuery = params.Encode()
+
+	body, err := c.doRequest(req, ctx)
+	if err != nil {
+		return err
+	}
+
+	response := DnsZoneCreateResponse{}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return err
+	}
+
+	if response.Status != "ok" {
+		return fmt.Errorf("failed to create zone record: %s", response.ErrorMessage)
+	}
+
+	return nil
+
+}
+
+func (c *Client) DeleteDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context) error {
+
+	req, err := c.GetRequest("/api/zones/records/delete")
+	if err != nil {
+		return err
+	}
+
+	params := req.URL.Query()
+	params.Add("domain", r.Domain)
+	params.Add("type", r.Type)
+	params.Add("zone", r.Zone)
+
+	body, err := c.doRequest(req, ctx)
+	if err != nil {
+		return err
+	}
+
+	response := BaseResponse{}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return err
+	}
+
+	if response.Status != "ok" {
+		return fmt.Errorf("failed to delete zone record: %s", response.ErrorMessage)
+	}
+
+	return nil
+}

@@ -159,3 +159,32 @@ type DnsZoneRecord struct {
 		Cname               string `json:"cname"`
 	} `json:"rData"`
 }
+
+type DnsZoneRecordCreate struct {
+	Domain            string `json:"domain"`
+	Type              string `json:"type"`
+	Zone              string `json:"zone,omitempty"`
+	TTL               int64  `json:"ttl,omitempty"`
+	Comments          string `json:"comments,omitempty"`
+	ExpiryTTL         int64  `json:"expiryTtl,omitempty"`
+	IPAddress         string `json:"ipAddress,omitempty"`
+	Ptr               string `json:"ptr,omitempty"`
+	CreatePtrZone     bool   `json:"createPtrZone,omitempty"`
+	UpdateSvcbHints   bool   `json:"updateSvcbHints,omitempty"`
+	NameServer        string `json:"nameServer,omitempty"`
+	Cname             string `json:"cname,omitempty"`
+	PtrName           string `json:"ptrName,omitempty"`
+	Exchange          string `json:"exchange,omitempty"`
+	Preference        int64  `json:"preference,omitempty"`
+	Text              string `json:"text,omitempty"`
+	SplitText         string `json:"splitText,omitempty"`
+	Protocol          string `json:"protocol,omitempty"`
+	Forwarder         string `json:"forwarder,omitempty"`
+	ForwarderPriority int64  `json:"forwarderPriority,omitempty"`
+	DnssecValidation  bool   `json:"dnssecValidation,omitempty"`
+	ProxyType         string `json:"proxyType,omitempty"`
+	ProxyAddress      string `json:"proxyAddress,omitempty"`
+	ProxyPort         int64  `json:"proxyPort,omitempty"`
+	ProxyUsername     string `json:"proxyUsername,omitempty"`
+	ProxyPassword     string `json:"proxyPassword,omitempty"`
+}

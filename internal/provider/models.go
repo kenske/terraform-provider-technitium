@@ -117,3 +117,32 @@ type dnsZoneRecordData struct {
 	Cname               types.String `tfsdk:"cname"`
 	NameServer          types.String `tfsdk:"name_server"`
 }
+
+type dnsZoneRecordCreate struct {
+	Domain            types.String `tfsdk:"domain"`
+	Zone              types.String `tfsdk:"zone"`
+	Type              types.String `tfsdk:"type"`
+	TTL               types.Int64  `tfsdk:"ttl"`
+	Comments          types.String `tfsdk:"comments"`
+	ExpiryTTL         types.Int64  `tfsdk:"expiry_ttl"`
+	IPAddress         types.String `tfsdk:"ip_address"`
+	Ptr               types.String `tfsdk:"ptr"`
+	CreatePtrZone     types.Bool   `tfsdk:"create_ptr_zone"`
+	UpdateSvcbHints   types.Bool   `tfsdk:"update_svcb_hints"`
+	NameServer        types.String `tfsdk:"name_server"`
+	Cname             types.String `tfsdk:"cname"`
+	PtrName           types.String `tfsdk:"ptr_name"`
+	Exchange          types.String `tfsdk:"exchange"`
+	Preference        types.Int64  `tfsdk:"preference"`
+	Text              types.String `tfsdk:"text"`
+	SplitText         types.String `tfsdk:"split_text"`
+	Protocol          types.String `tfsdk:"protocol"`
+	Forwarder         types.String `tfsdk:"forwarder"`
+	ForwarderPriority types.Int64  `tfsdk:"forwarder_priority"`
+	DnssecValidation  types.Bool   `tfsdk:"dnssec_validation"`
+	ProxyType         types.String `tfsdk:"proxy_type"`
+	ProxyAddress      types.String `tfsdk:"proxy_address"`
+	ProxyPort         types.Int64  `tfsdk:"proxy_port"`
+	ProxyUsername     types.String `tfsdk:"proxy_username"`
+	ProxyPassword     types.String `tfsdk:"proxy_password"`
+}
