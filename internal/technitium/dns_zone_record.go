@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"net/http"
+	"strings"
 )
 
 func (c *Client) GetDnsZoneRecords(domain string, ctx context.Context) ([]DnsZoneRecord, error) {
@@ -74,7 +75,7 @@ func (c *Client) CreateDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context)
 		return err
 	}
 
-	response := DnsZoneCreateResponse{}
+	response := BaseResponse{}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		return err
@@ -99,6 +100,7 @@ func (c *Client) DeleteDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context)
 	params.Add("domain", r.Domain)
 	params.Add("type", r.Type)
 	params.Add("zone", r.Zone)
+	req.URL.RawQuery = params.Encode()
 
 	body, err := c.doRequest(req, ctx)
 	if err != nil {
@@ -112,6 +114,11 @@ func (c *Client) DeleteDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context)
 	}
 
 	if response.Status != "ok" {
+
+		if strings.Contains(response.ErrorMessage, "Cannot delete record: no such record exists") {
+			return nil
+		}
+
 		return fmt.Errorf("failed to delete zone record: %s", response.ErrorMessage)
 	}
 

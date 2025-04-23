@@ -132,19 +132,25 @@ func (r *dnsZoneRecordResource) Read(ctx context.Context, req resource.ReadReque
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *dnsZoneRecordResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
-	var state dnsZoneCreate
+	var state dnsZoneRecordCreate
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	err := r.client.DeleteDnsZone(state.Name.ValueString(), ctx)
+	record := technitium.DnsZoneRecordCreate{}
+
+	record.Type = state.Type.ValueString()
+	record.Domain = state.Domain.ValueString()
+	record.Zone = state.Zone.ValueString()
+
+	err := r.client.DeleteDnsZoneRecord(record, ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error deleting DNS zone",
-			"Could not delete DNS Zone "+state.Name.ValueString()+": "+err.Error(),
+			"Error deleting DNS zone record",
+			"Could not delete DNS Zone record "+state.Domain.ValueString()+": "+err.Error(),
 		)
 		return
 	}

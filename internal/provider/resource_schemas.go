@@ -131,7 +131,7 @@ func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
 		"ptr": schema.StringAttribute{
 			Optional: true,
 		},
-		"createPtrZone": schema.BoolAttribute{
+		"create_ptr_zone": schema.BoolAttribute{
 			Optional: true,
 		},
 		"update_svcb_hints": schema.BoolAttribute{
@@ -143,7 +143,7 @@ func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
 		"cname": schema.StringAttribute{
 			Optional: true,
 		},
-		"ptrName": schema.StringAttribute{
+		"ptr_name": schema.StringAttribute{
 			Optional: true,
 		},
 		"exchange": schema.StringAttribute{
@@ -158,7 +158,7 @@ func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
 			Optional:    true,
 			Description: "The text data for TXT record. This option is required for adding TXT record.",
 		},
-		"splitText": schema.StringAttribute{
+		"split_text": schema.StringAttribute{
 			Optional:    true,
 			Description: "Set to true for using new line char to split text into multiple character-strings for adding TXT record.",
 		},
