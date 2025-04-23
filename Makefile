@@ -7,7 +7,7 @@ install: build
 	go install -v ./...
 
 lint:
-	golangci-lint run
+	docker run --rm -v $$(pwd):/app -w /app golangci/golangci-lint:v2.1.2 golangci-lint run
 
 generate:
 	cd tools; go generate ./...

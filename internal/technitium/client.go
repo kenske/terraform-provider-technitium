@@ -13,15 +13,10 @@ import (
 
 const HostURL string = "http://localhost:5380"
 
-// Client -
 type Client struct {
 	HostURL    string
 	HTTPClient *http.Client
 	Token      string
-}
-
-type StatusResponse struct {
-	status string
 }
 
 func NewClient(host, token string, ctx context.Context) (*Client, error) {
@@ -64,7 +59,7 @@ func (c *Client) GetSessionInfo(ctx context.Context) error {
 		return err
 	}
 
-	sr := StatusResponse{}
+	sr := BaseResponse{}
 	err = json.Unmarshal(body, &sr)
 	if err != nil {
 		return err
