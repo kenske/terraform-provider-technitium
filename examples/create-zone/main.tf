@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     technitium = {
-      source = "kenske.com/terraform/technitium-dns"
+      source = "registry.terraform.io/kenske/technitium"
     }
   }
 }
