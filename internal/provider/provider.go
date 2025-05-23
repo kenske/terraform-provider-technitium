@@ -113,7 +113,7 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 	if host == "" {
 		resp.Diagnostics.AddAttributeError(
 			path.Root("host"),
-			"Missing Technitium DNS API API Host",
+			"Missing Technitium DNS API Host",
 			"Host value is missing",
 		)
 	}

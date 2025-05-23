@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     technitium = {
-      source = "kenske.com/terraform/technitium-dns"
+      source = "registry.terraform.io/kenske/technitium"
     }
   }
 }
@@ -19,7 +19,7 @@ data "technitium_dhcp_scope" "default" {
 
 
 output "scope_list" {
- value = data.technitium_dhcp_scopes.list.scopes
+  value = data.technitium_dhcp_scopes.list.scopes
 }
 
 
