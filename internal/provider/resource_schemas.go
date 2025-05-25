@@ -117,7 +117,8 @@ func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
 			Optional: true,
 		},
 		"ttl": schema.Int64Attribute{
-			Optional: true,
+			Optional:    true,
+			Description: "The time-to-live (TTL) for the DNS record in seconds",
 		},
 		"comments": schema.StringAttribute{
 			Optional: true,

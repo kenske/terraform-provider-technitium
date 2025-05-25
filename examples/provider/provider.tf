@@ -6,6 +6,7 @@ terraform {
   }
 }
 
+
 provider "technitium" {
   host  = var.TECHNITIUM_HOST
   token = var.TECHNITIUM_TOKEN
