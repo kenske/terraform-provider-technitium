@@ -53,7 +53,8 @@ func (r *dhcpScopeResource) Metadata(_ context.Context, req resource.MetadataReq
 
 func (r *dhcpScopeResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Attributes: DhcpScopeResourceSchema(),
+		Attributes:  DhcpScopeResourceSchema(),
+		Description: "The API does a lot of magic behind the scenes when creating a new scope, so most changes will require deleting and recreating the scope.",
 	}
 
 }

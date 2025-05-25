@@ -1,4 +1,4 @@
-default: fmt lint install generate server
+default: fmt lint install docs server
 
 build:
 	go build -v ./...
@@ -9,7 +9,8 @@ install: build
 lint:
 	docker run --rm -v $$(pwd):/app -w /app golangci/golangci-lint:v2.1.2 golangci-lint run
 
-generate:
+## Generate docs
+docs:
 	cd tools; go generate ./...
 
 fmt:
@@ -21,4 +22,4 @@ test:
 testacc:
 	TF_ACC=1 go test -v -cover -timeout 120m ./...
 
-.PHONY: fmt lint test testacc build install generate
+.PHONY: fmt lint test testacc build install docs

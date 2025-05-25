@@ -3,12 +3,12 @@
 page_title: "technitium_dhcp_scope Resource - technitium"
 subcategory: ""
 description: |-
-  
+  The API does a lot of magic behind the scenes when creating a new scope, so most changes will require deleting and recreating the scope.
 ---
 
 # technitium_dhcp_scope (Resource)
 
-
+The API does a lot of magic behind the scenes when creating a new scope, so most changes will require deleting and recreating the scope.
 
 ## Example Usage
 

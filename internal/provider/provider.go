@@ -51,11 +51,13 @@ func (p *technitiumProvider) Schema(_ context.Context, _ provider.SchemaRequest,
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"host": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "The Technitium DNS API host URL. Alternatively, you can set the value using the TECHNITIUM_HOST environment variable.",
 			},
 			"token": schema.StringAttribute{
-				Optional:  true,
-				Sensitive: true,
+				Optional:    true,
+				Sensitive:   true,
+				Description: "The Technitium DNS API token. Alternatively, you can set the value using the TECHNITIUM_TOKEN environment variable.",
 			},
 		},
 	}
