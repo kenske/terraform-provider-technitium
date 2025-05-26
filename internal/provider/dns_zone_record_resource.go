@@ -144,6 +144,7 @@ func (r *dnsZoneRecordResource) Delete(ctx context.Context, req resource.DeleteR
 	record.Type = state.Type.ValueString()
 	record.Domain = state.Domain.ValueString()
 	record.Zone = state.Zone.ValueString()
+	record.IPAddress = state.IPAddress.ValueString()
 
 	err := r.client.DeleteDnsZoneRecord(record, ctx)
 
