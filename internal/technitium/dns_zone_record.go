@@ -100,6 +100,7 @@ func (c *Client) DeleteDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context)
 	params.Add("domain", r.Domain)
 	params.Add("type", r.Type)
 	params.Add("zone", r.Zone)
+	params.Add("ipAddress", r.IPAddress)
 	req.URL.RawQuery = params.Encode()
 
 	body, err := c.doRequest(req, ctx)
