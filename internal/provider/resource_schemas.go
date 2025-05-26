@@ -76,12 +76,26 @@ func DnsZoneResourceSchema() map[string]schema.Attribute {
 		},
 		"type": schema.StringAttribute{
 			Required: true,
+			Description: "The type of DNS zone. Valid values are " +
+				"[Primary, Secondary, Stub, Forwarder, SecondaryForwarder, Catalog, SecondaryCatalog]",
 		},
 		"catalog": schema.StringAttribute{
 			Optional: true,
 		},
 		"forwarder": schema.StringAttribute{
 			Optional: true,
+			Description: "The address of the DNS server to be used as a forwarder. " +
+				"This optional parameter is required to be used with Conditional Forwarder zones. " +
+				"A special value this-server can be used as a forwarder which when used will " +
+				"forward all the requests internally to this DNS server such that you can override " +
+				"the zone with records and rest of the zone gets resolved via This Server. " +
+				"The initialize_forwarder parameter must be set to true to use this option.",
+		},
+		"initialize_forwarder": schema.BoolAttribute{
+			Optional: true,
+			Description: " Set value as true to initialize the Conditional Forwarder zone with " +
+				"an FWD record or set it to false to create an empty Forwarder zone. " +
+				"Default value is true",
 		},
 		"use_soa_serial_date_scheme": schema.BoolAttribute{
 			Optional: true,

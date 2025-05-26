@@ -74,6 +74,7 @@ func (c *Client) CreateDnsZone(z DnsZoneCreate, ctx context.Context) (DnsZone, e
 	params.Add("tsigKeyName", z.TsigKeyName)
 	params.Add("protocol", z.Protocol)
 	params.Add("forwarder", z.Forwarder)
+	params.Add("initializeForwarder", fmt.Sprintf("%v", z.InitializeForwarder))
 	params.Add("dnssecValidation", fmt.Sprintf("%v", z.DnssecValidation))
 
 	req.URL.RawQuery = params.Encode()
