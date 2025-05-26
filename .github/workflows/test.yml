@@ -4,9 +4,6 @@ name: Tests
 # This GitHub action runs your tests for each pull request and push.
 # Optionally, you can turn it on using a schedule for regular testing.
 on:
-  pull_request:
-    paths-ignore:
-      - 'README.md'
   push:
     paths-ignore:
       - 'README.md'
@@ -42,8 +39,8 @@ jobs:
         with:
           go-version-file: 'go.mod'
           cache: true
-      # We need the latest version of Terraform for our documentation generation to use
-      - uses: hashicorp/setup-terraform@v3
+      # We need the latest version of Opentofu for our documentation generation to use
+      - uses: opentofu/setup-opentofu@v1
         with:
           terraform_wrapper: false
       - run: make generate
@@ -69,7 +66,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           cache: true
-      - uses: hashicorp/setup-opentofu@v1
+      - uses: opentofu/setup-opentofu@v1
         with:
           tofu_version: ${{ matrix.opentofu }}
           tofu_wrapper: false

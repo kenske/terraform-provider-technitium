@@ -74,6 +74,7 @@ type dnsZoneList struct {
 type dnsZoneCreate struct {
 	dnsZone
 	Forwarder                  types.String   `tfsdk:"forwarder"`
+	InitializeForwarder        types.Bool     `tfsdk:"initialize_forwarder"`
 	UseSoaSerialDateScheme     types.Bool     `tfsdk:"use_soa_serial_date_scheme"`
 	PrimaryNameServerAddresses []types.String `tfsdk:"primary_name_server_addresses"`
 	ZoneTransferProtocol       types.String   `tfsdk:"zone_transfer_protocol"`

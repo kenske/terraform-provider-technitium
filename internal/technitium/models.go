@@ -114,6 +114,7 @@ type DnsZoneCreate struct {
 	TsigKeyName                string   `json:"tsigKeyName"`
 	Protocol                   string   `json:"protocol"`
 	Forwarder                  string   `json:"forwarder"`
+	InitializeForwarder        bool     `json:"initializeForwarder"`
 	DnssecValidation           bool     `json:"dnssecValidation"`
 }
 

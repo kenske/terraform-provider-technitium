@@ -81,6 +81,7 @@ func (r *dnsZoneResource) CreateZone(plan dnsZoneCreate, ctx context.Context) er
 	zone.Name = plan.Name.ValueString()
 	zone.Type = plan.Type.ValueString()
 	zone.Catalog = plan.Catalog.ValueString()
+	zone.InitializeForwarder = plan.InitializeForwarder.ValueBool()
 	zone.Forwarder = plan.Forwarder.ValueString()
 	zone.UseSoaSerialDateScheme = plan.UseSoaSerialDateScheme.ValueBool()
 	zone.PrimaryNameServerAddresses = convertTfListToStringList(plan.PrimaryNameServerAddresses)
