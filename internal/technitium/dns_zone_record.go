@@ -141,9 +141,7 @@ func (c *Client) GetDnsZoneRecord(domain string, recordType string, ctx context.
 		return DnsZoneRecord{}, fmt.Errorf("no DNS zone records found for domain: %s", domain)
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Found %d DNS zone records for domain: %s", len(records), domain))
 	for _, record := range records {
-		tflog.Debug(ctx, fmt.Sprintf("Record: %+v", record))
 		if record.Type == recordType && record.Name == domain {
 			tflog.Debug(ctx, fmt.Sprintf("Found DNS zone record: %+v", record))
 			return record, nil

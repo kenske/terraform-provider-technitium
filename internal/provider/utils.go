@@ -69,3 +69,9 @@ func ConfigureDataSourceClient(req datasource.ConfigureRequest, resp *datasource
 
 	return client
 }
+
+func setStringIfNotEmpty(target *types.String, value string) {
+	if value != "" {
+		*target = types.StringValue(value)
+	}
+}

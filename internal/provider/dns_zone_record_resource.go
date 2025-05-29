@@ -128,21 +128,18 @@ func (r *dnsZoneRecordResource) Read(ctx context.Context, req resource.ReadReque
 	record, err := r.client.GetDnsZoneRecord(state.Domain.ValueString(), state.Type.ValueString(), ctx)
 	if err != nil {
 
-		tflog.Debug(ctx, "Removing record "+state.Domain.ValueString()+"from state due to error: "+err.Error())
+		tflog.Info(ctx, "Removing record "+state.Domain.ValueString()+" from state due to error: "+err.Error())
 		resp.State.RemoveResource(ctx)
 
-		//resp.Diagnostics.AddError(
-		//	"Error Reading DNS zone record",
-		//	"Could not read DNS zone record  "+state.Domain.ValueString()+": "+err.Error(),
-		//)
 		return
 	}
 
 	state.Domain = types.StringValue(record.Name)
 	state.Type = types.StringValue(record.Type)
 	state.TTL = types.Int64Value(record.TTL)
-	state.Cname = types.StringValue(record.RecordData.Cname)
-	state.IPAddress = types.StringValue(record.RecordData.IpAddress)
+
+	setStringIfNotEmpty(&state.Cname, record.RecordData.Cname)
+	setStringIfNotEmpty(&state.IPAddress, record.RecordData.IpAddress)
 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -181,7 +178,32 @@ func (r *dnsZoneRecordResource) Delete(ctx context.Context, req resource.DeleteR
 
 func (r *dnsZoneRecordResource) ModifyPlan(_ context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	resp.RequiresReplace = path.Paths{
-		path.Empty(),
+		path.Root("domain"),
+		path.Root("zone"),
+		path.Root("type"),
+		path.Root("ttl"),
+		path.Root("comments"),
+		path.Root("expiry_ttl"),
+		path.Root("ip_address"),
+		path.Root("ptr"),
+		path.Root("create_ptr_zone"),
+		path.Root("update_svcb_hints"),
+		path.Root("name_server"),
+		path.Root("cname"),
+		path.Root("ptr_name"),
+		path.Root("exchange"),
+		path.Root("preference"),
+		path.Root("text"),
+		path.Root("split_text"),
+		path.Root("protocol"),
+		path.Root("forwarder"),
+		path.Root("forwarder_priority"),
+		path.Root("dnssec_validation"),
+		path.Root("proxy_type"),
+		path.Root("proxy_address"),
+		path.Root("proxy_port"),
+		path.Root("proxy_username"),
+		path.Root("proxy_password"),
 	}
 
 }
