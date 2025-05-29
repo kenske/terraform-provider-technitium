@@ -3,7 +3,9 @@ package provider
 import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-	"terraform-provider-technitium-dns/internal/technitium"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"terraform-provider-technitium/internal/technitium"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -122,6 +124,23 @@ func (r *dnsZoneRecordResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
+	// Check if the record exists
+	record, err := r.client.GetDnsZoneRecord(state.Domain.ValueString(), state.Type.ValueString(), ctx)
+	if err != nil {
+
+		tflog.Info(ctx, "Removing record "+state.Domain.ValueString()+" from state due to error: "+err.Error())
+		resp.State.RemoveResource(ctx)
+
+		return
+	}
+
+	state.Domain = types.StringValue(record.Name)
+	state.Type = types.StringValue(record.Type)
+	state.TTL = types.Int64Value(record.TTL)
+
+	setStringIfNotEmpty(&state.Cname, record.RecordData.Cname)
+	setStringIfNotEmpty(&state.IPAddress, record.RecordData.IpAddress)
+
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -159,7 +178,32 @@ func (r *dnsZoneRecordResource) Delete(ctx context.Context, req resource.DeleteR
 
 func (r *dnsZoneRecordResource) ModifyPlan(_ context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	resp.RequiresReplace = path.Paths{
-		path.Root("domain").ParentPath(),
+		path.Root("domain"),
+		path.Root("zone"),
+		path.Root("type"),
+		path.Root("ttl"),
+		path.Root("comments"),
+		path.Root("expiry_ttl"),
+		path.Root("ip_address"),
+		path.Root("ptr"),
+		path.Root("create_ptr_zone"),
+		path.Root("update_svcb_hints"),
+		path.Root("name_server"),
+		path.Root("cname"),
+		path.Root("ptr_name"),
+		path.Root("exchange"),
+		path.Root("preference"),
+		path.Root("text"),
+		path.Root("split_text"),
+		path.Root("protocol"),
+		path.Root("forwarder"),
+		path.Root("forwarder_priority"),
+		path.Root("dnssec_validation"),
+		path.Root("proxy_type"),
+		path.Root("proxy_address"),
+		path.Root("proxy_port"),
+		path.Root("proxy_username"),
+		path.Root("proxy_password"),
 	}
 
 }

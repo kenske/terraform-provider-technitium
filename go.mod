@@ -1,4 +1,4 @@
-module terraform-provider-technitium-dns
+module terraform-provider-technitium
 
 go 1.23.0
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"os"
-	"terraform-provider-technitium-dns/internal/technitium"
+	"terraform-provider-technitium/internal/technitium"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -52,12 +52,12 @@ func (p *technitiumProvider) Schema(_ context.Context, _ provider.SchemaRequest,
 		Attributes: map[string]schema.Attribute{
 			"host": schema.StringAttribute{
 				Optional:    true,
-				Description: "The Technitium DNS API host URL. Alternatively, you can set the value using the TECHNITIUM_HOST environment variable.",
+				Description: "Technitium API host URL. Alternatively, you can set the value using the TECHNITIUM_HOST environment variable.",
 			},
 			"token": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The Technitium DNS API token. Alternatively, you can set the value using the TECHNITIUM_TOKEN environment variable.",
+				Description: "Technitium API token. Alternatively, you can set the value using the TECHNITIUM_TOKEN environment variable.",
 			},
 		},
 	}

@@ -5,7 +5,7 @@ meta {
 }
 
 get {
-  url: http://{{host}}/api/zones/records/get?token={{api_token}}&domain=example.com
+  url: http://{{host}}/api/zones/records/get?token={{api_token}}&domain=example.com&listZone=true
   body: none
   auth: none
 }
@@ -13,4 +13,5 @@ get {
 params:query {
   token: {{api_token}}
   domain: example.com
+  listZone: true
 }
