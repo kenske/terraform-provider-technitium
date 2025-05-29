@@ -71,6 +71,9 @@ func (c *Client) CreateDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context)
 	params.Add("proxyPort", fmt.Sprintf("%d", r.ProxyPort))
 	params.Add("proxyUsername", r.ProxyUsername)
 	params.Add("proxyPassword", r.ProxyPassword)
+	params.Add("appName", r.AppName)
+	params.Add("classPath", r.ClassPath)
+	params.Add("recordData", r.RecordData)
 
 	req.URL.RawQuery = params.Encode()
 

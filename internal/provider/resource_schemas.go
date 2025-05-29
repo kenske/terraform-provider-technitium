@@ -215,5 +215,17 @@ func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
 		"proxy_password": schema.StringAttribute{
 			Optional: true,
 		},
+		"app_name": schema.StringAttribute{
+			Optional:    true,
+			Description: "DNS app name, required for `APP` records",
+		},
+		"class_path": schema.StringAttribute{
+			Optional:    true,
+			Description: "DNS app class path",
+		},
+		"record_data": schema.StringAttribute{
+			Optional:    true,
+			Description: "DNS app record data",
+		},
 	}
 }
