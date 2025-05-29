@@ -32,16 +32,16 @@ resource "technitium_dns_zone" "internal" {
 ### Required
 
 - `name` (String)
-- `type` (String) The type of DNS zone. Valid values are [Primary, Secondary, Stub, Forwarder, SecondaryForwarder, Catalog, SecondaryCatalog]
+- `type` (String) The type of DNS zone. Valid values are [`Primary`, `Secondary`, `Stub`, `Forwarder`, `SecondaryForwarder`, `Catalog`, `SecondaryCatalog`]
 
 ### Optional
 
 - `catalog` (String)
 - `dnssec_validation` (Boolean)
-- `forwarder` (String) The address of the DNS server to be used as a forwarder. This optional parameter is required to be used with Conditional Forwarder zones. A special value this-server can be used as a forwarder which when used will forward all the requests internally to this DNS server such that you can override the zone with records and rest of the zone gets resolved via This Server. The initialize_forwarder parameter must be set to true to use this option.
-- `initialize_forwarder` (Boolean) Set value as true to initialize the Conditional Forwarder zone with an FWD record or set it to false to create an empty Forwarder zone. Default value is true
+- `forwarder` (String) The address of the DNS server to be used as a forwarder. This optional parameter is required to be used with Conditional Forwarder zones. A special value `this-server` can be used as a forwarder which when used will forward all the requests internally to this DNS server such that you can override the zone with records and rest of the zone gets resolved via this server. The `initialize_forwarder` parameter must be set to `true` to use this option.
+- `initialize_forwarder` (Boolean) Set value as true to initialize the Conditional Forwarder zone with an FWD record or set it to false to create an empty Forwarder zone. Default value is `true`
 - `primary_name_server_addresses` (List of String)
-- `protocol` (String)
+- `protocol` (String) The DNS transport protocol to be used by the Conditional Forwarder zone.This optional parameter is used with Conditional Forwarder zones.Valid values are [`Udp`, `Tcp`, `Tls`, `Https`, `Quic`].Default is `Udp`
 - `tsig_key_name` (String)
 - `use_soa_serial_date_scheme` (Boolean)
 - `zone_transfer_protocol` (String)

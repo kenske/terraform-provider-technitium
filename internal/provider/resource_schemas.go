@@ -2,6 +2,7 @@ package provider
 
 import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -77,7 +78,7 @@ func DnsZoneResourceSchema() map[string]schema.Attribute {
 		"type": schema.StringAttribute{
 			Required: true,
 			Description: "The type of DNS zone. Valid values are " +
-				"[Primary, Secondary, Stub, Forwarder, SecondaryForwarder, Catalog, SecondaryCatalog]",
+				"[`Primary`, `Secondary`, `Stub`, `Forwarder`, `SecondaryForwarder`, `Catalog`, `SecondaryCatalog`]",
 		},
 		"catalog": schema.StringAttribute{
 			Optional: true,
@@ -86,16 +87,18 @@ func DnsZoneResourceSchema() map[string]schema.Attribute {
 			Optional: true,
 			Description: "The address of the DNS server to be used as a forwarder. " +
 				"This optional parameter is required to be used with Conditional Forwarder zones. " +
-				"A special value this-server can be used as a forwarder which when used will " +
+				"A special value `this-server` can be used as a forwarder which when used will " +
 				"forward all the requests internally to this DNS server such that you can override " +
-				"the zone with records and rest of the zone gets resolved via This Server. " +
-				"The initialize_forwarder parameter must be set to true to use this option.",
+				"the zone with records and rest of the zone gets resolved via this server. " +
+				"The `initialize_forwarder` parameter must be set to `true` to use this option.",
 		},
 		"initialize_forwarder": schema.BoolAttribute{
 			Optional: true,
+			Computed: true,
 			Description: " Set value as true to initialize the Conditional Forwarder zone with " +
 				"an FWD record or set it to false to create an empty Forwarder zone. " +
-				"Default value is true",
+				"Default value is `true`",
+			Default: booldefault.StaticBool(true),
 		},
 		"use_soa_serial_date_scheme": schema.BoolAttribute{
 			Optional: true,
@@ -114,8 +117,8 @@ func DnsZoneResourceSchema() map[string]schema.Attribute {
 			Optional: true,
 			Description: "The DNS transport protocol to be used by the Conditional Forwarder zone." +
 				"This optional parameter is used with Conditional Forwarder zones." +
-				"Valid values are [Udp, Tcp, Tls, Https, Quic]." +
-				"Default Udp protocol is used when this parameter is missing.",
+				"Valid values are [`Udp`, `Tcp`, `Tls`, `Https`, `Quic`]." +
+				"Default is `Udp`",
 		},
 		"dnssec_validation": schema.BoolAttribute{
 			Optional: true,
@@ -129,7 +132,8 @@ func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
 			Required: true,
 		},
 		"type": schema.StringAttribute{
-			Required: true,
+			Required:    true,
+			Description: "The type of DNS record. Valid values are [`A`, `AAAA`, `NS`, `CNAME`, `PTR`, `MX`, `TXT`, `SRV`, `DNAME`, `DS`, `SSHFP`, `TLSA`, `SVCB`, `HTTPS`, `URI`, `CAA`] and proprietary types [`ANAME`, `FWD`, `APP`].",
 		},
 		"zone": schema.StringAttribute{
 			Optional: true,
@@ -183,11 +187,11 @@ func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
 		},
 		"protocol": schema.StringAttribute{
 			Optional:    true,
-			Description: "This parameter is required for adding the FWD record. Valid values are [Udp, Tcp, Tls, Https, Quic].",
+			Description: "This parameter is required for adding the FWD record. Valid values are [`Udp`, `Tcp`, `Tls`, `Https`, `Quic`].",
 		},
 		"forwarder": schema.StringAttribute{
 			Optional:    true,
-			Description: "The forwarder address. A special value of this-server can be used to directly forward requests internally to the DNS server. This parameter is required for adding the FWD record.",
+			Description: "The forwarder address. A special value of `this-server` can be used to directly forward requests internally to the DNS server. This parameter is required for adding the FWD record.",
 		},
 		"forwarder_priority": schema.Int64Attribute{
 			Optional: true,
@@ -196,7 +200,8 @@ func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
 			Optional: true,
 		},
 		"proxy_type": schema.StringAttribute{
-			Optional: true,
+			Optional:    true,
+			Description: "The type of proxy to be used for conditional forwarding. Valid values are [`NoProxy`, `DefaultProxy`, `Http`, `Socks5`].",
 		},
 		"proxy_address": schema.StringAttribute{
 			Optional: true,
