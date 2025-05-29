@@ -3,7 +3,9 @@ package provider
 import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-	"terraform-provider-technitium-dns/internal/technitium"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"terraform-provider-technitium/internal/technitium"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -122,6 +124,26 @@ func (r *dnsZoneRecordResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
+	// Check if the record exists
+	record, err := r.client.GetDnsZoneRecord(state.Domain.ValueString(), state.Type.ValueString(), ctx)
+	if err != nil {
+
+		tflog.Debug(ctx, "Removing record "+state.Domain.ValueString()+"from state due to error: "+err.Error())
+		resp.State.RemoveResource(ctx)
+
+		//resp.Diagnostics.AddError(
+		//	"Error Reading DNS zone record",
+		//	"Could not read DNS zone record  "+state.Domain.ValueString()+": "+err.Error(),
+		//)
+		return
+	}
+
+	state.Domain = types.StringValue(record.Name)
+	state.Type = types.StringValue(record.Type)
+	state.TTL = types.Int64Value(record.TTL)
+	state.Cname = types.StringValue(record.RecordData.Cname)
+	state.IPAddress = types.StringValue(record.RecordData.IpAddress)
+
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -159,7 +181,7 @@ func (r *dnsZoneRecordResource) Delete(ctx context.Context, req resource.DeleteR
 
 func (r *dnsZoneRecordResource) ModifyPlan(_ context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	resp.RequiresReplace = path.Paths{
-		path.Root("domain").ParentPath(),
+		path.Empty(),
 	}
 
 }

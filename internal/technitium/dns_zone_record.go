@@ -17,6 +17,10 @@ func (c *Client) GetDnsZoneRecords(domain string, ctx context.Context) ([]DnsZon
 		return nil, err
 	}
 
+	params := req.URL.Query()
+	params.Add("listZone", "true")
+	req.URL.RawQuery = params.Encode()
+
 	body, err := c.doRequest(req, ctx)
 	if err != nil {
 		return nil, err
@@ -124,4 +128,28 @@ func (c *Client) DeleteDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context)
 	}
 
 	return nil
+}
+
+func (c *Client) GetDnsZoneRecord(domain string, recordType string, ctx context.Context) (DnsZoneRecord, error) {
+	records, err := c.GetDnsZoneRecords(domain, ctx)
+
+	if err != nil {
+		return DnsZoneRecord{}, fmt.Errorf("failed to get DNS zone record: %w", err)
+	}
+
+	if len(records) == 0 {
+		return DnsZoneRecord{}, fmt.Errorf("no DNS zone records found for domain: %s", domain)
+	}
+
+	tflog.Debug(ctx, fmt.Sprintf("Found %d DNS zone records for domain: %s", len(records), domain))
+	for _, record := range records {
+		tflog.Debug(ctx, fmt.Sprintf("Record: %+v", record))
+		if record.Type == recordType && record.Name == domain {
+			tflog.Debug(ctx, fmt.Sprintf("Found DNS zone record: %+v", record))
+			return record, nil
+		}
+	}
+
+	return DnsZoneRecord{}, fmt.Errorf("no DNS zone record found for domain: %s with type: %s", domain, recordType)
+
 }

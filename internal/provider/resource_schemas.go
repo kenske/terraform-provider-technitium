@@ -112,6 +112,10 @@ func DnsZoneResourceSchema() map[string]schema.Attribute {
 		},
 		"protocol": schema.StringAttribute{
 			Optional: true,
+			Description: "The DNS transport protocol to be used by the Conditional Forwarder zone." +
+				"This optional parameter is used with Conditional Forwarder zones." +
+				"Valid values are [Udp, Tcp, Tls, Https, Quic]." +
+				"Default Udp protocol is used when this parameter is missing.",
 		},
 		"dnssec_validation": schema.BoolAttribute{
 			Optional: true,

@@ -5,7 +5,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"terraform-provider-technitium-dns/internal/technitium"
+	"terraform-provider-technitium/internal/technitium"
 )
 
 func convertStringListToTF(items []string) []types.String {
