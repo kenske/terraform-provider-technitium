@@ -21,7 +21,7 @@ terraform {
 
 
 provider "technitium" {
-  host  = var.TECHNITIUM_HOST
+  host  = "http://localhost:5380"
   token = var.TECHNITIUM_TOKEN
 }
 ```
@@ -31,6 +31,6 @@ provider "technitium" {
 
 ### Optional
 
-- `host` (String) The Technitium DNS API host URL. Alternatively, you can set the value using the TECHNITIUM_HOST environment variable.
-- `token` (String, Sensitive) The Technitium DNS API token. Alternatively, you can set the value using the TECHNITIUM_TOKEN environment variable.
+- `host` (String) Technitium API host URL. Alternatively, you can set the value using the TECHNITIUM_HOST environment variable.
+- `token` (String, Sensitive) Technitium API token. Alternatively, you can set the value using the TECHNITIUM_TOKEN environment variable.
 

@@ -54,8 +54,8 @@ func (r *dnsZoneResource) Create(ctx context.Context, req resource.CreateRequest
 	err := r.CreateZone(plan, ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating DHCP scope",
-			"Could not create DHCP scope: "+err.Error(),
+			"Error creating DNS zone",
+			"Could not create DNS zone: "+err.Error(),
 		)
 		return
 	}
@@ -90,7 +90,6 @@ func (r *dnsZoneResource) CreateZone(plan dnsZoneCreate, ctx context.Context) er
 	zone.Protocol = plan.Protocol.ValueString()
 	zone.DnssecValidation = plan.DnssecValidation.ValueBool()
 
-	// Create new scope
 	_, err := r.client.CreateDnsZone(zone, ctx)
 	if err != nil {
 		return err
@@ -117,10 +116,7 @@ func (r *dnsZoneResource) Delete(ctx context.Context, req resource.DeleteRequest
 	err := r.client.DeleteDnsZone(state.Name.ValueString(), ctx)
 
 	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error deleting DNS zone",
-			"Could not delete DNS Zone "+state.Name.ValueString()+": "+err.Error(),
-		)
+		resp.State.RemoveResource(ctx)
 		return
 	}
 }

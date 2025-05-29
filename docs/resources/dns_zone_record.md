@@ -49,7 +49,7 @@ resource "technitium_dns_zone_record" "a" {
 ### Required
 
 - `domain` (String)
-- `type` (String)
+- `type` (String) The type of DNS record. Valid values are [`A`, `AAAA`, `NS`, `CNAME`, `PTR`, `MX`, `TXT`, `SRV`, `DNAME`, `DS`, `SSHFP`, `TLSA`, `SVCB`, `HTTPS`, `URI`, `CAA`] and proprietary types [`ANAME`, `FWD`, `APP`].
 
 ### Optional
 
@@ -59,16 +59,16 @@ resource "technitium_dns_zone_record" "a" {
 - `dnssec_validation` (Boolean)
 - `exchange` (String) The exchange domain name. This option is required for adding MX record.
 - `expiry_ttl` (Number)
-- `forwarder` (String) The forwarder address. A special value of this-server can be used to directly forward requests internally to the DNS server. This parameter is required for adding the FWD record.
+- `forwarder` (String) The forwarder address. A special value of `this-server` can be used to directly forward requests internally to the DNS server. This parameter is required for adding the FWD record.
 - `forwarder_priority` (Number)
 - `ip_address` (String)
 - `name_server` (String)
 - `preference` (Number) This is the preference value for MX record type. This option is required for adding MX record.
-- `protocol` (String) This parameter is required for adding the FWD record. Valid values are [Udp, Tcp, Tls, Https, Quic].
+- `protocol` (String) This parameter is required for adding the FWD record. Valid values are [`Udp`, `Tcp`, `Tls`, `Https`, `Quic`].
 - `proxy_address` (String)
 - `proxy_password` (String)
 - `proxy_port` (Number)
-- `proxy_type` (String)
+- `proxy_type` (String) The type of proxy to be used for conditional forwarding. Valid values are [`NoProxy`, `DefaultProxy`, `Http`, `Socks5`].
 - `proxy_username` (String)
 - `ptr` (String)
 - `ptr_name` (String)

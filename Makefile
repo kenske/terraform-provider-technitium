@@ -1,4 +1,4 @@
-default: fmt lint install docs server
+default: fmt lint install generate
 
 build:
 	go build -v ./...

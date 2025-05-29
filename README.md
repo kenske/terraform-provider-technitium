@@ -12,7 +12,7 @@ Add the provider to your Terraform configuration:
 terraform {
   required_providers {
     technitium = {
-      version = ">= 0.2.0"
+      version = "~> 0.0.7"
       source = "registry.terraform.io/kenske/technitium"
     }
   }
@@ -119,8 +119,11 @@ resource "technitium_dns_zone_record" "a" {
 1. Enter the repository directory
 1. Build the provider using the Go `install` command:
 1. Setup the override in your `~/.terraformrc` file as described in the Terraform provider [documentation](https://developer.hashicorp.com/terraform/tutorials/providers-plugin-framework/providers-plugin-framework-provider#prepare-terraform-for-local-provider-install).
+1. Use `TF_LOG_PROVIDER=debug` to enable debug logging for the provider.
+
+```bash
 
 ## To Do
 - [ ] Add support for resource imports
-- [ ] More unit tests
+- [ ] More/better unit tests
 
