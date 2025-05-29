@@ -12,7 +12,7 @@ Add the provider to your Terraform configuration:
 terraform {
   required_providers {
     technitium = {
-      version = "~> 0.0.7"
+      version = "~> 0.1.0"
       source = "registry.terraform.io/kenske/technitium"
     }
   }

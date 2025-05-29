@@ -146,4 +146,7 @@ type dnsZoneRecordCreate struct {
 	ProxyPort         types.Int64  `tfsdk:"proxy_port"`
 	ProxyUsername     types.String `tfsdk:"proxy_username"`
 	ProxyPassword     types.String `tfsdk:"proxy_password"`
+	AppName           types.String `tfsdk:"app_name"`
+	ClassPath         types.String `tfsdk:"class_path"`
+	RecordData        types.String `tfsdk:"record_data"`
 }

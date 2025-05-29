@@ -188,4 +188,7 @@ type DnsZoneRecordCreate struct {
 	ProxyPort         int64  `json:"proxyPort,omitempty"`
 	ProxyUsername     string `json:"proxyUsername,omitempty"`
 	ProxyPassword     string `json:"proxyPassword,omitempty"`
+	AppName           string `json:"appName,omitempty"`
+	ClassPath         string `json:"classPath,omitempty"`
+	RecordData        string `json:"recordData,omitempty"`
 }

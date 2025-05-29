@@ -26,7 +26,7 @@ type dnsZoneRecordResource struct {
 	client *technitium.Client
 }
 
-// Configure adds the provider configured client to the resource.
+// Configure adds the provider-configured client to the resource.
 func (r *dnsZoneRecordResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	r.client = ConfigureResourceClient(req, resp)
 }
@@ -105,6 +105,9 @@ func (r *dnsZoneRecordResource) CreateZoneRecord(plan dnsZoneRecordCreate, ctx c
 	record.ProxyPort = plan.ProxyPort.ValueInt64()
 	record.ProxyUsername = plan.ProxyUsername.ValueString()
 	record.ProxyPassword = plan.ProxyPassword.ValueString()
+	record.AppName = plan.AppName.ValueString()
+	record.ClassPath = plan.ClassPath.ValueString()
+	record.RecordData = plan.RecordData.ValueString()
 
 	err := r.client.CreateDnsZoneRecord(record, ctx)
 	if err != nil {
@@ -204,6 +207,9 @@ func (r *dnsZoneRecordResource) ModifyPlan(_ context.Context, req resource.Modif
 		path.Root("proxy_port"),
 		path.Root("proxy_username"),
 		path.Root("proxy_password"),
+		path.Root("app_name"),
+		path.Root("class_path"),
+		path.Root("record_data"),
 	}
 
 }
