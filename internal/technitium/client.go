@@ -13,9 +13,13 @@ import (
 
 const HostURL string = "http://localhost:5380"
 
+type HttpClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 type Client struct {
 	HostURL    string
-	HTTPClient *http.Client
+	HTTPClient HttpClient
 	Token      string
 }
 

@@ -3,11 +3,31 @@ package provider
 import (
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/stretchr/testify/assert"
+	"net/http"
+	"terraform-provider-technitium/internal/test"
 	"testing"
 	"time"
 )
 
 func TestDnsZonesDataSource(t *testing.T) {
+
+	scenario := test.GetMockScenarioFromFile(t, "../test/mocks/dns_zone_records_response.json", http.StatusOK)
+	_, cleanup := GetMockClient(scenario)
+	defer cleanup()
+
+	assert.Equal(t, "", "")
+
+	//ds := &DnsZonesDataSource{
+	//	client: client,
+	//}
+	//
+	//ctx := t.Context()
+
+}
+
+// Acceptance tests
+func TestAccDnsZonesDataSource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
