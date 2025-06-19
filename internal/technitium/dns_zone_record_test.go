@@ -21,7 +21,7 @@ func TestClient_GetDnsZoneRecords(t *testing.T) {
 			{Name: "example.com", Type: "A", RecordData: DnsZoneRecordData{IpAddress: "192.0.2.1"}},
 			{Name: "example.com", Type: "SOA", RecordData: DnsZoneRecordData{PrimaryNameServer: "dns-server"}},
 		}
-		mockResponseBody := fmt.Sprintf(`{"response":{"records":[{"name":"example.com","type":"A","rdata":{"ipAddress":"192.0.2.1"}},{"name":"example.com","type":"SOA","rdata":{"primaryNameServer":"dns-server"}}]}}`)
+		mockResponseBody := `{"response":{"records":[{"name":"example.com","type":"A","rdata":{"ipAddress":"192.0.2.1"}},{"name":"example.com","type":"SOA","rdata":{"primaryNameServer":"dns-server"}}]}}`
 		mockScenario := test.Scenario{
 			ExpectedStatus: http.StatusOK,
 			ExpectedBody:   mockResponseBody,
@@ -164,7 +164,7 @@ func TestClient_GetDnsZoneRecord(t *testing.T) {
 
 	t.Run("record of specific type not found", func(t *testing.T) {
 		nonExistentType := "TXT"
-		mockResponseBody := fmt.Sprintf(`{"response":{"records":[{"name":"example.com","type":"A","ipAddress":"192.0.2.1"}]}}`)
+		mockResponseBody := `{"response":{"records":[{"name":"example.com","type":"A","ipAddress":"192.0.2.1"}]}}`
 		mockScenario := test.Scenario{
 			ExpectedStatus: http.StatusOK,
 			ExpectedBody:   mockResponseBody,
