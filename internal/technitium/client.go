@@ -112,7 +112,7 @@ func (c *Client) doRequest(req *http.Request, ctx context.Context) ([]byte, erro
 
 	if ctx != nil {
 		url := req.URL.String()
-		// Censor token in the URL for logging
+		// Hide token in the URL for logging
 		re := regexp.MustCompile(`token=[^&]+`)
 		censoredURL := re.ReplaceAllString(url, "token=hidden")
 		tflog.Info(ctx, censoredURL)
