@@ -70,11 +70,6 @@ func (r *dnsZoneRecordResource) Create(ctx context.Context, req resource.CreateR
 
 }
 
-// Update updates the resource and sets the updated Terraform state on success.
-func (r *dnsZoneRecordResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-
-}
-
 func (r *dnsZoneRecordResource) CreateZoneRecord(plan dnsZoneRecordCreate, ctx context.Context) error {
 
 	var record technitium.DnsZoneRecordCreate
@@ -110,6 +105,74 @@ func (r *dnsZoneRecordResource) CreateZoneRecord(plan dnsZoneRecordCreate, ctx c
 	record.RecordData = plan.RecordData.ValueString()
 
 	err := r.client.CreateDnsZoneRecord(record, ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Update updates the resource and sets the updated Terraform state on success.
+func (r *dnsZoneRecordResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+
+	var plan dnsZoneRecordCreate
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	err := r.UpdateZoneRecord(plan, ctx)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error updating zone record",
+			"Could not create zone record: "+err.Error(),
+		)
+		return
+	}
+
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+}
+
+func (r *dnsZoneRecordResource) UpdateZoneRecord(plan dnsZoneRecordCreate, ctx context.Context) error {
+
+	var record technitium.DnsZoneRecordCreate
+
+	record.Domain = plan.Domain.ValueString()
+	record.Type = plan.Type.ValueString()
+	record.Zone = plan.Zone.ValueString()
+	record.TTL = plan.TTL.ValueInt64()
+	record.Comments = plan.Comments.ValueString()
+	record.ExpiryTTL = plan.ExpiryTTL.ValueInt64()
+	record.IPAddress = plan.IPAddress.ValueString()
+	record.Ptr = plan.Ptr.ValueString()
+	record.CreatePtrZone = plan.CreatePtrZone.ValueBool()
+	record.UpdateSvcbHints = plan.UpdateSvcbHints.ValueBool()
+	record.NameServer = plan.NameServer.ValueString()
+	record.Cname = plan.Cname.ValueString()
+	record.PtrName = plan.PtrName.ValueString()
+	record.Exchange = plan.Exchange.ValueString()
+	record.Preference = plan.Preference.ValueInt64()
+	record.Text = plan.Text.ValueString()
+	record.SplitText = plan.SplitText.ValueString()
+	record.Protocol = plan.Protocol.ValueString()
+	record.Forwarder = plan.Forwarder.ValueString()
+	record.ForwarderPriority = plan.ForwarderPriority.ValueInt64()
+	record.DnssecValidation = plan.DnssecValidation.ValueBool()
+	record.ProxyType = plan.ProxyType.ValueString()
+	record.ProxyAddress = plan.ProxyAddress.ValueString()
+	record.ProxyPort = plan.ProxyPort.ValueInt64()
+	record.ProxyUsername = plan.ProxyUsername.ValueString()
+	record.ProxyPassword = plan.ProxyPassword.ValueString()
+	record.AppName = plan.AppName.ValueString()
+	record.ClassPath = plan.ClassPath.ValueString()
+	record.RecordData = plan.RecordData.ValueString()
+
+	err := r.client.UpdateDnsZoneRecord(record, ctx)
 	if err != nil {
 		return err
 	}
@@ -184,32 +247,6 @@ func (r *dnsZoneRecordResource) ModifyPlan(_ context.Context, req resource.Modif
 		path.Root("domain"),
 		path.Root("zone"),
 		path.Root("type"),
-		path.Root("ttl"),
-		path.Root("comments"),
-		path.Root("expiry_ttl"),
-		path.Root("ip_address"),
-		path.Root("ptr"),
-		path.Root("create_ptr_zone"),
-		path.Root("update_svcb_hints"),
-		path.Root("name_server"),
-		path.Root("cname"),
-		path.Root("ptr_name"),
-		path.Root("exchange"),
-		path.Root("preference"),
-		path.Root("text"),
-		path.Root("split_text"),
-		path.Root("protocol"),
-		path.Root("forwarder"),
-		path.Root("forwarder_priority"),
-		path.Root("dnssec_validation"),
-		path.Root("proxy_type"),
-		path.Root("proxy_address"),
-		path.Root("proxy_port"),
-		path.Root("proxy_username"),
-		path.Root("proxy_password"),
-		path.Root("app_name"),
-		path.Root("class_path"),
-		path.Root("record_data"),
 	}
 
 }
