@@ -179,6 +179,23 @@ func DnsZoneRecordsSchema() map[string]schema.Attribute {
 	}
 }
 
+func DnsZoneRecordDataSourceSchema() map[string]schema.Attribute {
+	// Start with the base schema from DnsZoneRecordSchema.
+	schemaAttributes := DnsZoneRecordSchema()
+
+	// For the data source, 'name' is a required input to find the record.
+	schemaAttributes["name"] = schema.StringAttribute{
+		Required: true,
+	}
+
+	// 'type' is also a required input for the lookup.
+	schemaAttributes["type"] = schema.StringAttribute{
+		Required: true,
+	}
+
+	return schemaAttributes
+}
+
 func DnsZoneRecordSchema() map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"name": schema.StringAttribute{
@@ -187,7 +204,7 @@ func DnsZoneRecordSchema() map[string]schema.Attribute {
 		"type": schema.StringAttribute{
 			Computed: true,
 		},
-		"ttl": schema.Int32Attribute{
+		"ttl": schema.Int64Attribute{
 			Computed: true,
 		},
 		"disabled": schema.BoolAttribute{
@@ -202,7 +219,7 @@ func DnsZoneRecordSchema() map[string]schema.Attribute {
 		"last_modified": schema.StringAttribute{
 			Computed: true,
 		},
-		"expiry_ttl": schema.Int32Attribute{
+		"expiry_ttl": schema.Int64Attribute{
 			Computed: true,
 		},
 		"record_data": schema.SingleNestedAttribute{

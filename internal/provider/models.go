@@ -89,15 +89,15 @@ type dnsZoneRecords struct {
 }
 
 type dnsZoneRecord struct {
-	Name         types.String      `tfsdk:"name"`
-	Type         types.String      `tfsdk:"type"`
-	TTL          types.Int64       `tfsdk:"ttl"`
-	Disabled     types.Bool        `tfsdk:"disabled"`
-	DnssecStatus types.String      `tfsdk:"dnssec_status"`
-	LastUsedOn   types.String      `tfsdk:"last_used_on"`
-	LastModified types.String      `tfsdk:"last_modified"`
-	ExpiryTTL    types.Int64       `tfsdk:"expiry_ttl"`
-	RecordData   dnsZoneRecordData `tfsdk:"record_data"`
+	Name         types.String       `tfsdk:"name"`
+	Type         types.String       `tfsdk:"type"`
+	TTL          types.Int64        `tfsdk:"ttl"`
+	Disabled     types.Bool         `tfsdk:"disabled"`
+	DnssecStatus types.String       `tfsdk:"dnssec_status"`
+	LastUsedOn   types.String       `tfsdk:"last_used_on"`
+	LastModified types.String       `tfsdk:"last_modified"`
+	ExpiryTTL    types.Int64        `tfsdk:"expiry_ttl"`
+	RecordData   *dnsZoneRecordData `tfsdk:"record_data"`
 }
 
 type dnsZoneRecordData struct {
