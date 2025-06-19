@@ -1,0 +1,23 @@
+{
+  "response": {
+    "name": "example3.com",
+    "type": "Primary",
+    "internal": false,
+    "dnssecStatus": "Unsigned",
+    "notifyFailed": false,
+    "notifyFailedFor": [],
+    "disabled": false,
+    "catalog": null,
+    "queryAccess": "Allow",
+    "queryAccessNetworkACL": [],
+    "zoneTransfer": "AllowOnlyZoneNameServers",
+    "zoneTransferNetworkACL": [],
+    "zoneTransferTsigKeyNames": [],
+    "notify": "ZoneNameServers",
+    "notifyNameServers": [],
+    "update": "Deny",
+    "updateNetworkACL": [],
+    "updateSecurityPolicies": []
+  },
+  "status": "ok"
+}

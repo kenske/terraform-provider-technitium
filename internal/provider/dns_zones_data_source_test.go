@@ -3,16 +3,31 @@ package provider
 import (
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"net/http"
+	"terraform-provider-technitium/internal/test"
 	"testing"
 	"time"
 )
 
 func TestDnsZonesDataSource(t *testing.T) {
+
+	scenario := test.GetMockScenarioFromFile(t, "../test/mocks/dns_zones_response.json", http.StatusOK)
+	server := test.NewTestServer(scenario)
+	defer server.Close()
+
+	config := fmt.Sprintf(`
+provider "technitium" {
+  host = "%s"
+  token = "test"
+}
+`, server.URL)
+
 	resource.Test(t, resource.TestCase{
+		IsUnitTest:               true,
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: providerConfig + `data "technitium_dns_zones" "test" {}`,
+				Config: config + `data "technitium_dns_zones" "test" {}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("data.technitium_dns_zones.test", "zones.0.name", "0.in-addr.arpa"),
 					resource.TestCheckResourceAttr("data.technitium_dns_zones.test", "zones.0.type", "Primary"),
@@ -23,6 +38,7 @@ func TestDnsZonesDataSource(t *testing.T) {
 					resource.TestCheckResourceAttr("data.technitium_dns_zones.test", "zones.0.expiry", ""),
 					resource.TestCheckResourceAttr("data.technitium_dns_zones.test", "zones.0.is_expired", "false"),
 					resource.TestCheckResourceAttr("data.technitium_dns_zones.test", "zones.0.internal", "true"),
+					resource.TestCheckResourceAttr("data.technitium_dns_zones.test", "zones.#", "6"),
 
 					resource.TestCheckResourceAttrWith(
 						"data.technitium_dns_zones.test",

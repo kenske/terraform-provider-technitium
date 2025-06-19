@@ -36,8 +36,10 @@ type technitiumProvider struct {
 }
 
 type technitiumProviderModel struct {
-	Host  types.String `tfsdk:"host"`
-	Token types.String `tfsdk:"token"`
+	Host     types.String `tfsdk:"host"`
+	Token    types.String `tfsdk:"token"`
+	Username types.String `tfsdk:"username"`
+	Password types.String `tfsdk:"password"`
 }
 
 // Metadata returns the provider type name.
@@ -58,6 +60,15 @@ func (p *technitiumProvider) Schema(_ context.Context, _ provider.SchemaRequest,
 				Optional:    true,
 				Sensitive:   true,
 				Description: "Technitium API token. Alternatively, you can set the value using the TECHNITIUM_TOKEN environment variable.",
+			},
+			"username": schema.StringAttribute{
+				Optional:    true,
+				Description: "Technitium API username. Alternatively, you can set the value using the TECHNITIUM_USERNAME environment variable.",
+			},
+			"password": schema.StringAttribute{
+				Optional:    true,
+				Sensitive:   true,
+				Description: "Technitium API token. Alternatively, you can set the value using the TECHNITIUM_PASSWORD environment variable.",
 			},
 		},
 	}
@@ -86,8 +97,24 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 	if config.Token.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(
 			path.Root("token"),
-			"Unknown Technitium DNS API Password",
+			"Unknown Technitium DNS API token",
 			"The provider cannot create the Technitium DNS API client as there is an unknown configuration value for the API token. ",
+		)
+	}
+
+	if config.Token.IsUnknown() {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("username"),
+			"Unknown Technitium DNS API username",
+			"The provider cannot create the Technitium DNS API client as there is an unknown configuration value for the API username. ",
+		)
+	}
+
+	if config.Token.IsUnknown() {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("password"),
+			"Unknown Technitium DNS API password",
+			"The provider cannot create the Technitium DNS API client as there is an unknown configuration value for the API password. ",
 		)
 	}
 
@@ -97,9 +124,10 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 
 	// Default values to environment variables, but override
 	// with Terraform configuration value if set.
-
 	host := os.Getenv("TECHNITIUM_HOST")
 	token := os.Getenv("TECHNITIUM_TOKEN")
+	username := os.Getenv("TECHNITIUM_USERNAME")
+	password := os.Getenv("TECHNITIUM_PASSWORD")
 
 	if !config.Host.IsNull() {
 		host = config.Host.ValueString()
@@ -107,6 +135,12 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 
 	if !config.Token.IsNull() {
 		token = config.Token.ValueString()
+	}
+	if !config.Username.IsNull() {
+		username = config.Username.ValueString()
+	}
+	if !config.Password.IsNull() {
+		password = config.Password.ValueString()
 	}
 
 	// If any of the expected configurations are missing, return
@@ -121,18 +155,38 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 	}
 
 	if token == "" {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("password"),
-			"Missing Technitium DNS API token",
-			"Token is empty",
-		)
+		// Get token from username and password
+		if username == "" || password == "" {
+			resp.Diagnostics.AddError(
+				"Technitium API Authentication failure",
+				"Either an API token or a username/password is required to access the Technitium DNS API. ",
+			)
+			return
+		}
 	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
+	// Get token if username and password are provided
+	if token == "" && username != "" && password != "" {
+		newToken, err := technitium.GetToken(host, username, password)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Get Technitium DNS API Token",
+				"An unexpected error occurred when retrieving the Technitium DNS API token. "+
+					"If the error is not clear, please contact the provider developers.\n\n"+
+					"Token Error: "+err.Error(),
+			)
+			return
+		}
+
+		token = newToken
+	}
+
 	client, err := technitium.NewClient(host, token, ctx)
+
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Technitium DNS API Client",

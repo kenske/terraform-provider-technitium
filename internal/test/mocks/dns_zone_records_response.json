@@ -1,0 +1,43 @@
+{
+  "response": {
+    "zone": {
+      "name": "example.com",
+      "type": "Forwarder",
+      "lastModified": "2025-05-29T23:28:12.8607906Z",
+      "disabled": false,
+      "soaSerial": 4,
+      "catalog": null,
+      "notifyFailed": false,
+      "notifyFailedFor": []
+    },
+    "records": [
+      {
+        "name": "example.com",
+        "type": "SOA",
+        "ttl": 0,
+        "ttlString": "0s",
+        "disabled": false,
+        "rData": {
+          "primaryNameServer": "dns-server",
+          "responsiblePerson": "invalid",
+          "serial": 4,
+          "refresh": 900,
+          "retry": 300,
+          "expire": 604800,
+          "minimum": 900,
+          "refreshString": "15m",
+          "retryString": "5m",
+          "expireString": "1w",
+          "minimumString": "15m",
+          "useSerialDateScheme": false
+        },
+        "dnssecStatus": "Unknown",
+        "lastUsedOn": "0001-01-01T00:00:00",
+        "lastModified": "2025-05-29T21:52:19.4867037Z",
+        "expiryTtl": 0,
+        "expiryTtlString": "0s"
+      }
+    ]
+  },
+  "status": "ok"
+}

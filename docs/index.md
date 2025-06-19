@@ -20,9 +20,17 @@ terraform {
 }
 
 
+# Using API token
 provider "technitium" {
   host  = "http://localhost:5380"
   token = var.TECHNITIUM_TOKEN
+}
+
+# Using API username/password
+provider "technitium" {
+  host     = "http://localhost:5380"
+  username = "admin"
+  password = "password"
 }
 ```
 
@@ -32,5 +40,7 @@ provider "technitium" {
 ### Optional
 
 - `host` (String) Technitium API host URL. Alternatively, you can set the value using the TECHNITIUM_HOST environment variable.
+- `password` (String, Sensitive) Technitium API token. Alternatively, you can set the value using the TECHNITIUM_PASSWORD environment variable.
 - `token` (String, Sensitive) Technitium API token. Alternatively, you can set the value using the TECHNITIUM_TOKEN environment variable.
+- `username` (String) Technitium API username. Alternatively, you can set the value using the TECHNITIUM_USERNAME environment variable.
 
