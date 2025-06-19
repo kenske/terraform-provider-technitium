@@ -59,20 +59,7 @@ func (d *dnsZoneRecordsDataSource) Read(ctx context.Context, req datasource.Read
 
 	// Map response body to model
 	for _, record := range records {
-
-		ZoneRecord := dnsZoneRecord{
-			Name:         types.StringValue(record.Name),
-			Type:         types.StringValue(record.Type),
-			TTL:          types.Int64Value(record.TTL),
-			Disabled:     types.BoolValue(record.Disabled),
-			DnssecStatus: types.StringValue(record.DnsSecStatus),
-			LastUsedOn:   types.StringValue(record.LastUsedOn),
-			LastModified: types.StringValue(record.LastModified),
-			ExpiryTTL:    types.Int64Value(record.ExpiryTTL),
-			RecordData:   getRecordData(record),
-		}
-
-		data.Records = append(data.Records, ZoneRecord)
+		data.Records = append(data.Records, *parseRecord(record))
 
 	}
 
@@ -84,27 +71,66 @@ func (d *dnsZoneRecordsDataSource) Read(ctx context.Context, req datasource.Read
 	}
 }
 
-func getRecordData(record technitium.DnsZoneRecord) dnsZoneRecordData {
+func parseRecord(record technitium.DnsZoneRecord) *dnsZoneRecord {
+	return &dnsZoneRecord{
+		Name:         types.StringValue(record.Name),
+		Type:         types.StringValue(record.Type),
+		TTL:          types.Int64Value(record.TTL),
+		Disabled:     types.BoolValue(record.Disabled),
+		DnssecStatus: types.StringValue(record.DnsSecStatus),
+		LastUsedOn:   types.StringValue(record.LastUsedOn),
+		LastModified: types.StringValue(record.LastModified),
+		ExpiryTTL:    types.Int64Value(record.ExpiryTTL),
+		RecordData:   getRecordData(record),
+	}
+}
 
-	RecordData := dnsZoneRecordData{
-		PrimaryNameServer:   types.StringValue(record.RecordData.PrimaryNameServer),
-		ResponsiblePerson:   types.StringValue(record.RecordData.ResponsiblePerson),
-		Serial:              types.Int64Value(record.RecordData.Serial),
-		Refresh:             types.Int64Value(record.RecordData.Refresh),
-		Retry:               types.Int64Value(record.RecordData.Retry),
-		Expire:              types.Int64Value(record.RecordData.Expire),
-		Minimum:             types.Int64Value(record.RecordData.Minimum),
-		UseSerialDateScheme: types.BoolValue(record.RecordData.UseSerialDateScheme),
-		Protocol:            types.StringValue(record.RecordData.Protocol),
-		Forwarder:           types.StringValue(record.RecordData.Forwarder),
-		Priority:            types.Int64Value(record.RecordData.Priority),
-		DnssecValidation:    types.BoolValue(record.RecordData.DnssecValidation),
-		ProxyType:           types.StringValue(record.RecordData.ProxyType),
-		IpAddress:           types.StringValue(record.RecordData.IpAddress),
-		Cname:               types.StringValue(record.RecordData.Cname),
+func getRecordData(record technitium.DnsZoneRecord) *dnsZoneRecordData {
+
+	rd := record.RecordData
+	data := dnsZoneRecordData{}
+
+	if rd.PrimaryNameServer != "" {
+		data.PrimaryNameServer = types.StringValue(rd.PrimaryNameServer)
+	}
+	if rd.ResponsiblePerson != "" {
+		data.ResponsiblePerson = types.StringValue(rd.ResponsiblePerson)
+	}
+	if rd.Serial != 0 {
+		data.Serial = types.Int64Value(rd.Serial)
+	}
+	if rd.Refresh != 0 {
+		data.Refresh = types.Int64Value(rd.Refresh)
+	}
+	if rd.Retry != 0 {
+		data.Retry = types.Int64Value(rd.Retry)
+	}
+	if rd.Expire != 0 {
+		data.Expire = types.Int64Value(rd.Expire)
+	}
+	if rd.Minimum != 0 {
+		data.Minimum = types.Int64Value(rd.Minimum)
+	}
+	if rd.Protocol != "" {
+		data.Protocol = types.StringValue(rd.Protocol)
+	}
+	if rd.Forwarder != "" {
+		data.Forwarder = types.StringValue(rd.Forwarder)
+	}
+	if rd.Priority != 0 {
+		data.Priority = types.Int64Value(rd.Priority)
+	}
+	if rd.ProxyType != "" {
+		data.ProxyType = types.StringValue(rd.ProxyType)
+	}
+	if rd.IpAddress != "" {
+		data.IpAddress = types.StringValue(rd.IpAddress)
+	}
+	if rd.Cname != "" {
+		data.Cname = types.StringValue(rd.Cname)
 	}
 
-	return RecordData
+	return &data
 }
 
 func (d *dnsZoneRecordsDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {

@@ -84,7 +84,7 @@ func (c *Client) GetSessionInfo(ctx context.Context) error {
 		return err
 	}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/user/session/get?token=%s", c.HostURL, c.Token), strings.NewReader(string(rb)))
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/user/session/get", c.HostURL), strings.NewReader(string(rb)))
 	if err != nil {
 		return err
 	}
