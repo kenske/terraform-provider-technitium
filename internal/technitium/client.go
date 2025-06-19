@@ -7,11 +7,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"io"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 )
-
-const HostURL string = "http://localhost:5380"
 
 type HttpClient interface {
 	Do(req *http.Request) (*http.Response, error)
@@ -26,11 +25,7 @@ type Client struct {
 func NewClient(host, token string, ctx context.Context) (*Client, error) {
 	c := Client{
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
-		HostURL:    HostURL,
-	}
-
-	if host != "" {
-		c.HostURL = host
+		HostURL:    host,
 	}
 
 	c.Token = token
@@ -40,6 +35,42 @@ func NewClient(host, token string, ctx context.Context) (*Client, error) {
 	}
 
 	return &c, nil
+}
+
+func GetToken(host string, username string, password string) (string, error) {
+
+	if username == "" || password == "" {
+		return "", fmt.Errorf("username and password must be provided")
+	}
+
+	url := fmt.Sprintf("%s/api/user/login?user=%s&pass=%s", host, username, password)
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("failed to get token: %s", resp.Status)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	var result map[string]string
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return "", err
+	}
+
+	token, ok := result["token"]
+	if !ok {
+		return "", fmt.Errorf("token not found in response")
+	}
+
+	return token, nil
 }
 
 func (c *Client) GetSessionInfo(ctx context.Context) error {
@@ -81,7 +112,10 @@ func (c *Client) doRequest(req *http.Request, ctx context.Context) ([]byte, erro
 
 	if ctx != nil {
 		url := req.URL.String()
-		tflog.Info(ctx, url)
+		// Censor token in the URL for logging
+		re := regexp.MustCompile(`token=[^&]+`)
+		censoredURL := re.ReplaceAllString(url, "token=hidden")
+		tflog.Info(ctx, censoredURL)
 	}
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
