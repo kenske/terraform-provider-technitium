@@ -1,0 +1,69 @@
+{
+  "response": {
+    "zones": [
+      {
+        "name": "0.in-addr.arpa",
+        "type": "Primary",
+        "lastModified": "2025-06-19T00:03:29.5414297Z",
+        "disabled": false,
+        "soaSerial": 1,
+        "internal": true,
+        "catalog": null,
+        "dnssecStatus": "Unsigned"
+      },
+      {
+        "name": "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa",
+        "type": "Primary",
+        "lastModified": "2025-06-19T00:03:29.5442195Z",
+        "disabled": false,
+        "soaSerial": 1,
+        "internal": true,
+        "catalog": null,
+        "dnssecStatus": "Unsigned"
+      },
+      {
+        "name": "127.in-addr.arpa",
+        "type": "Primary",
+        "lastModified": "2025-06-19T00:03:29.5422906Z",
+        "disabled": false,
+        "soaSerial": 1,
+        "internal": true,
+        "catalog": null,
+        "dnssecStatus": "Unsigned"
+      },
+      {
+        "name": "255.in-addr.arpa",
+        "type": "Primary",
+        "lastModified": "2025-06-19T00:03:29.5416087Z",
+        "disabled": false,
+        "soaSerial": 1,
+        "internal": true,
+        "catalog": null,
+        "dnssecStatus": "Unsigned"
+      },
+      {
+        "name": "example3.com",
+        "type": "Primary",
+        "lastModified": "2025-05-29T03:38:18.027Z",
+        "disabled": false,
+        "soaSerial": 2025052937,
+        "internal": false,
+        "catalog": null,
+        "dnssecStatus": "Unsigned",
+        "notifyFailed": false,
+        "notifyFailedFor": []
+      },
+      {
+        "name": "localhost",
+        "type": "Primary",
+        "lastModified": "2025-06-19T00:03:29.5414233Z",
+        "disabled": false,
+        "soaSerial": 1,
+        "internal": true,
+        "catalog": null,
+        "dnssecStatus": "Unsigned"
+      }
+    ]
+  },
+  "status": "ok"
+}
