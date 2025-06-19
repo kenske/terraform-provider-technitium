@@ -39,8 +39,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           cache: true
-      # We need the latest version of Opentofu for our documentation generation to use
-      - uses: opentofu/setup-opentofu@v1
+      - uses: hashicorp/setup-terraform@v3.1.2 # v3.1.2
         with:
           terraform_wrapper: false
       - run: make generate
