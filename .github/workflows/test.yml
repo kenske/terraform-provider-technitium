@@ -54,6 +54,26 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15
+
+    services:
+      technitium:
+        # Replace with the correct Docker image for your Technitium DNS server
+        image: technitium/dns-server:13.6.0
+        # Map port 5380 on the host to port 5380 in the container
+        ports:
+          - 5380:5380
+        env:
+          DNS_SERVER_DOMAIN: dns-server
+          DNS_SERVER_ADMIN_PASSWORD: password
+
+        # Wait for the service to be healthy before starting the test steps
+        options: >-
+          --health-cmd "curl -f http://localhost:5380/api/user/login?user=admin&pass=password || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+
     strategy:
       fail-fast: false
       matrix:
@@ -72,5 +92,6 @@ jobs:
       - run: go mod download
       - env:
           TF_ACC: "1"
+          TECHNITIUM_HOST: https://technitium:5380
         run: go test -v -cover ./internal/provider/
         timeout-minutes: 10
