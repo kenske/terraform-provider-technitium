@@ -7,8 +7,9 @@ terraform {
 }
 
 provider "technitium" {
-  host  = var.TECHNITIUM_HOST
-  token = var.TECHNITIUM_TOKEN
+  host  = "http://localhost:5380"
+  username = "admin"
+    password = "password"
 }
 
 resource "technitium_dns_zone" "example" {
@@ -41,7 +42,6 @@ resource "technitium_dns_zone_record" "a" {
   depends_on = [technitium_dns_zone.example]
 
 }
-
 
 resource "technitium_dns_zone_record" "app" {
   zone     = technitium_dns_zone.example.name
