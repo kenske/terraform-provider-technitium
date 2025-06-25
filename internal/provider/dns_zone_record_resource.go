@@ -122,7 +122,14 @@ func (r *dnsZoneRecordResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	err := r.UpdateZoneRecord(plan, ctx)
+	var state dnsZoneRecordCreate
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	err := r.UpdateZoneRecord(ctx, state, plan)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error updating zone record",
@@ -138,29 +145,29 @@ func (r *dnsZoneRecordResource) Update(ctx context.Context, req resource.UpdateR
 	}
 }
 
-func (r *dnsZoneRecordResource) UpdateZoneRecord(plan dnsZoneRecordCreate, ctx context.Context) error {
+func (r *dnsZoneRecordResource) UpdateZoneRecord(ctx context.Context, state dnsZoneRecordCreate, plan dnsZoneRecordCreate) error {
 
-	var record technitium.DnsZoneRecordCreate
+	var record technitium.DnsZoneRecordUpdate
 
-	record.Domain = plan.Domain.ValueString()
+	record.Domain = state.Domain.ValueString()
 	record.Type = plan.Type.ValueString()
 	record.Zone = plan.Zone.ValueString()
 	record.TTL = plan.TTL.ValueInt64()
 	record.Comments = plan.Comments.ValueString()
 	record.ExpiryTTL = plan.ExpiryTTL.ValueInt64()
-	record.IPAddress = plan.IPAddress.ValueString()
+	record.IPAddress = state.IPAddress.ValueString()
 	record.Ptr = plan.Ptr.ValueString()
 	record.CreatePtrZone = plan.CreatePtrZone.ValueBool()
 	record.UpdateSvcbHints = plan.UpdateSvcbHints.ValueBool()
-	record.NameServer = plan.NameServer.ValueString()
+	record.NameServer = state.NameServer.ValueString()
 	record.Cname = plan.Cname.ValueString()
-	record.PtrName = plan.PtrName.ValueString()
-	record.Exchange = plan.Exchange.ValueString()
+	record.PtrName = state.PtrName.ValueString()
+	record.Exchange = state.Exchange.ValueString()
 	record.Preference = plan.Preference.ValueInt64()
-	record.Text = plan.Text.ValueString()
-	record.SplitText = plan.SplitText.ValueString()
+	record.Text = state.Text.ValueString()
+	record.SplitText = state.SplitText.ValueString()
 	record.Protocol = plan.Protocol.ValueString()
-	record.Forwarder = plan.Forwarder.ValueString()
+	record.Forwarder = state.Forwarder.ValueString()
 	record.ForwarderPriority = plan.ForwarderPriority.ValueInt64()
 	record.DnssecValidation = plan.DnssecValidation.ValueBool()
 	record.ProxyType = plan.ProxyType.ValueString()
@@ -171,6 +178,42 @@ func (r *dnsZoneRecordResource) UpdateZoneRecord(plan dnsZoneRecordCreate, ctx c
 	record.AppName = plan.AppName.ValueString()
 	record.ClassPath = plan.ClassPath.ValueString()
 	record.RecordData = plan.RecordData.ValueString()
+
+	if state.Domain.ValueString() != plan.Domain.ValueString() {
+		record.NewDomain = plan.Domain.ValueString()
+	}
+
+	if state.IPAddress.ValueString() != plan.IPAddress.ValueString() {
+		record.NewIPAddress = plan.IPAddress.ValueString()
+	}
+
+	if state.NameServer.ValueString() != plan.NameServer.ValueString() {
+		record.NewNameServer = plan.NameServer.ValueString()
+	}
+
+	if state.PtrName.ValueString() != plan.PtrName.ValueString() {
+		record.NewPtrName = plan.PtrName.ValueString()
+	}
+
+	if state.Exchange.ValueString() != plan.Exchange.ValueString() {
+		record.NewExchange = plan.Exchange.ValueString()
+	}
+
+	if state.Preference.ValueInt64() != plan.Preference.ValueInt64() {
+		record.NewPreference = plan.Preference.ValueInt64()
+	}
+
+	if state.Text.ValueString() != plan.Text.ValueString() {
+		record.NewText = plan.Text.ValueString()
+	}
+
+	if state.SplitText.ValueString() != plan.SplitText.ValueString() {
+		record.NewSplitText = plan.SplitText.ValueString()
+	}
+
+	if state.Forwarder.ValueString() != plan.Forwarder.ValueString() {
+		record.NewForwarder = plan.Forwarder.ValueString()
+	}
 
 	err := r.client.UpdateDnsZoneRecord(record, ctx)
 	if err != nil {

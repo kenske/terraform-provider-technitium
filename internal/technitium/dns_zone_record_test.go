@@ -253,7 +253,14 @@ func TestClient_CreateDnsZoneRecord(t *testing.T) {
 
 func TestClient_UpdateDnsZoneRecord(t *testing.T) {
 	ctx := context.Background()
-	recordUpdate := DnsZoneRecordCreate{Domain: "update.example.com", Type: "A", Zone: "example.com", IPAddress: "192.0.2.11"}
+	recordUpdate := DnsZoneRecordUpdate{
+		DnsZoneRecordCreate: DnsZoneRecordCreate{
+			Domain:    "update.example.com",
+			Type:      "A",
+			Zone:      "example.com",
+			IPAddress: "192.0.2.11",
+		},
+	}
 
 	t.Run("successful update", func(t *testing.T) {
 		mockScenario := test.Scenario{
