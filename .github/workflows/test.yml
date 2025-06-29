@@ -92,6 +92,6 @@ jobs:
       - run: go mod download
       - env:
           TF_ACC: "1"
-          TECHNITIUM_HOST: https://technitium:5380
+          TECHNITIUM_HOST: http://technitium:5380
         run: go test -v -cover ./internal/provider/
         timeout-minutes: 10

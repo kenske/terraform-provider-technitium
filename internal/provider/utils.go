@@ -75,3 +75,9 @@ func setStringIfNotEmpty(target *types.String, value string) {
 		*target = types.StringValue(value)
 	}
 }
+
+func setIntIfNotEmpty(target *types.Int64, value int64) {
+	if value != 0 {
+		*target = types.Int64Value(value)
+	}
+}

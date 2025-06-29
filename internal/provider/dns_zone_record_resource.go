@@ -92,6 +92,7 @@ func (r *dnsZoneRecordResource) CreateZoneRecord(plan dnsZoneRecordCreate, ctx c
 	record.Zone = plan.Zone.ValueString()
 	record.TTL = plan.TTL.ValueInt64()
 	record.Comments = plan.Comments.ValueString()
+	record.Disable = plan.Disabled.ValueBool()
 	record.ExpiryTTL = plan.ExpiryTTL.ValueInt64()
 	record.IPAddress = plan.IPAddress.ValueString()
 	record.Ptr = plan.Ptr.ValueString()
@@ -167,6 +168,7 @@ func (r *dnsZoneRecordResource) UpdateZoneRecord(ctx context.Context, state dnsZ
 	record.Zone = plan.Zone.ValueString()
 	record.TTL = plan.TTL.ValueInt64()
 	record.Comments = plan.Comments.ValueString()
+	record.Disable = plan.Disabled.ValueBool()
 	record.ExpiryTTL = plan.ExpiryTTL.ValueInt64()
 	record.IPAddress = state.IPAddress.ValueString()
 	record.Ptr = plan.Ptr.ValueString()
@@ -258,8 +260,13 @@ func (r *dnsZoneRecordResource) Read(ctx context.Context, req resource.ReadReque
 
 	state.Domain = types.StringValue(record.Name)
 	state.Type = types.StringValue(record.Type)
+	state.Disabled = types.BoolValue(record.Disabled)
 	state.TTL = types.Int64Value(record.TTL)
+	state.ExpiryTTL = types.Int64Value(record.ExpiryTTL)
+	state.Forwarder = types.StringValue(record.RecordData.Forwarder)
+	state.NameServer = types.StringValue(record.RecordData.NameServer)
 
+	setStringIfNotEmpty(&state.Comments, record.Comments)
 	setStringIfNotEmpty(&state.Cname, record.RecordData.Cname)
 	setStringIfNotEmpty(&state.IPAddress, record.RecordData.IpAddress)
 
