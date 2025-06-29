@@ -123,6 +123,7 @@ type dnsZoneRecordCreate struct {
 	Domain            types.String `tfsdk:"domain"`
 	Zone              types.String `tfsdk:"zone"`
 	Type              types.String `tfsdk:"type"`
+	Disabled          types.Bool   `tfsdk:"disabled"`
 	TTL               types.Int64  `tfsdk:"ttl"`
 	Comments          types.String `tfsdk:"comments"`
 	ExpiryTTL         types.Int64  `tfsdk:"expiry_ttl"`

@@ -143,6 +143,10 @@ func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
 			Computed:    true,
 			Description: "The time-to-live (TTL) for the DNS record in seconds",
 		},
+		"disabled": schema.BoolAttribute{
+			Optional:    true,
+			Description: "Set to true to disable the DNS record. Default is false.",
+		},
 		"comments": schema.StringAttribute{
 			Optional: true,
 		},
