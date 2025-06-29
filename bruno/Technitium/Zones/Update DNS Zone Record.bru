@@ -1,0 +1,44 @@
+meta {
+  name: Update DNS Zone Record
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://{{host}}/api/zones/records/update?appName&classPath&cname&comments&createPtrZone=false&dnssecValidation=false&domain=testa.example3.com&exchange&expiryTtl=0&forwarder&forwarderPriority=0&ipAddress=192.168.1.20&nameServer&preference=0&protocol&proxyAddress&proxyPassword&proxyPort=0&proxyType&proxyUsername&ptr&ptrName&recordData&splitText&text&token={{api_token}}&ttl=7200&type=A&updateSvcbHints=false&zone=example3.com
+  body: none
+  auth: inherit
+}
+
+params:query {
+  appName: 
+  classPath: 
+  cname: 
+  comments: 
+  createPtrZone: false
+  dnssecValidation: false
+  domain: testa.example3.com
+  exchange: 
+  expiryTtl: 0
+  forwarder: 
+  forwarderPriority: 0
+  ipAddress: 192.168.1.20
+  nameServer: 
+  preference: 0
+  protocol: 
+  proxyAddress: 
+  proxyPassword: 
+  proxyPort: 0
+  proxyType: 
+  proxyUsername: 
+  ptr: 
+  ptrName: 
+  recordData: 
+  splitText: 
+  text: 
+  token: {{api_token}}
+  ttl: 7200
+  type: A
+  updateSvcbHints: false
+  zone: example3.com
+}

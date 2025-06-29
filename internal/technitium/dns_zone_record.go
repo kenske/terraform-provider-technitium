@@ -26,7 +26,7 @@ func (c *Client) GetDnsZoneRecords(domain string, ctx context.Context) ([]DnsZon
 		return nil, err
 	}
 
-	tflog.Debug(ctx, string(body))
+	//tflog.Debug(ctx, string(body))
 
 	response := DnsZoneRecordsResponse{}
 	err = json.Unmarshal(body, &response)
@@ -118,7 +118,7 @@ func (c *Client) CreateDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context)
 
 }
 
-func (c *Client) UpdateDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context) error {
+func (c *Client) UpdateDnsZoneRecord(r DnsZoneRecordUpdate, ctx context.Context) error {
 	req, err := c.GetRequest("/api/zones/records/update")
 	if err != nil {
 		return err
@@ -126,24 +126,33 @@ func (c *Client) UpdateDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context)
 
 	params := req.URL.Query()
 	params.Add("domain", r.Domain)
+	params.Add("newDomain", r.NewDomain)
 	params.Add("zone", r.Zone)
 	params.Add("type", r.Type)
 	params.Add("ttl", fmt.Sprintf("%d", r.TTL))
 	params.Add("comments", r.Comments)
 	params.Add("expiryTtl", fmt.Sprintf("%d", r.ExpiryTTL))
 	params.Add("ipAddress", r.IPAddress)
+	params.Add("newIpAddress", r.NewIPAddress)
 	params.Add("ptr", r.Ptr)
 	params.Add("createPtrZone", fmt.Sprintf("%t", r.CreatePtrZone))
 	params.Add("updateSvcbHints", fmt.Sprintf("%t", r.UpdateSvcbHints))
 	params.Add("nameServer", r.NameServer)
+	params.Add("newNameServer", r.NewNameServer)
 	params.Add("cname", r.Cname)
 	params.Add("ptrName", r.PtrName)
+	params.Add("newPtrName", r.NewPtrName)
 	params.Add("exchange", r.Exchange)
+	params.Add("newExchange", r.NewExchange)
 	params.Add("preference", fmt.Sprintf("%d", r.Preference))
+	params.Add("newPreference", fmt.Sprintf("%d", r.NewPreference))
 	params.Add("text", r.Text)
+	params.Add("newText", r.NewText)
 	params.Add("splitText", r.SplitText)
+	params.Add("newSplitText", r.NewSplitText)
 	params.Add("protocol", r.Protocol)
 	params.Add("forwarder", r.Forwarder)
+	params.Add("newForwarder", r.NewForwarder)
 	params.Add("forwarderPriority", fmt.Sprintf("%d", r.ForwarderPriority))
 	params.Add("dnssecValidation", fmt.Sprintf("%t", r.DnssecValidation))
 	params.Add("proxyType", r.ProxyType)

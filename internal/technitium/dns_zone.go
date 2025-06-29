@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"net/http"
 	"strings"
 )
@@ -22,7 +21,7 @@ func (c *Client) GetDnsZones(ctx context.Context) ([]DnsZoneList, error) {
 		return nil, err
 	}
 
-	tflog.Debug(ctx, string(body))
+	//tflog.Debug(ctx, string(body))
 
 	response := DnsZonesResponse{}
 	err = json.Unmarshal(body, &response)

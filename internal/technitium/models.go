@@ -194,3 +194,16 @@ type DnsZoneRecordCreate struct {
 	ClassPath         string `json:"classPath,omitempty"`
 	RecordData        string `json:"recordData,omitempty"`
 }
+
+type DnsZoneRecordUpdate struct {
+	DnsZoneRecordCreate
+	NewDomain     string `json:"newDomain,omitempty"`
+	NewIPAddress  string `json:"newIPAddress,omitempty"`
+	NewNameServer string `json:"newNameServer,omitempty"`
+	NewPtrName    string `json:"newPtrName,omitempty"`
+	NewExchange   string `json:"newExchange,omitempty"`
+	NewPreference int64  `json:"newPreference,omitempty"`
+	NewText       string `json:"newText,omitempty"`
+	NewSplitText  string `json:"newSplitText,omitempty"`
+	NewForwarder  string `json:"newForwarder,omitempty"`
+}
