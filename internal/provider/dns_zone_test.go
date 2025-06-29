@@ -58,3 +58,31 @@ func TestAccDnsZoneRecord_update(t *testing.T) {
 		},
 	})
 }
+
+func TestAccDnsZoneRecord_App(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			// Create initial resource
+			{
+				Config: GetFileConfig(t, "dns_zone_record_app.tf"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("technitium_dns_zone_record.app", "app_name", "NO DATA"),
+					resource.TestCheckResourceAttr("technitium_dns_zone_record.app", "ttl", "0"),
+				),
+			},
+			{
+				// Make sure the TTL got updated
+				Config: GetFileConfig(t, "dns_zone_record_app.tf"),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectEmptyPlan(),
+					},
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("technitium_dns_zone_record.app", "ttl", "0"),
+				),
+			},
+		},
+	})
+}

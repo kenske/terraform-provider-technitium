@@ -62,6 +62,19 @@ func (r *dnsZoneRecordResource) Create(ctx context.Context, req resource.CreateR
 		return
 	}
 
+	newRecord, err := r.client.GetDnsZoneRecord(plan.Domain.ValueString(), plan.Type.ValueString(), ctx)
+
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error retrieving created zone record",
+			"Could not retrieve created zone record: "+err.Error(),
+		)
+		return
+	}
+
+	// Set the state with the new record data
+	plan.TTL = types.Int64Value(newRecord.TTL)
+
 	diags = resp.State.Set(ctx, plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
