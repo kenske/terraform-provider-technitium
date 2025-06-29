@@ -26,7 +26,7 @@ func (c *Client) GetDnsZoneRecords(domain string, ctx context.Context) ([]DnsZon
 		return nil, err
 	}
 
-	tflog.Debug(ctx, string(body))
+	//tflog.Debug(ctx, string(body))
 
 	response := DnsZoneRecordsResponse{}
 	err = json.Unmarshal(body, &response)
@@ -59,11 +59,11 @@ func (c *Client) GetDnsZoneRecord(domain string, recordType string, ctx context.
 
 }
 
-func (c *Client) CreateDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context) error {
+func (c *Client) CreateDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context) (DnsZoneRecord, error) {
 
 	req, err := c.GetRequest("/api/zones/records/add")
 	if err != nil {
-		return err
+		return DnsZoneRecord{}, err
 	}
 
 	params := req.URL.Query()
@@ -101,20 +101,25 @@ func (c *Client) CreateDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context)
 
 	body, err := c.doRequest(req, ctx)
 	if err != nil {
-		return err
+		return DnsZoneRecord{}, err
 	}
 
 	response := BaseResponse{}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return err
+		return DnsZoneRecord{}, err
 	}
 
 	if response.Status != "ok" {
-		return fmt.Errorf("failed to create zone record: %s", response.ErrorMessage)
+		return DnsZoneRecord{}, fmt.Errorf("failed to create zone record: %s", response.ErrorMessage)
 	}
 
-	return nil
+	newRecord, err := c.GetDnsZoneRecord(r.Domain, r.Type, ctx)
+	if err != nil {
+		return DnsZoneRecord{}, fmt.Errorf("failed to retrieve newly created DNS zone record: %w", err)
+	}
+
+	return newRecord, nil
 
 }
 
