@@ -56,7 +56,6 @@ func (e expectDrift) CheckPlan(ctx context.Context, req plancheck.CheckPlanReque
 	}
 
 	resp.Error = fmt.Errorf("resource %s not found in drift check", e.resourceName)
-	return
 
 }
 
