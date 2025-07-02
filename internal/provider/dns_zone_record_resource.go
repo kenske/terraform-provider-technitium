@@ -92,7 +92,6 @@ func (r *dnsZoneRecordResource) CreateZoneRecord(plan dnsZoneRecordCreate, ctx c
 	record.Zone = plan.Zone.ValueString()
 	record.TTL = plan.TTL.ValueInt64()
 	record.Comments = plan.Comments.ValueString()
-	record.Disable = plan.Disabled.ValueBool()
 	record.ExpiryTTL = plan.ExpiryTTL.ValueInt64()
 	record.IPAddress = plan.IPAddress.ValueString()
 	record.Ptr = plan.Ptr.ValueString()
@@ -251,10 +250,8 @@ func (r *dnsZoneRecordResource) Read(ctx context.Context, req resource.ReadReque
 	// Check if the record exists
 	record, err := r.client.GetDnsZoneRecord(state.Domain.ValueString(), state.Type.ValueString(), ctx)
 	if err != nil {
-
 		tflog.Info(ctx, "Removing record "+state.Domain.ValueString()+" from state due to error: "+err.Error())
 		resp.State.RemoveResource(ctx)
-
 		return
 	}
 
@@ -262,13 +259,13 @@ func (r *dnsZoneRecordResource) Read(ctx context.Context, req resource.ReadReque
 	state.Type = types.StringValue(record.Type)
 	state.Disabled = types.BoolValue(record.Disabled)
 	state.TTL = types.Int64Value(record.TTL)
+	state.Comments = types.StringValue(record.Comments)
 	state.ExpiryTTL = types.Int64Value(record.ExpiryTTL)
-	state.Forwarder = types.StringValue(record.RecordData.Forwarder)
-	state.NameServer = types.StringValue(record.RecordData.NameServer)
 
-	setStringIfNotEmpty(&state.Comments, record.Comments)
 	setStringIfNotEmpty(&state.Cname, record.RecordData.Cname)
 	setStringIfNotEmpty(&state.IPAddress, record.RecordData.IpAddress)
+	setStringIfNotEmpty(&state.Forwarder, record.RecordData.Forwarder)
+	setStringIfNotEmpty(&state.NameServer, record.RecordData.NameServer)
 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -305,11 +302,10 @@ func (r *dnsZoneRecordResource) Delete(ctx context.Context, req resource.DeleteR
 	}
 }
 
-func (r *dnsZoneRecordResource) ModifyPlan(_ context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+func (r *dnsZoneRecordResource) ModifyPlan(_ context.Context, _ resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	resp.RequiresReplace = path.Paths{
 		path.Root("domain"),
 		path.Root("zone"),
 		path.Root("type"),
 	}
-
 }

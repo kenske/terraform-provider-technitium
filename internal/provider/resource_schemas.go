@@ -3,6 +3,8 @@ package provider
 import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -145,13 +147,19 @@ func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
 		},
 		"disabled": schema.BoolAttribute{
 			Optional:    true,
+			Computed:    true,
+			Default:     booldefault.StaticBool(false),
 			Description: "Set to true to disable the DNS record. Default is false.",
 		},
 		"comments": schema.StringAttribute{
 			Optional: true,
+			Computed: true,
+			Default:  stringdefault.StaticString(""),
 		},
 		"expiry_ttl": schema.Int64Attribute{
 			Optional: true,
+			Computed: true,
+			Default:  int64default.StaticInt64(0),
 		},
 		"ip_address": schema.StringAttribute{
 			Optional: true,

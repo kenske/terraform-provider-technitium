@@ -141,7 +141,7 @@ type DnsZoneRecord struct {
 	DnsSecStatus string            `json:"dnsSecStatus"`
 	LastUsedOn   string            `json:"lastUsedOn"`
 	LastModified string            `json:"lastModified"`
-	ExpiryTTL    int64             `json:"expiryTTL"`
+	ExpiryTTL    int64             `json:"expiryTtl"`
 	RecordData   DnsZoneRecordData `json:"rData"`
 }
 
@@ -170,7 +170,6 @@ type DnsZoneRecordCreate struct {
 	Zone              string `json:"zone,omitempty"`
 	TTL               int64  `json:"ttl,omitempty"`
 	Comments          string `json:"comments,omitempty"`
-	Disable           bool   `json:"disable,omitempty"`
 	ExpiryTTL         int64  `json:"expiryTtl,omitempty"`
 	IPAddress         string `json:"ipAddress,omitempty"`
 	Ptr               string `json:"ptr,omitempty"`
@@ -199,6 +198,7 @@ type DnsZoneRecordCreate struct {
 
 type DnsZoneRecordUpdate struct {
 	DnsZoneRecordCreate
+	Disable       bool   `json:"disable,omitempty"`
 	NewDomain     string `json:"newDomain,omitempty"`
 	NewIPAddress  string `json:"newIPAddress,omitempty"`
 	NewNameServer string `json:"newNameServer,omitempty"`

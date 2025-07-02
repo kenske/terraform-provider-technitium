@@ -113,6 +113,7 @@ func TestAccDnsZoneRecord_drift(t *testing.T) {
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction("technitium_dns_zone_record.test", plancheck.ResourceActionUpdate),
+						ExpectDrift("technitium_dns_zone_record.test", "comments", "external update"),
 					},
 				},
 			},

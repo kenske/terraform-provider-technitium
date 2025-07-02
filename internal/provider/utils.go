@@ -76,8 +76,7 @@ func setStringIfNotEmpty(target *types.String, value string) {
 	}
 }
 
-func setIntIfNotEmpty(target *types.Int64, value int64) {
-	if value != 0 {
-		*target = types.Int64Value(value)
-	}
-}
+//func convertToJsonString(object interface{}) string {
+//	formatted, _ := json.MarshalIndent(object, "", "  ")
+//	return string(formatted)
+//}
