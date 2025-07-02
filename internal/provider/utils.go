@@ -75,3 +75,8 @@ func setStringIfNotEmpty(target *types.String, value string) {
 		*target = types.StringValue(value)
 	}
 }
+
+//func convertToJsonString(object interface{}) string {
+//	formatted, _ := json.MarshalIndent(object, "", "  ")
+//	return string(formatted)
+//}
