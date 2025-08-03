@@ -74,6 +74,7 @@ resource "technitium_dns_zone_record" "app" {
 - `cname` (String)
 - `comments` (String)
 - `create_ptr_zone` (Boolean)
+- `disabled` (Boolean) Set to true to disable the DNS record. Default is false.
 - `dnssec_validation` (Boolean)
 - `exchange` (String) The exchange domain name. This option is required for adding MX record.
 - `expiry_ttl` (Number)
