@@ -86,13 +86,13 @@ func updateZoneRecord(ctx context.Context) error {
 	token, err := technitium.GetToken(host, username, password)
 
 	if err != nil {
-		return fmt.Errorf("Error getting token: %v\n", err)
+		return fmt.Errorf("error getting token: %v", err)
 	}
 
 	client, err := technitium.NewClient(host, token, ctx)
 
 	if err != nil {
-		return fmt.Errorf("Error creating client: %v\n", err)
+		return fmt.Errorf("error creating client: %v", err)
 	}
 
 	update := technitium.DnsZoneRecordUpdate{
@@ -107,7 +107,7 @@ func updateZoneRecord(ctx context.Context) error {
 
 	err = client.UpdateDnsZoneRecord(update, ctx)
 	if err != nil {
-		return fmt.Errorf("Error updating DNS zone record: %v\n", err)
+		return fmt.Errorf("error updating DNS zone record: %v", err)
 	}
 
 	return nil
