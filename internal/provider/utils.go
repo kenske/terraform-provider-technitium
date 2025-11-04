@@ -1,11 +1,13 @@
 package provider
 
 import (
+	"context"
 	"fmt"
+	"terraform-provider-technitium/internal/technitium"
+
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"terraform-provider-technitium/internal/technitium"
 )
 
 func convertStringListToTF(items []string) []types.String {
@@ -76,7 +78,38 @@ func setStringIfNotEmpty(target *types.String, value string) {
 	}
 }
 
-//func convertToJsonString(object interface{}) string {
-//	formatted, _ := json.MarshalIndent(object, "", "  ")
-//	return string(formatted)
-//}
+func updateZoneRecord(ctx context.Context) error {
+	host := "http://localhost:5380"
+	username := "admin"
+	password := "password"
+
+	token, err := technitium.GetToken(host, username, password)
+
+	if err != nil {
+		return fmt.Errorf("error getting token: %v", err)
+	}
+
+	client, err := technitium.NewClient(host, token, ctx)
+
+	if err != nil {
+		return fmt.Errorf("error creating client: %v", err)
+	}
+
+	update := technitium.DnsZoneRecordUpdate{
+		DnsZoneRecordCreate: technitium.DnsZoneRecordCreate{
+			Domain:    "test.example.com",
+			Type:      "A",
+			Zone:      "example.com",
+			IPAddress: "192.168.1.10",
+			Comments:  "external update",
+		},
+	}
+
+	err = client.UpdateDnsZoneRecord(update, ctx)
+	if err != nil {
+		return fmt.Errorf("error updating DNS zone record: %v", err)
+	}
+
+	return nil
+
+}
