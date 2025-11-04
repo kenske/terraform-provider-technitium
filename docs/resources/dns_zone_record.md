@@ -19,6 +19,11 @@ resource "technitium_dns_zone" "example" {
   use_soa_serial_date_scheme = true
 }
 
+resource "technitium_dns_zone" "ptr" {
+  name = "1.168.192.in-addr.arpa"
+  type = "Primary"
+}
+
 resource "technitium_dns_zone_record" "cname" {
   zone     = technitium_dns_zone.example.name
   domain   = "cname.${technitium_dns_zone.example.name}"
@@ -56,6 +61,15 @@ resource "technitium_dns_zone_record" "app" {
   }
   EOT
   depends_on  = [technitium_dns_zone.example]
+}
+
+
+resource "technitium_dns_zone_record" "ptr" {
+  domain   = "1.${technitium_dns_zone.ptr.name}"
+  ptr_name = "ptr.${technitium_dns_zone.example.name}"
+  type     = "PTR"
+  comments = "test"
+  ttl      = "3600"
 }
 ```
 

@@ -11,6 +11,6 @@ resource "technitium_dns_zone" "internal" {
 }
 
 resource "technitium_dns_zone" "ptr" {
-  name              = "1.168.192.in-addr.arpa"
-  type              = "Primary"
+  name = "1.168.192.in-addr.arpa"
+  type = "Primary"
 }

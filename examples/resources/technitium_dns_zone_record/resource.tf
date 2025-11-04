@@ -5,8 +5,8 @@ resource "technitium_dns_zone" "example" {
 }
 
 resource "technitium_dns_zone" "ptr" {
-  name              = "1.168.192.in-addr.arpa"
-  type              = "Primary"
+  name = "1.168.192.in-addr.arpa"
+  type = "Primary"
 }
 
 resource "technitium_dns_zone_record" "cname" {
