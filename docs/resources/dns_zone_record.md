@@ -87,7 +87,6 @@ resource "technitium_dns_zone_record" "ptr" {
 - `class_path` (String) DNS app class path
 - `cname` (String)
 - `comments` (String)
-- `create_ptr_zone` (Boolean) Set this option to true to create a reverse zone for PTR record. This option is used for A and AAAA records
 - `disabled` (Boolean) Set to true to disable the DNS record. Default is false.
 - `dnssec_validation` (Boolean)
 - `exchange` (String) The exchange domain name. This option is required for adding MX record.
@@ -103,7 +102,6 @@ resource "technitium_dns_zone_record" "ptr" {
 - `proxy_port` (Number)
 - `proxy_type` (String) The type of proxy to be used for conditional forwarding. Valid values are [`NoProxy`, `DefaultProxy`, `Http`, `Socks5`].
 - `proxy_username` (String)
-- `ptr` (Boolean) Set to true to add a reverse PTR record for the IP address in the A or AAAA record. This option is used only for A and AAAA records.
 - `ptr_name` (String)
 - `record_data` (String) DNS app record data
 - `split_text` (String) Set to true for using new line char to split text into multiple character-strings for adding TXT record.

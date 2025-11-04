@@ -164,14 +164,6 @@ func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
 		"ip_address": schema.StringAttribute{
 			Optional: true,
 		},
-		"ptr": schema.BoolAttribute{
-			Optional:    true,
-			Description: "Set to true to add a reverse PTR record for the IP address in the A or AAAA record. This option is used only for A and AAAA records.",
-		},
-		"create_ptr_zone": schema.BoolAttribute{
-			Optional:    true,
-			Description: "Set this option to true to create a reverse zone for PTR record. This option is used for A and AAAA records",
-		},
 		"update_svcb_hints": schema.BoolAttribute{
 			Optional: true,
 		},
