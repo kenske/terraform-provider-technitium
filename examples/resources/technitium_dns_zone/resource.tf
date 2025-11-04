@@ -9,3 +9,8 @@ resource "technitium_dns_zone" "internal" {
   type      = "Forwarder"
   forwarder = "this-server"
 }
+
+resource "technitium_dns_zone" "ptr" {
+  name              = "1.168.192.in-addr.arpa"
+  type              = "Primary"
+}

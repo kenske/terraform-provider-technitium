@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"net/http"
 	"strings"
+
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 func (c *Client) GetDnsZoneRecords(domain string, ctx context.Context) ([]DnsZoneRecord, error) {
@@ -197,6 +198,7 @@ func (c *Client) DeleteDnsZoneRecord(r DnsZoneRecordCreate, ctx context.Context)
 	params.Add("type", r.Type)
 	params.Add("zone", r.Zone)
 	params.Add("ipAddress", r.IPAddress)
+	params.Add("ptrName", r.PtrName)
 	req.URL.RawQuery = params.Encode()
 
 	body, err := c.doRequest(req, ctx)

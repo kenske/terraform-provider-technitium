@@ -2,10 +2,11 @@ package provider
 
 import (
 	"context"
+	"terraform-provider-technitium/internal/technitium"
+
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"terraform-provider-technitium/internal/technitium"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -290,6 +291,7 @@ func (r *dnsZoneRecordResource) Delete(ctx context.Context, req resource.DeleteR
 	record.Domain = state.Domain.ValueString()
 	record.Zone = state.Zone.ValueString()
 	record.IPAddress = state.IPAddress.ValueString()
+	record.PtrName = state.PtrName.ValueString()
 
 	err := r.client.DeleteDnsZoneRecord(record, ctx)
 
