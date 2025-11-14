@@ -164,12 +164,6 @@ func DnsZoneRecordResourceSchema() map[string]schema.Attribute {
 		"ip_address": schema.StringAttribute{
 			Optional: true,
 		},
-		"ptr": schema.StringAttribute{
-			Optional: true,
-		},
-		"create_ptr_zone": schema.BoolAttribute{
-			Optional: true,
-		},
 		"update_svcb_hints": schema.BoolAttribute{
 			Optional: true,
 		},
