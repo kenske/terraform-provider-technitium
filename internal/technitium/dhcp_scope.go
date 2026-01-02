@@ -70,6 +70,7 @@ func (c *Client) SetScope(s DhcpScope, oldName string, ctx context.Context) (Dhc
 	params.Add("routerAddress", s.RouterAddress)
 	params.Add("useThisDnsServer", fmt.Sprintf("%v", s.UseThisDnsServer))
 	params.Add("dnsServers", strings.Join(s.DnsServers, ","))
+	params.Add("ntpServers", strings.Join(s.NtpServers, ","))
 	params.Add("domainName", s.DomainName)
 
 	if oldName != "" {

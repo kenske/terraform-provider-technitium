@@ -146,6 +146,13 @@ func (r *dhcpScopeResource) SetScope(plan dhcpScope, oldName string, ctx context
 		}
 	}
 
+	if len(plan.NtpServers) > 0 {
+		scope.NtpServers = make([]string, len(plan.NtpServers))
+		for _, server := range plan.NtpServers {
+			scope.NtpServers = append(scope.NtpServers, server.ValueString())
+		}
+	}
+
 	if len(plan.Exclusions) > 0 {
 		for _, e := range plan.Exclusions {
 			exclusion := technitium.Exclusion{

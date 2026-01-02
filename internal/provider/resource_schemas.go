@@ -32,6 +32,10 @@ func DhcpScopeResourceSchema() map[string]schema.Attribute {
 			ElementType: types.StringType,
 			Optional:    true,
 		},
+		"ntp_servers": schema.ListAttribute{
+			ElementType: types.StringType,
+			Optional:    true,
+		},
 		"domain_name": schema.StringAttribute{
 			Optional: true,
 		},

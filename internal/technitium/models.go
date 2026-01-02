@@ -30,6 +30,7 @@ type DhcpScope struct {
 	RouterAddress    string      `json:"routerAddress,omitempty"`
 	UseThisDnsServer bool        `json:"useThisDnsServer,omitempty"`
 	DnsServers       []string    `json:"dnsServers,omitempty"`
+	NtpServers       []string    `json:"ntpServers,omitempty"`
 	DomainName       string      `json:"DomainName,omitempty"`
 	Exclusions       []Exclusion `json:"exclusions"`
 }

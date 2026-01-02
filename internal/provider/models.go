@@ -20,6 +20,7 @@ type dhcpScope struct {
 	RouterAddress    types.String   `tfsdk:"router_address"`
 	UseThisDnsServer types.Bool     `tfsdk:"use_this_dns_server"`
 	DnsServers       []types.String `tfsdk:"dns_servers"`
+	NtpServers       []types.String `tfsdk:"ntp_servers"`
 	DomainName       types.String   `tfsdk:"domain_name"`
 	Exclusions       []Exclusion    `tfsdk:"exclusions"`
 }

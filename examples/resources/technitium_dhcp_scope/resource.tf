@@ -10,6 +10,10 @@ resource "technitium_dhcp_scope" "test" {
     "1.1.1.1",
     "8.8.8.8"
   ]
+  ntp_servers = [
+    "time.google.com",
+    "time.cloudflare.com"
+  ]
   exclusions = [
     {
       starting_address = "10.0.0.10"
