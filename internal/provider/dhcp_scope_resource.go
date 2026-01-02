@@ -126,37 +126,191 @@ func (r *dhcpScopeResource) SetScope(plan dhcpScope, oldName string, ctx context
 
 	var scope technitium.DhcpScope
 
-	// Set values from plan
+	// Basic scope configuration
 	scope.Name = plan.Name.ValueString()
 	scope.StartingAddress = plan.StartingAddress.ValueString()
 	scope.EndingAddress = plan.EndingAddress.ValueString()
 	scope.SubnetMask = plan.SubnetMask.ValueString()
-	scope.UseThisDnsServer = plan.UseThisDnsServer.ValueBool()
-	scope.DomainName = plan.DomainName.ValueString()
 
-	// Set router address if not null
+	// Lease time configuration
+	if !plan.LeaseTimeDays.IsNull() {
+		scope.LeaseTimeDays = int(plan.LeaseTimeDays.ValueInt64())
+	}
+	if !plan.LeaseTimeHours.IsNull() {
+		scope.LeaseTimeHours = int(plan.LeaseTimeHours.ValueInt64())
+	}
+	if !plan.LeaseTimeMinutes.IsNull() {
+		scope.LeaseTimeMinutes = int(plan.LeaseTimeMinutes.ValueInt64())
+	}
+
+	// Offer delay and ping check
+	if !plan.OfferDelayTime.IsNull() {
+		scope.OfferDelayTime = int(plan.OfferDelayTime.ValueInt64())
+	}
+	if !plan.PingCheckEnabled.IsNull() {
+		scope.PingCheckEnabled = plan.PingCheckEnabled.ValueBool()
+	}
+	if !plan.PingCheckTimeout.IsNull() {
+		scope.PingCheckTimeout = int(plan.PingCheckTimeout.ValueInt64())
+	}
+	if !plan.PingCheckRetries.IsNull() {
+		scope.PingCheckRetries = int(plan.PingCheckRetries.ValueInt64())
+	}
+
+	// Network configuration
 	if !plan.RouterAddress.IsNull() {
 		scope.RouterAddress = plan.RouterAddress.ValueString()
 	}
+	if !plan.UseThisDnsServer.IsNull() {
+		scope.UseThisDnsServer = plan.UseThisDnsServer.ValueBool()
+	}
 
+	// DNS servers
 	if len(plan.DnsServers) > 0 {
-		scope.DnsServers = make([]string, len(plan.DnsServers))
+		scope.DnsServers = make([]string, 0, len(plan.DnsServers))
 		for _, server := range plan.DnsServers {
 			scope.DnsServers = append(scope.DnsServers, server.ValueString())
 		}
 	}
 
-	if len(plan.Exclusions) > 0 {
-		for _, e := range plan.Exclusions {
-			exclusion := technitium.Exclusion{
-				StartingAddress: e.StartingAddress.ValueString(),
-				EndingAddress:   e.EndingAddress.ValueString(),
-			}
-			scope.Exclusions = append(scope.Exclusions, exclusion)
+	// WINS servers
+	if len(plan.WinsServers) > 0 {
+		scope.WinsServers = make([]string, 0, len(plan.WinsServers))
+		for _, server := range plan.WinsServers {
+			scope.WinsServers = append(scope.WinsServers, server.ValueString())
 		}
 	}
 
-	// Create new scope
+	// NTP servers
+	if len(plan.NtpServers) > 0 {
+		scope.NtpServers = make([]string, 0, len(plan.NtpServers))
+		for _, server := range plan.NtpServers {
+			scope.NtpServers = append(scope.NtpServers, server.ValueString())
+		}
+	}
+
+	// NTP server domain names
+	if len(plan.NtpServerDomainNames) > 0 {
+		scope.NtpServerDomainNames = make([]string, 0, len(plan.NtpServerDomainNames))
+		for _, name := range plan.NtpServerDomainNames {
+			scope.NtpServerDomainNames = append(scope.NtpServerDomainNames, name.ValueString())
+		}
+	}
+
+	// Static routes
+	if len(plan.StaticRoutes) > 0 {
+		scope.StaticRoutes = make([]technitium.DhcpStaticRoute, 0, len(plan.StaticRoutes))
+		for _, route := range plan.StaticRoutes {
+			scope.StaticRoutes = append(scope.StaticRoutes, technitium.DhcpStaticRoute{
+				Destination: route.Destination.ValueString(),
+				SubnetMask:  route.SubnetMask.ValueString(),
+				Router:      route.Router.ValueString(),
+			})
+		}
+	}
+
+	// Vendor info
+	if len(plan.VendorInfo) > 0 {
+		scope.VendorInfo = make([]technitium.DhcpVendorInfo, 0, len(plan.VendorInfo))
+		for _, vendor := range plan.VendorInfo {
+			scope.VendorInfo = append(scope.VendorInfo, technitium.DhcpVendorInfo{
+				Identifier:  vendor.Identifier.ValueString(),
+				Information: vendor.Information.ValueString(),
+			})
+		}
+	}
+
+	// CAPWAP AC IP addresses
+	if len(plan.CAPWAPAcIpAddresses) > 0 {
+		scope.CAPWAPAcIpAddresses = make([]string, 0, len(plan.CAPWAPAcIpAddresses))
+		for _, addr := range plan.CAPWAPAcIpAddresses {
+			scope.CAPWAPAcIpAddresses = append(scope.CAPWAPAcIpAddresses, addr.ValueString())
+		}
+	}
+
+	// TFTP server addresses
+	if len(plan.TftpServerAddresses) > 0 {
+		scope.TftpServerAddresses = make([]string, 0, len(plan.TftpServerAddresses))
+		for _, addr := range plan.TftpServerAddresses {
+			scope.TftpServerAddresses = append(scope.TftpServerAddresses, addr.ValueString())
+		}
+	}
+
+	// Generic options
+	if len(plan.GenericOptions) > 0 {
+		scope.GenericOptions = make([]technitium.DhcpGenericOption, 0, len(plan.GenericOptions))
+		for _, option := range plan.GenericOptions {
+			scope.GenericOptions = append(scope.GenericOptions, technitium.DhcpGenericOption{
+				Code:  int(option.Code.ValueInt64()),
+				Value: option.Value.ValueString(),
+			})
+		}
+	}
+
+	// Exclusions
+	if len(plan.Exclusions) > 0 {
+		scope.Exclusions = make([]technitium.Exclusion, 0, len(plan.Exclusions))
+		for _, e := range plan.Exclusions {
+			scope.Exclusions = append(scope.Exclusions, technitium.Exclusion{
+				StartingAddress: e.StartingAddress.ValueString(),
+				EndingAddress:   e.EndingAddress.ValueString(),
+			})
+		}
+	}
+
+	// Reserved leases
+	if len(plan.ReservedLeases) > 0 {
+		scope.ReservedLeases = make([]string, 0, len(plan.ReservedLeases))
+		for _, lease := range plan.ReservedLeases {
+			scope.ReservedLeases = append(scope.ReservedLeases, lease.ValueString())
+		}
+	}
+
+	// Access control options
+	if !plan.AllowOnlyReservedLeases.IsNull() {
+		scope.AllowOnlyReservedLeases = plan.AllowOnlyReservedLeases.ValueBool()
+	}
+	if !plan.BlockLocallyAdministeredMacAddresses.IsNull() {
+		scope.BlockLocallyAdministeredMacAddresses = plan.BlockLocallyAdministeredMacAddresses.ValueBool()
+	}
+	if !plan.IgnoreClientIdentifierOption.IsNull() {
+		scope.IgnoreClientIdentifierOption = plan.IgnoreClientIdentifierOption.ValueBool()
+	}
+
+	// Domain configuration
+	if !plan.DomainName.IsNull() {
+		scope.DomainName = plan.DomainName.ValueString()
+	}
+	if len(plan.DomainSearchList) > 0 {
+		scope.DomainSearchList = make([]string, 0, len(plan.DomainSearchList))
+		for _, domain := range plan.DomainSearchList {
+			scope.DomainSearchList = append(scope.DomainSearchList, domain.ValueString())
+		}
+	}
+
+	// Boot options
+	if !plan.BootFileName.IsNull() {
+		scope.BootFileName = plan.BootFileName.ValueString()
+	}
+	if !plan.NextServerAddress.IsNull() {
+		scope.NextServerAddress = plan.NextServerAddress.ValueString()
+	}
+	if !plan.ServerHostName.IsNull() {
+		scope.ServerHostName = plan.ServerHostName.ValueString()
+	}
+	if !plan.ServerAddress.IsNull() {
+		scope.ServerAddress = plan.ServerAddress.ValueString()
+	}
+
+	// Interface binding
+	if !plan.InterfaceAddress.IsNull() {
+		scope.InterfaceAddress = plan.InterfaceAddress.ValueString()
+	}
+	if !plan.InterfaceIndex.IsNull() {
+		scope.InterfaceIndex = int(plan.InterfaceIndex.ValueInt64())
+	}
+
+	// Create or update scope
 	createdScope, err := r.client.SetScope(scope, oldName, ctx)
 	if err != nil {
 		return err
