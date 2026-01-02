@@ -11,8 +11,8 @@ resource "technitium_dhcp_scope" "test" {
     "8.8.8.8"
   ]
   ntp_servers = [
-    "time.google.com",
-    "time.cloudflare.com"
+    "time.nist.gov",
+    "us.pool.ntp.org"
   ]
   exclusions = [
     {
