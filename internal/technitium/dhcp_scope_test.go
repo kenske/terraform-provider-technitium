@@ -185,6 +185,15 @@ func TestClient_GetScope(t *testing.T) {
 					EndingAddress:   "192.168.1.160",
 				},
 			},
+			ReservedLeases: []DhcpReservedLease{
+				{
+					Name:            "TestScope",
+					HardwareAddress: "00:11:22:33:44:55",
+					IpAddress:       "192.168.1.150",
+					HostName:        "test-device",
+					Comments:        "Test reservation",
+				},
+			},
 		}
 
 		mockResponse := DhcpScopeResponse{
@@ -228,6 +237,19 @@ func TestClient_GetScope(t *testing.T) {
 
 		if scope.LeaseTimeDays != 7 {
 			t.Errorf("Expected lease time days 7, got %d", scope.LeaseTimeDays)
+		}
+
+		if len(scope.ReservedLeases) != 1 {
+			t.Errorf("Expected 1 reserved lease, got %d", len(scope.ReservedLeases))
+		}
+
+		if len(scope.ReservedLeases) > 0 {
+			if scope.ReservedLeases[0].HardwareAddress != "00:11:22:33:44:55" {
+				t.Errorf("Expected hardware address '00:11:22:33:44:55', got '%s'", scope.ReservedLeases[0].HardwareAddress)
+			}
+			if scope.ReservedLeases[0].HostName != "test-device" {
+				t.Errorf("Expected hostname 'test-device', got '%s'", scope.ReservedLeases[0].HostName)
+			}
 		}
 	})
 
@@ -360,6 +382,63 @@ func TestClient_SetScope(t *testing.T) {
 
 		if scope.Name != "RenamedScope" {
 			t.Errorf("Expected name 'RenamedScope', got '%s'", scope.Name)
+		}
+	})
+
+	t.Run("scope with reserved leases", func(t *testing.T) {
+		inputScope := DhcpScope{
+			Name:            "ScopeWithLeases",
+			StartingAddress: "192.168.5.1",
+			EndingAddress:   "192.168.5.254",
+			SubnetMask:      "255.255.255.0",
+			RouterAddress:   "192.168.5.1",
+			LeaseTimeDays:   7,
+			ReservedLeases: []DhcpReservedLease{
+				{
+					Name:            "ScopeWithLeases",
+					HardwareAddress: "AA:BB:CC:DD:EE:FF",
+					IpAddress:       "192.168.5.100",
+					HostName:        "device1",
+				},
+				{
+					Name:            "ScopeWithLeases",
+					HardwareAddress: "11:22:33:44:55:66",
+					IpAddress:       "192.168.5.101",
+					HostName:        "device2",
+				},
+			},
+		}
+
+		mockResponse := DhcpScopeResponse{
+			Response:     inputScope,
+			BaseResponse: BaseResponse{Status: "ok"},
+		}
+
+		mockBody, _ := json.Marshal(mockResponse)
+		mockScenario := test.Scenario{
+			ExpectedStatus: http.StatusOK,
+			ExpectedBody:   string(mockBody),
+		}
+
+		client, cleanup := GetMockClient(mockScenario)
+		defer cleanup()
+
+		scope, err := client.SetScope(inputScope, "", ctx)
+		if err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+
+		if len(scope.ReservedLeases) != 2 {
+			t.Errorf("Expected 2 reserved leases, got %d", len(scope.ReservedLeases))
+		}
+
+		if len(scope.ReservedLeases) > 0 {
+			if scope.ReservedLeases[0].HardwareAddress != "AA:BB:CC:DD:EE:FF" {
+				t.Errorf("Expected first lease hardware address 'AA:BB:CC:DD:EE:FF', got '%s'", scope.ReservedLeases[0].HardwareAddress)
+			}
+			if scope.ReservedLeases[1].HardwareAddress != "11:22:33:44:55:66" {
+				t.Errorf("Expected second lease hardware address '11:22:33:44:55:66', got '%s'", scope.ReservedLeases[1].HardwareAddress)
+			}
 		}
 	})
 

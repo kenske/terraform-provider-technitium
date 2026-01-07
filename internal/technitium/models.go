@@ -46,7 +46,7 @@ type DhcpScope struct {
 	TftpServerAddresses                  []string            `json:"tftpServerAddresses,omitempty"`
 	GenericOptions                       []DhcpGenericOption `json:"genericOptions,omitempty"`
 	Exclusions                           []Exclusion         `json:"exclusions,omitempty"`
-	ReservedLeases                       []string            `json:"reservedLeases,omitempty"`
+	ReservedLeases                       []DhcpReservedLease `json:"reservedLeases,omitempty"`
 	AllowOnlyReservedLeases              bool                `json:"allowOnlyReservedLeases,omitempty"`
 	BlockLocallyAdministeredMacAddresses bool                `json:"blockLocallyAdministeredMacAddresses,omitempty"`
 	IgnoreClientIdentifierOption         bool                `json:"ignoreClientIdentifierOption,omitempty"`

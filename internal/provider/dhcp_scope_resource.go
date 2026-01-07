@@ -258,11 +258,13 @@ func (r *dhcpScopeResource) SetScope(plan dhcpScope, oldName string, ctx context
 		}
 	}
 
-	// Reserved leases
+	// Reserved leases - convert from string list to DhcpReservedLease objects
 	if len(plan.ReservedLeases) > 0 {
-		scope.ReservedLeases = make([]string, 0, len(plan.ReservedLeases))
+		scope.ReservedLeases = make([]technitium.DhcpReservedLease, 0, len(plan.ReservedLeases))
 		for _, lease := range plan.ReservedLeases {
-			scope.ReservedLeases = append(scope.ReservedLeases, lease.ValueString())
+			scope.ReservedLeases = append(scope.ReservedLeases, technitium.DhcpReservedLease{
+				HardwareAddress: lease.ValueString(),
+			})
 		}
 	}
 

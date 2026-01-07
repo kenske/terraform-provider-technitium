@@ -151,7 +151,13 @@ func (c *Client) SetScope(s DhcpScope, oldName string, ctx context.Context) (Dhc
 	}
 
 	// Reserved leases and access control
-	params.Add("reservedLeases", strings.Join(s.ReservedLeases, ","))
+	if len(s.ReservedLeases) > 0 {
+		leases := make([]string, 0)
+		for _, lease := range s.ReservedLeases {
+			leases = append(leases, lease.HardwareAddress)
+		}
+		params.Add("reservedLeases", strings.Join(leases, ","))
+	}
 	params.Add("allowOnlyReservedLeases", fmt.Sprintf("%v", s.AllowOnlyReservedLeases))
 	params.Add("blockLocallyAdministeredMacAddresses", fmt.Sprintf("%v", s.BlockLocallyAdministeredMacAddresses))
 	params.Add("ignoreClientIdentifierOption", fmt.Sprintf("%v", s.IgnoreClientIdentifierOption))
