@@ -62,7 +62,7 @@ func (r *dhcpReservedLeaseResource) Schema(_ context.Context, _ resource.SchemaR
 
 func (r *dhcpReservedLeaseResource) ModifyPlan(_ context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	resp.RequiresReplace = path.Paths{
-		path.Root("scope_name"),
+		path.Root("name"),
 		path.Root("hardware_address"),
 		path.Root("ip_address"),
 		path.Root("host_name"),
@@ -107,7 +107,7 @@ func (r *dhcpReservedLeaseResource) SetReservedLease(plan dhcpReservedLease, ctx
 	var lease technitium.DhcpReservedLease
 
 	// Set values from plan
-	lease.Name = plan.ScopeName.ValueString()
+	lease.Name = plan.Name.ValueString()
 	lease.HardwareAddress = plan.HardwareAddress.ValueString()
 	lease.IpAddress = plan.IpAddress.ValueString()
 	lease.HostName = plan.HostName.ValueString()
@@ -136,12 +136,12 @@ func (r *dhcpReservedLeaseResource) Delete(ctx context.Context, req resource.Del
 		return
 	}
 
-	err := r.client.DeleteLease(state.ScopeName.ValueString(), state.HardwareAddress.ValueString(), ctx)
+	err := r.client.DeleteLease(state.Name.ValueString(), state.HardwareAddress.ValueString(), ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error deleting DHCP reserved lease",
-			"Could not delete DHCP reserved lease  "+state.ScopeName.ValueString()+": "+err.Error(),
+			"Could not delete DHCP reserved lease  "+state.Name.ValueString()+": "+err.Error(),
 		)
 		return
 	}

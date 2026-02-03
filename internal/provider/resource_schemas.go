@@ -236,7 +236,7 @@ func DhcpScopeResourceSchema() map[string]schema.Attribute {
 func DhcpReservedLeaseResourceSchema() map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 
-		"scope_name": schema.StringAttribute{
+		"name": schema.StringAttribute{
 			Required:    true,
 			Description: "The name of the DHCP scope to add this reservation to.",
 		},

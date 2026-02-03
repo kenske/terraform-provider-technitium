@@ -45,7 +45,6 @@ type dhcpScope struct {
 	BootFileName                         types.String    `tfsdk:"boot_file_name"`
 	BootstrapServerAddress               types.String    `tfsdk:"bootstrap_server_address"`
 	BootstrapServerHostName              types.String    `tfsdk:"bootstrap_server_host_name"`
-	ServerHostName                       types.String    `tfsdk:"server_host_name"`
 	ServerAddress                        types.String    `tfsdk:"server_address"`
 	InterfaceAddress                     types.String    `tfsdk:"interface_address"`
 	InterfaceIndex                       types.Int64     `tfsdk:"interface_index"`
@@ -73,7 +72,7 @@ type GenericOption struct {
 }
 
 type dhcpReservedLease struct {
-	ScopeName       types.String `tfsdk:"scope_name"`
+	Name            types.String `tfsdk:"name"`
 	HardwareAddress types.String `tfsdk:"hardware_address"`
 	IpAddress       types.String `tfsdk:"ip_address"`
 	HostName        types.String `tfsdk:"host_name"`
