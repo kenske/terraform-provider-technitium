@@ -52,11 +52,13 @@ resource "technitium_dhcp_scope" "test" {
       information = "010203"
     }
   ]
-
-  # TFTP server for network booting
+  # TFTP Server - Voip Configuration server address (option 150)
   tftp_server_addresses = ["10.0.0.5"]
-  boot_file_name        = "pxelinux.0"
-  next_server_address   = "10.0.0.5"
+
+  # PXE Booting
+  boot_file_name             = "pxelinux.0"
+  bootstrap_server_address   = "10.0.0.5"
+  bootstrap_server_host_name = "tftp.example.com"
 
   # Generic DHCP options (example: option 252 for WPAD)
   generic_options = [

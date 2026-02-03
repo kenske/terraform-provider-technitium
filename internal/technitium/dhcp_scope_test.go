@@ -500,14 +500,14 @@ func TestClient_SetScope(t *testing.T) {
 
 	t.Run("scope with vendor info and tftp servers", func(t *testing.T) {
 		inputScope := DhcpScope{
-			Name:                "VendorScope",
-			StartingAddress:     "10.1.0.10",
-			EndingAddress:       "10.1.0.100",
-			SubnetMask:          "255.255.255.0",
-			RouterAddress:       "10.1.0.1",
-			TftpServerAddresses: []string{"10.1.0.5", "10.1.0.6"},
-			BootFileName:        "pxelinux.0",
-			NextServerAddress:   "10.1.0.5",
+			Name:                   "VendorScope",
+			StartingAddress:        "10.1.0.10",
+			EndingAddress:          "10.1.0.100",
+			SubnetMask:             "255.255.255.0",
+			RouterAddress:          "10.1.0.1",
+			TftpServerAddresses:    []string{"10.1.0.5", "10.1.0.6"},
+			BootFileName:           "pxelinux.0",
+			BootstrapServerAddress: "10.1.0.5",
 			VendorInfo: []DhcpVendorInfo{
 				{
 					Identifier:  "MSFT 5.0",

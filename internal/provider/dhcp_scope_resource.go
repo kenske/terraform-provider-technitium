@@ -294,11 +294,11 @@ func (r *dhcpScopeResource) SetScope(plan dhcpScope, oldName string, ctx context
 	if !plan.BootFileName.IsNull() {
 		scope.BootFileName = plan.BootFileName.ValueString()
 	}
-	if !plan.NextServerAddress.IsNull() {
-		scope.NextServerAddress = plan.NextServerAddress.ValueString()
+	if !plan.BootstrapServerAddress.IsNull() {
+		scope.BootstrapServerAddress = plan.BootstrapServerAddress.ValueString()
 	}
-	if !plan.ServerHostName.IsNull() {
-		scope.ServerHostName = plan.ServerHostName.ValueString()
+	if !plan.BootstrapServerHostName.IsNull() {
+		scope.BootstrapServerHostName = plan.BootstrapServerHostName.ValueString()
 	}
 	if !plan.ServerAddress.IsNull() {
 		scope.ServerAddress = plan.ServerAddress.ValueString()

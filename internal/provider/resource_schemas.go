@@ -210,13 +210,13 @@ func DhcpScopeResourceSchema() map[string]schema.Attribute {
 			Optional:    true,
 			Description: "The boot file name for network booting.",
 		},
-		"next_server_address": schema.StringAttribute{
+		"bootstrap_server_address": schema.StringAttribute{
 			Optional:    true,
-			Description: "The next server IP address for network booting.",
+			Description: "The IP address of next server (TFTP) to use in bootstrap by the clients. If not specified, the DHCP server's IP address is used. (siaddr)",
 		},
-		"server_host_name": schema.StringAttribute{
+		"bootstrap_server_host_name": schema.StringAttribute{
 			Optional:    true,
-			Description: "The DHCP server host name.",
+			Description: "The optional bootstrap server host name to be used by the clients to identify the TFTP server. (sname/Option 66)",
 		},
 		"server_address": schema.StringAttribute{
 			Optional:    true,
@@ -236,8 +236,9 @@ func DhcpScopeResourceSchema() map[string]schema.Attribute {
 func DhcpReservedLeaseResourceSchema() map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 
-		"name": schema.StringAttribute{
-			Required: true,
+		"scope_name": schema.StringAttribute{
+			Required:    true,
+			Description: "The name of the DHCP scope to add this reservation to.",
 		},
 		"hardware_address": schema.StringAttribute{
 			Required: true,

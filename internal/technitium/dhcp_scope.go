@@ -140,8 +140,8 @@ func (c *Client) SetScope(s DhcpScope, oldName string, ctx context.Context) (Dhc
 
 	// Boot options
 	params.Add("bootFileName", s.BootFileName)
-	params.Add("nextServerAddress", s.NextServerAddress)
-	params.Add("serverHostName", s.ServerHostName)
+	params.Add("nextServerAddress", s.BootstrapServerAddress)
+	params.Add("serverHostName", s.BootstrapServerHostName)
 	params.Add("serverAddress", s.ServerAddress)
 
 	// Interface binding

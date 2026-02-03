@@ -53,8 +53,8 @@ type DhcpScope struct {
 	DomainName                           string              `json:"domainName,omitempty"`
 	DomainSearchList                     []string            `json:"domainSearchList,omitempty"`
 	BootFileName                         string              `json:"bootFileName,omitempty"`
-	NextServerAddress                    string              `json:"nextServerAddress,omitempty"`
-	ServerHostName                       string              `json:"serverHostName,omitempty"`
+	BootstrapServerAddress               string              `json:"nextServerAddress,omitempty"`
+	BootstrapServerHostName              string              `json:"serverHostName,omitempty"`
 	ServerAddress                        string              `json:"serverAddress,omitempty"`
 	InterfaceAddress                     string              `json:"interfaceAddress,omitempty"`
 	InterfaceIndex                       int                 `json:"interfaceIndex,omitempty"`
