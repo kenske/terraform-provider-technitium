@@ -23,15 +23,57 @@ type DhcpScopesResponse struct {
 }
 
 type DhcpScope struct {
-	Name             string      `json:"name"`
-	StartingAddress  string      `json:"startingAddress"`
-	EndingAddress    string      `json:"endingAddress"`
-	SubnetMask       string      `json:"subnetMask"`
-	RouterAddress    string      `json:"routerAddress,omitempty"`
-	UseThisDnsServer bool        `json:"useThisDnsServer,omitempty"`
-	DnsServers       []string    `json:"dnsServers,omitempty"`
-	DomainName       string      `json:"DomainName,omitempty"`
-	Exclusions       []Exclusion `json:"exclusions"`
+	Name                                 string              `json:"name"`
+	StartingAddress                      string              `json:"startingAddress"`
+	EndingAddress                        string              `json:"endingAddress"`
+	SubnetMask                           string              `json:"subnetMask"`
+	LeaseTimeDays                        int                 `json:"leaseTimeDays,omitempty"`
+	LeaseTimeHours                       int                 `json:"leaseTimeHours,omitempty"`
+	LeaseTimeMinutes                     int                 `json:"leaseTimeMinutes,omitempty"`
+	OfferDelayTime                       int                 `json:"offerDelayTime,omitempty"`
+	PingCheckEnabled                     bool                `json:"pingCheckEnabled,omitempty"`
+	PingCheckTimeout                     int                 `json:"pingCheckTimeout,omitempty"`
+	PingCheckRetries                     int                 `json:"pingCheckRetries,omitempty"`
+	RouterAddress                        string              `json:"routerAddress,omitempty"`
+	UseThisDnsServer                     bool                `json:"useThisDnsServer,omitempty"`
+	DnsServers                           []string            `json:"dnsServers,omitempty"`
+	WinsServers                          []string            `json:"winsServers,omitempty"`
+	NtpServers                           []string            `json:"ntpServers,omitempty"`
+	NtpServerDomainNames                 []string            `json:"ntpServerDomainNames,omitempty"`
+	StaticRoutes                         []DhcpStaticRoute   `json:"staticRoutes,omitempty"`
+	VendorInfo                           []DhcpVendorInfo    `json:"vendorInfo,omitempty"`
+	CAPWAPAcIpAddresses                  []string            `json:"capwapAcIpAddresses,omitempty"`
+	TftpServerAddresses                  []string            `json:"tftpServerAddresses,omitempty"`
+	GenericOptions                       []DhcpGenericOption `json:"genericOptions,omitempty"`
+	Exclusions                           []Exclusion         `json:"exclusions,omitempty"`
+	ReservedLeases                       []DhcpReservedLease `json:"reservedLeases,omitempty"`
+	AllowOnlyReservedLeases              bool                `json:"allowOnlyReservedLeases,omitempty"`
+	BlockLocallyAdministeredMacAddresses bool                `json:"blockLocallyAdministeredMacAddresses,omitempty"`
+	IgnoreClientIdentifierOption         bool                `json:"ignoreClientIdentifierOption,omitempty"`
+	DomainName                           string              `json:"domainName,omitempty"`
+	DomainSearchList                     []string            `json:"domainSearchList,omitempty"`
+	BootFileName                         string              `json:"bootFileName,omitempty"`
+	BootstrapServerAddress               string              `json:"nextServerAddress,omitempty"`
+	BootstrapServerHostName              string              `json:"serverHostName,omitempty"`
+	ServerAddress                        string              `json:"serverAddress,omitempty"`
+	InterfaceAddress                     string              `json:"interfaceAddress,omitempty"`
+	InterfaceIndex                       int                 `json:"interfaceIndex,omitempty"`
+}
+
+type DhcpStaticRoute struct {
+	Destination string `json:"destination"`
+	SubnetMask  string `json:"subnetMask"`
+	Router      string `json:"router"`
+}
+
+type DhcpVendorInfo struct {
+	Identifier  string `json:"identifier"`
+	Information string `json:"information"`
+}
+
+type DhcpGenericOption struct {
+	Code  int    `json:"code"`
+	Value string `json:"value"`
 }
 
 type Exclusion struct {
