@@ -13,20 +13,62 @@ type dhcpScopeList struct {
 }
 
 type dhcpScope struct {
-	Name             types.String   `tfsdk:"name"`
-	StartingAddress  types.String   `tfsdk:"starting_address"`
-	EndingAddress    types.String   `tfsdk:"ending_address"`
-	SubnetMask       types.String   `tfsdk:"subnet_mask"`
-	RouterAddress    types.String   `tfsdk:"router_address"`
-	UseThisDnsServer types.Bool     `tfsdk:"use_this_dns_server"`
-	DnsServers       []types.String `tfsdk:"dns_servers"`
-	DomainName       types.String   `tfsdk:"domain_name"`
-	Exclusions       []Exclusion    `tfsdk:"exclusions"`
+	Name                                 types.String    `tfsdk:"name"`
+	StartingAddress                      types.String    `tfsdk:"starting_address"`
+	EndingAddress                        types.String    `tfsdk:"ending_address"`
+	SubnetMask                           types.String    `tfsdk:"subnet_mask"`
+	LeaseTimeDays                        types.Int64     `tfsdk:"lease_time_days"`
+	LeaseTimeHours                       types.Int64     `tfsdk:"lease_time_hours"`
+	LeaseTimeMinutes                     types.Int64     `tfsdk:"lease_time_minutes"`
+	OfferDelayTime                       types.Int64     `tfsdk:"offer_delay_time"`
+	PingCheckEnabled                     types.Bool      `tfsdk:"ping_check_enabled"`
+	PingCheckTimeout                     types.Int64     `tfsdk:"ping_check_timeout"`
+	PingCheckRetries                     types.Int64     `tfsdk:"ping_check_retries"`
+	RouterAddress                        types.String    `tfsdk:"router_address"`
+	UseThisDnsServer                     types.Bool      `tfsdk:"use_this_dns_server"`
+	DnsServers                           []types.String  `tfsdk:"dns_servers"`
+	WinsServers                          []types.String  `tfsdk:"wins_servers"`
+	NtpServers                           []types.String  `tfsdk:"ntp_servers"`
+	NtpServerDomainNames                 []types.String  `tfsdk:"ntp_server_domain_names"`
+	StaticRoutes                         []StaticRoute   `tfsdk:"static_routes"`
+	VendorInfo                           []VendorInfo    `tfsdk:"vendor_info"`
+	CAPWAPAcIpAddresses                  []types.String  `tfsdk:"capwap_ac_ip_addresses"`
+	TftpServerAddresses                  []types.String  `tfsdk:"tftp_server_addresses"`
+	GenericOptions                       []GenericOption `tfsdk:"generic_options"`
+	Exclusions                           []Exclusion     `tfsdk:"exclusions"`
+	ReservedLeases                       []types.String  `tfsdk:"reserved_leases"`
+	AllowOnlyReservedLeases              types.Bool      `tfsdk:"allow_only_reserved_leases"`
+	BlockLocallyAdministeredMacAddresses types.Bool      `tfsdk:"block_locally_administered_mac_addresses"`
+	IgnoreClientIdentifierOption         types.Bool      `tfsdk:"ignore_client_identifier_option"`
+	DomainName                           types.String    `tfsdk:"domain_name"`
+	DomainSearchList                     []types.String  `tfsdk:"domain_search_list"`
+	BootFileName                         types.String    `tfsdk:"boot_file_name"`
+	BootstrapServerAddress               types.String    `tfsdk:"bootstrap_server_address"`
+	BootstrapServerHostName              types.String    `tfsdk:"bootstrap_server_host_name"`
+	ServerAddress                        types.String    `tfsdk:"server_address"`
+	InterfaceAddress                     types.String    `tfsdk:"interface_address"`
+	InterfaceIndex                       types.Int64     `tfsdk:"interface_index"`
 }
 
 type Exclusion struct {
 	StartingAddress types.String `tfsdk:"starting_address"`
 	EndingAddress   types.String `tfsdk:"ending_address"`
+}
+
+type StaticRoute struct {
+	Destination types.String `tfsdk:"destination"`
+	SubnetMask  types.String `tfsdk:"subnet_mask"`
+	Router      types.String `tfsdk:"router"`
+}
+
+type VendorInfo struct {
+	Identifier  types.String `tfsdk:"identifier"`
+	Information types.String `tfsdk:"information"`
+}
+
+type GenericOption struct {
+	Code  types.Int64  `tfsdk:"code"`
+	Value types.String `tfsdk:"value"`
 }
 
 type dhcpReservedLease struct {
