@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"terraform-provider-technitium/internal/test"
 	"testing"
@@ -161,6 +162,62 @@ func TestClient_doRequest(t *testing.T) {
 		expectedErrMsg := fmt.Sprintf("status: %d, body: %s", http.StatusBadRequest, mockScenario.ExpectedBody)
 		if !strings.Contains(err.Error(), expectedErrMsg) {
 			t.Errorf("Expected error message '%s', got '%v'", expectedErrMsg, err)
+		}
+	})
+}
+
+func TestClient_doRequest_TokenAuth(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("default mode sends Authorization Bearer header and no token query param", func(t *testing.T) {
+		var gotAuthHeader, gotRawQuery string
+
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			gotAuthHeader = r.Header.Get("Authorization")
+			gotRawQuery = r.URL.RawQuery
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, `{"data":"test"}`)
+		}))
+		defer server.Close()
+
+		client := &Client{HostURL: server.URL, HTTPClient: server.Client(), Token: "test-token"}
+		req, _ := http.NewRequest("GET", server.URL+"/api/test", nil)
+
+		if _, err := client.doRequest(req, ctx); err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+
+		if gotAuthHeader != "Bearer test-token" {
+			t.Errorf("Expected Authorization header 'Bearer test-token', got %q", gotAuthHeader)
+		}
+		if strings.Contains(gotRawQuery, "token=") {
+			t.Errorf("Expected no 'token' query parameter in request URL, got raw query %q", gotRawQuery)
+		}
+	})
+
+	t.Run("legacy mode sends token as query parameter and no Authorization header", func(t *testing.T) {
+		var gotAuthHeader, gotToken string
+
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			gotAuthHeader = r.Header.Get("Authorization")
+			gotToken = r.URL.Query().Get("token")
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, `{"data":"test"}`)
+		}))
+		defer server.Close()
+
+		client := &Client{HostURL: server.URL, HTTPClient: server.Client(), Token: "test-token", LegacyTokenAuth: true}
+		req, _ := http.NewRequest("GET", server.URL+"/api/test", nil)
+
+		if _, err := client.doRequest(req, ctx); err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+
+		if gotToken != "test-token" {
+			t.Errorf("Expected 'token' query parameter 'test-token', got %q", gotToken)
+		}
+		if gotAuthHeader != "" {
+			t.Errorf("Expected no Authorization header in legacy mode, got %q", gotAuthHeader)
 		}
 	})
 }

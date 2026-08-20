@@ -20,12 +20,20 @@ type Client struct {
 	HostURL    string
 	HTTPClient HttpClient
 	Token      string
+
+	// LegacyTokenAuth sends the API token as a "token" URL query parameter
+	// instead of an "Authorization: Bearer" header. Technitium DNS Server
+	// versions prior to 15.0 only support the query parameter form. Leaving
+	// this false (the default) keeps the token out of request URLs, which
+	// commonly end up in reverse proxy access logs.
+	LegacyTokenAuth bool
 }
 
-func NewClient(host, token string, ctx context.Context) (*Client, error) {
+func NewClient(host, token string, legacyTokenAuth bool, ctx context.Context) (*Client, error) {
 	c := Client{
-		HTTPClient: &http.Client{Timeout: 10 * time.Second},
-		HostURL:    host,
+		HTTPClient:      &http.Client{Timeout: 10 * time.Second},
+		HostURL:         host,
+		LegacyTokenAuth: legacyTokenAuth,
 	}
 
 	c.Token = token
@@ -105,10 +113,14 @@ func (c *Client) GetSessionInfo(ctx context.Context) error {
 
 func (c *Client) doRequest(req *http.Request, ctx context.Context) ([]byte, error) {
 
-	// append token to url parameters
-	query := req.URL.Query()
-	query.Add("token", c.Token)
-	req.URL.RawQuery = query.Encode()
+	if c.LegacyTokenAuth {
+		// append token to url parameters (pre-15.0 Technitium DNS Server)
+		query := req.URL.Query()
+		query.Add("token", c.Token)
+		req.URL.RawQuery = query.Encode()
+	} else {
+		req.Header.Set("Authorization", "Bearer "+c.Token)
+	}
 
 	if ctx != nil {
 		url := req.URL.String()

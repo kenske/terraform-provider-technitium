@@ -40,6 +40,7 @@ provider "technitium" {
 ### Optional
 
 - `host` (String) Technitium API host URL. Alternatively, you can set the value using the TECHNITIUM_HOST environment variable.
+- `legacy_token_auth` (Boolean) Send the API token as a "token" URL query parameter instead of an "Authorization: Bearer" header. Only required for Technitium DNS Server versions prior to 15.0. Defaults to false. Alternatively, you can set the value using the TECHNITIUM_LEGACY_TOKEN_AUTH environment variable.
 - `password` (String, Sensitive) Technitium API token. Alternatively, you can set the value using the TECHNITIUM_PASSWORD environment variable.
 - `token` (String, Sensitive) Technitium API token. Alternatively, you can set the value using the TECHNITIUM_TOKEN environment variable.
 - `username` (String) Technitium API username. Alternatively, you can set the value using the TECHNITIUM_USERNAME environment variable.
