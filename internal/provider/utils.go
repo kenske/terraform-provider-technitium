@@ -89,7 +89,7 @@ func updateZoneRecord(ctx context.Context) error {
 		return fmt.Errorf("error getting token: %v", err)
 	}
 
-	client, err := technitium.NewClient(host, token, ctx)
+	client, err := technitium.NewClient(host, token, false, ctx)
 
 	if err != nil {
 		return fmt.Errorf("error creating client: %v", err)

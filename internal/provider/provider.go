@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"os"
+	"strconv"
 	"terraform-provider-technitium/internal/technitium"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -36,10 +37,11 @@ type technitiumProvider struct {
 }
 
 type technitiumProviderModel struct {
-	Host     types.String `tfsdk:"host"`
-	Token    types.String `tfsdk:"token"`
-	Username types.String `tfsdk:"username"`
-	Password types.String `tfsdk:"password"`
+	Host            types.String `tfsdk:"host"`
+	Token           types.String `tfsdk:"token"`
+	Username        types.String `tfsdk:"username"`
+	Password        types.String `tfsdk:"password"`
+	LegacyTokenAuth types.Bool   `tfsdk:"legacy_token_auth"`
 }
 
 // Metadata returns the provider type name.
@@ -69,6 +71,12 @@ func (p *technitiumProvider) Schema(_ context.Context, _ provider.SchemaRequest,
 				Optional:    true,
 				Sensitive:   true,
 				Description: "Technitium API token. Alternatively, you can set the value using the TECHNITIUM_PASSWORD environment variable.",
+			},
+			"legacy_token_auth": schema.BoolAttribute{
+				Optional: true,
+				Description: "Send the API token as a \"token\" URL query parameter instead of an \"Authorization: Bearer\" " +
+					"header. Only required for Technitium DNS Server versions prior to 15.0. Defaults to false. " +
+					"Alternatively, you can set the value using the TECHNITIUM_LEGACY_TOKEN_AUTH environment variable.",
 			},
 		},
 	}
@@ -118,6 +126,14 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 		)
 	}
 
+	if config.LegacyTokenAuth.IsUnknown() {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("legacy_token_auth"),
+			"Unknown Technitium DNS legacy token auth setting",
+			"The provider cannot create the Technitium DNS API client as there is an unknown configuration value for legacy_token_auth. ",
+		)
+	}
+
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -128,6 +144,20 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 	token := os.Getenv("TECHNITIUM_TOKEN")
 	username := os.Getenv("TECHNITIUM_USERNAME")
 	password := os.Getenv("TECHNITIUM_PASSWORD")
+
+	legacyTokenAuth := false
+	if v := os.Getenv("TECHNITIUM_LEGACY_TOKEN_AUTH"); v != "" {
+		parsed, err := strconv.ParseBool(v)
+		if err != nil {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("legacy_token_auth"),
+				"Invalid TECHNITIUM_LEGACY_TOKEN_AUTH value",
+				"Could not parse TECHNITIUM_LEGACY_TOKEN_AUTH as a boolean: "+err.Error(),
+			)
+			return
+		}
+		legacyTokenAuth = parsed
+	}
 
 	if !config.Host.IsNull() {
 		host = config.Host.ValueString()
@@ -141,6 +171,9 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 	}
 	if !config.Password.IsNull() {
 		password = config.Password.ValueString()
+	}
+	if !config.LegacyTokenAuth.IsNull() {
+		legacyTokenAuth = config.LegacyTokenAuth.ValueBool()
 	}
 
 	// If any of the expected configurations are missing, return
@@ -185,7 +218,7 @@ func (p *technitiumProvider) Configure(ctx context.Context, req provider.Configu
 		token = newToken
 	}
 
-	client, err := technitium.NewClient(host, token, ctx)
+	client, err := technitium.NewClient(host, token, legacyTokenAuth, ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
