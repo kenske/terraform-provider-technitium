@@ -3,14 +3,27 @@ package technitium
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"io"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 	"time"
 )
+
+// tokenQueryParamPattern matches a "token" query string parameter so its
+// value can be redacted before a URL is logged or surfaced in an error.
+var tokenQueryParamPattern = regexp.MustCompile(`token=[^&]+`)
+
+// redactTokenQueryParam replaces the value of a "token" query string
+// parameter with a fixed placeholder so a live API token never ends up in
+// logs or error messages (LegacyTokenAuth mode carries the token in the URL).
+func redactTokenQueryParam(s string) string {
+	return tokenQueryParamPattern.ReplaceAllString(s, "token=hidden")
+}
 
 type HttpClient interface {
 	Do(req *http.Request) (*http.Response, error)
@@ -51,8 +64,23 @@ func GetToken(host string, username string, password string) (string, error) {
 		return "", fmt.Errorf("username and password must be provided")
 	}
 
-	url := fmt.Sprintf("%s/api/user/login?user=%s&pass=%s", host, username, password)
-	resp, err := http.Get(url)
+	// Send credentials as a POST form body rather than a URL query string.
+	// The Technitium API accepts both GET and POST for /api/user/login, and
+	// only the POST form avoids putting the username and password in the
+	// request URL, where they would otherwise be captured in cleartext by
+	// reverse proxy access logs, browser history, and *url.Error messages
+	// from transport failures.
+	form := url.Values{}
+	form.Set("user", username)
+	form.Set("pass", password)
+
+	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/api/user/login", host), strings.NewReader(form.Encode()))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -123,15 +151,12 @@ func (c *Client) doRequest(req *http.Request, ctx context.Context) ([]byte, erro
 	}
 
 	if ctx != nil {
-		url := req.URL.String()
 		// Hide token in the URL for logging
-		re := regexp.MustCompile(`token=[^&]+`)
-		censoredURL := re.ReplaceAllString(url, "token=hidden")
-		tflog.Info(ctx, censoredURL)
+		tflog.Info(ctx, redactTokenQueryParam(req.URL.String()))
 	}
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, redactTokenFromError(err)
 	}
 	defer res.Body.Close()
 
@@ -145,6 +170,25 @@ func (c *Client) doRequest(req *http.Request, ctx context.Context) ([]byte, erro
 	}
 
 	return body, err
+}
+
+// redactTokenFromError strips a live API token out of a transport error
+// before it is returned to the caller. Go's *http.Client.Do wraps every
+// transport failure (DNS failure, connection refused, TLS failure, timeout)
+// in a *url.Error whose Error() string embeds the full request URL,
+// including its query string. In LegacyTokenAuth mode that query string
+// carries the "token" parameter, so an unredacted transport error would leak
+// the live token into whatever surfaces err.Error() -- e.g. a Terraform
+// diagnostic message shown in a user's terminal or CI log.
+func redactTokenFromError(err error) error {
+	var uerr *url.Error
+	if errors.As(err, &uerr) {
+		redacted := *uerr
+		redacted.URL = redactTokenQueryParam(uerr.URL)
+		return &redacted
+	}
+
+	return err
 }
 
 // GetRequest TODO: change this function to accept a map with GET params
