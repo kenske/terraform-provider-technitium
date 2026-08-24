@@ -39,7 +39,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           cache: true
-      - uses: hashicorp/setup-terraform@v3.1.2
+      - uses: hashicorp/setup-terraform@v4.0.0
         with:
           terraform_wrapper: false
       - run: make generate
@@ -85,7 +85,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           cache: true
-      - uses: opentofu/setup-opentofu@v1
+      - uses: opentofu/setup-opentofu@v2
         with:
           tofu_version: ${{ matrix.opentofu }}
           tofu_wrapper: false
